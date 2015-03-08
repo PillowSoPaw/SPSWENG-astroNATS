@@ -2,9 +2,12 @@ package View;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
+import java.awt.event.*;
 
 public class AddTransactionPanel extends JPanel {
 
@@ -73,9 +76,31 @@ public class AddTransactionPanel extends JPanel {
         servicePanel = new JPanel();
         lChoose = new JLabel("Choose Service:");
         chooseService = new JComboBox();
+        
+        //initialize the add employee button
         employee = new JButton("Add Employee");
+        employee.addActionListener(new ActionListener(){
+        	public void actionPerformed(ActionEvent e){
+        		employeeListFrame empList = new employeeListFrame();
+        		System.out.print(empList.getText());
+        	}
+        });
+        
+        //initialize add Products button
         products = new JButton("Products Used");
+        products.addActionListener(new ActionListener(){
+        	public void actionPerformed(ActionEvent e){
+        		//insert add products JFrame here
+        	}
+        });
+        
+        //initialize the add service button
         addService = new JButton("Add Service");
+        addService.addActionListener(new ActionListener(){
+        	public void actionPerformed(ActionEvent e){
+        		//insert add service code
+        	}
+        });
 
         servicePanel.setBorder(blackline);
         servicePanel.setLayout(null);

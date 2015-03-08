@@ -83,7 +83,10 @@ public class TransactionGUI extends JFrame{
         serviceLabel = new JLabel();
         servicesComboBox = new JComboBox();
         chooseServiceLabel = new JLabel();
+        
         addEmployee = new JButton();
+        
+        
         addProduct1 = new JButton();
         addService = new JButton();
         
