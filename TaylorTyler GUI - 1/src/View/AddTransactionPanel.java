@@ -8,16 +8,24 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
+import java.util.ArrayList;
+import javax.swing.table.AbstractTableModel;
 
 public class AddTransactionPanel extends JPanel {
-
+    
+    private int entries; //TURN THIS BLOCK INTO A CLASS called TransactionEntry
+    private ArrayList<String> services;
+    private ArrayList<String> customerNames;
+    private ArrayList<String> prices;
+    
     private JPanel leftPanel;
+    private JScrollPane transScroll;
     private JPanel pTransactionDetail;
     private JTextField customerName;
     private JTable transactionDetail;
     private JButton bCancel;
     private JButton bSave;
-
+    
     private JPanel rightPanel;
     private JLabel titleService;
     private JLabel titleLine;
@@ -37,22 +45,59 @@ public class AddTransactionPanel extends JPanel {
     private JLabel lQuantity;
     private JTextArea quantity;
     private JButton bAddProduct;
-
+           
+    private String[] testOptions = {"Shampoo", "Nail Polish", "Hair Dye Product"}; //Should get from DATABASE for DEVS
+    private String[] testOptions2 = {"Manicure", "Pedicure", "Haircut", "Dye Hair"}; //Should get from DATABASE for DEVS
+    
+    private Service[] serviceReference;
+    
+    private double[] testPrice = {124.99, 99.99, 249.99};
+    private double[] testPrice2 = {200.00, 200.00, 100.00, 300.00};
+    
+    private boolean isOpen;
+    
+    private AddTransactionPanel reference;
+    
     public AddTransactionPanel() {
         setBounds(183, 120, 600, 440);
         setLayout(null);
 //        setBounds()
-        String[] temp = {"Service", "Customer Name", "Price"};
-        String[][] temp2 = {{"Blah", "Blah", "Blah"},
-        {"Blah", "Blah", "Blah"}
-        };
-
         pTransactionDetail = new JPanel();
-
+        
+        entries = 0;
+        
+        isOpen = false;
+        
+        serviceReference = new Service[4]; // Should load from Database all the Services
+        
+        /* Instantiating Services, REMOVE AFTER TESTING */
+            serviceReference[0] = new Service(testOptions2[0]);
+            serviceReference[1] = new Service(testOptions2[1]);
+            serviceReference[2] = new Service(testOptions2[2]);
+            serviceReference[3] = new Service(testOptions2[3]);
+            
+            serviceReference[0].addProduct(new Product("Nail Polish", "Liter"));
+            serviceReference[0].addProduct(new Product("Nail Color", "Liter"));
+            
+            serviceReference[1].addProduct(new Product("Nail Polish", "Liter"));
+            serviceReference[1].addProduct(new Product("Nail Color", "Liter"));
+            
+            serviceReference[2].addProduct(new Product("Shampoo", "Liter"));
+            serviceReference[2].addProduct(new Product("Hair Spray", "Liter"));
+            
+            serviceReference[3].addProduct(new Product("Hair Dye Product", "Liter"));
+            serviceReference[3].addProduct(new Product("Bleach", "Liter"));
+        /* Instantiating Services, REMOVE AFTER TESTING */
+        
+        
         Border blackline = BorderFactory.createLineBorder(Color.black);
 
         setBorder(blackline);
-
+        
+        services = new ArrayList();
+        customerNames = new ArrayList();
+        prices = new ArrayList();
+        
         leftPanel = new JPanel();
         customerName = new JTextField("Customer Name"); // Retrieve Customer Name from Database
         customerName.setBounds(10, 10, 200, 20);
@@ -63,8 +108,14 @@ public class AddTransactionPanel extends JPanel {
         titleProduct = new JLabel("Product Availed");
         titleLine2 = new JLabel("______________________________________");
         
-        transactionDetail = new JTable(temp2, temp);
+        DefaultTableModel tModel = new DefaultTableModel();
+        tModel.addColumn("Service / Product");
+        tModel.addColumn("Customer Name");
+        tModel.addColumn("Price");
+        
+        transactionDetail = new JTable(tModel);
         transactionDetail.setBounds(10, 50, 300, 330);
+        transactionDetail.setRowHeight(20);
         pTransactionDetail.add(transactionDetail);
         bCancel.setBounds(10, 400, 75, 30);
         bSave.setBounds(175, 400, 135, 30);
@@ -72,35 +123,33 @@ public class AddTransactionPanel extends JPanel {
         titleProduct.setBounds(490, 240, 100, 20);
         titleLine.setBounds(325, 20, 300, 20);
         titleLine2.setBounds(325, 250, 300, 20);
+        transScroll = new JScrollPane(transactionDetail);
+        transScroll.setBounds(10, 50, 300, 330);
         
         servicePanel = new JPanel();
         lChoose = new JLabel("Choose Service:");
-        chooseService = new JComboBox();
+        chooseService = new JComboBox(testOptions2);
         
         //initialize the add employee button
+        buttonListener ButtonListener = new buttonListener();
+        
+        reference = this;
+        
         employee = new JButton("Add Employee");
         employee.addActionListener(new ActionListener(){
         	public void actionPerformed(ActionEvent e){
-        		employeeListFrame empList = new employeeListFrame();
-        		System.out.print(empList.getText());
+        		employeeListFrame empList = new employeeListFrame(reference);
+                        empList.addWindowListener(new WindowCloser());
         	}
         });
         
         //initialize add Products button
         products = new JButton("Products Used");
-        products.addActionListener(new ActionListener(){
-        	public void actionPerformed(ActionEvent e){
-        		//insert add products JFrame here
-        	}
-        });
+        products.addActionListener(ButtonListener);
         
         //initialize the add service button
         addService = new JButton("Add Service");
-        addService.addActionListener(new ActionListener(){
-        	public void actionPerformed(ActionEvent e){
-        		//insert add service code
-        	}
-        });
+        addService.addActionListener(ButtonListener);
 
         servicePanel.setBorder(blackline);
         servicePanel.setLayout(null);
@@ -118,12 +167,14 @@ public class AddTransactionPanel extends JPanel {
         servicePanel.add(addService);
         add(servicePanel);
         
-        JPanel productsPanel = new JPanel();
-        JLabel lChooseProduct = new JLabel("Choose Product:");
-        JComboBox chooseProduct = new JComboBox();
-        JLabel lQuantity = new JLabel("Quantity:");
-        JTextArea quantity = new JTextArea("Enter quantity here");
-        JButton bAddProduct = new JButton("Add Product"); 
+        productsPanel = new JPanel();
+        lChooseProduct = new JLabel("Choose Product:");
+        chooseProduct = new JComboBox(testOptions);
+        lQuantity = new JLabel("Quantity:");
+        quantity = new JTextArea("Enter quantity here");
+        bAddProduct = new JButton("Add Product"); 
+        
+        bAddProduct.addActionListener(ButtonListener);
         
         productsPanel.setBorder(blackline);
         productsPanel.setLayout(null);
@@ -134,7 +185,6 @@ public class AddTransactionPanel extends JPanel {
         quantity.setBounds(59, 85, 150, 18);
         quantity.setBorder(blackline);
         bAddProduct.setBounds(59, 110, 150, 25);
-        
         
         productsPanel.add(lChooseProduct);
         productsPanel.add(chooseProduct);
@@ -151,6 +201,78 @@ public class AddTransactionPanel extends JPanel {
         add(bSave);
         add(bCancel);
         add(customerName);
-        add(transactionDetail);
+        add(transScroll);
+    }
+    
+    private void updateTable(){
+        DefaultTableModel tModel = new DefaultTableModel(){
+        public boolean isCellEditable(int row, int column)
+        {
+            return false;//This causes all cells to be not editable
+        }
+        };
+        
+        tModel.addColumn("Service / Product");
+        tModel.addColumn("Customer Name");
+        tModel.addColumn("Price");
+        
+        int i = 0;
+        while(i < entries){
+            String[] entry = {services.get(i), customerNames.get(i), prices.get(i)};
+            tModel.addRow(entry);
+            
+            i++;
+        }
+        
+        transactionDetail.setModel(tModel);
+    }
+    
+    public void toggleOpen(){
+        isOpen = false;
+    }
+    
+    public class buttonListener implements ActionListener{
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if(e.getSource() == bAddProduct){
+                try {
+                    int temp = Integer.parseInt(quantity.getText());
+                    
+                    services.add(testOptions[chooseProduct.getSelectedIndex()] + " (" + temp + ")");
+                    prices.add("" + (testPrice[chooseProduct.getSelectedIndex()] * temp));
+                    customerNames.add(customerName.getText());
+                    
+                    entries++;
+                    
+                    updateTable();
+                } catch (NumberFormatException ex) {
+                    System.out.println("Quantity has to be double!");
+                    
+                    quantity.setText("This has to be a number.");
+                }
+            }else if(e.getSource() == addService){
+                    services.add(testOptions2[chooseService.getSelectedIndex()]);
+                    prices.add("" + testPrice2[chooseService.getSelectedIndex()]);
+                    customerNames.add(customerName.getText());
+                    
+                    entries++;
+                    
+                    updateTable();
+            }else if(e.getSource() == products){
+                    if(isOpen == false){
+                        productListFrame temp = new productListFrame(reference, serviceReference[chooseService.getSelectedIndex()]);
+                        temp.addWindowListener(new WindowCloser());
+                        isOpen = true;
+                    }
+            }
+        }
+    }
+    
+    public class WindowCloser extends WindowAdapter{
+        public void windowClosing(WindowEvent e)
+        {
+            toggleOpen();
+        }
     }
 }
+
