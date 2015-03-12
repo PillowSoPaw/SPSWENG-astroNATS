@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `mydb` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `mydb`;
--- MySQL dump 10.13  Distrib 5.6.17, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.17, for Win32 (x86)
 --
 -- Host: localhost    Database: mydb
 -- ------------------------------------------------------
--- Server version	5.6.21
+-- Server version	5.6.19
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -170,6 +170,7 @@ DROP TABLE IF EXISTS `product line item`;
 CREATE TABLE `product line item` (
   `productlineitem_id` int(11) NOT NULL AUTO_INCREMENT,
   `product_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
   PRIMARY KEY (`productlineitem_id`),
   KEY `product_id_idx` (`product_id`),
   CONSTRAINT `product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -195,10 +196,13 @@ DROP TABLE IF EXISTS `productlist`;
 CREATE TABLE `productlist` (
   `productlist_id` int(11) NOT NULL,
   `transaction_id` int(11) NOT NULL,
+  `productlineitem_id` int(11) NOT NULL,
   PRIMARY KEY (`productlist_id`),
   UNIQUE KEY `productlist_id_UNIQUE` (`productlist_id`),
   KEY `transaction_id_idx` (`transaction_id`),
-  CONSTRAINT `transaction_id` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`transaction_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `productlineitem_id_idx` (`productlineitem_id`),
+  CONSTRAINT `transaction_id` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`transaction_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `productlineitem_id` FOREIGN KEY (`productlineitem_id`) REFERENCES `product line item` (`productlineitem_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -221,6 +225,7 @@ DROP TABLE IF EXISTS `receipt`;
 CREATE TABLE `receipt` (
   `receipt_id` int(11) NOT NULL AUTO_INCREMENT,
   `client_id` int(11) NOT NULL,
+  `date` datetime NOT NULL,
   `modeOfPayment` varchar(45) NOT NULL,
   `totalBill` float NOT NULL,
   PRIMARY KEY (`receipt_id`),
@@ -276,6 +281,7 @@ DROP TABLE IF EXISTS `service line item`;
 CREATE TABLE `service line item` (
   `servicelineitem_id` int(11) NOT NULL AUTO_INCREMENT,
   `service_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
   PRIMARY KEY (`servicelineitem_id`),
   UNIQUE KEY `servicelineitem_id_UNIQUE` (`servicelineitem_id`),
   KEY `service_id_idx` (`service_id`),
@@ -303,12 +309,15 @@ CREATE TABLE `servicelist` (
   `servicelist_id` int(11) NOT NULL,
   `transaction_id` int(11) NOT NULL,
   `employee_id` int(11) NOT NULL,
+  `servicelineitem_id` int(11) NOT NULL,
   PRIMARY KEY (`servicelist_id`),
   UNIQUE KEY `servicelist_id_UNIQUE` (`servicelist_id`),
   KEY `employee_id_idx4` (`employee_id`),
   KEY `transaction_id_idx4` (`transaction_id`),
+  KEY `servicelineitem_id_idx` (`servicelineitem_id`),
   CONSTRAINT `employee_id4` FOREIGN KEY (`employee_id`) REFERENCES `employee` (`employee_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `transaction_id4` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`transaction_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `transaction_id4` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`transaction_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `servicelineitem_id` FOREIGN KEY (`servicelineitem_id`) REFERENCES `service line item` (`servicelineitem_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -360,20 +369,20 @@ DROP TABLE IF EXISTS `transaction`;
 CREATE TABLE `transaction` (
   `transaction_id` int(11) NOT NULL AUTO_INCREMENT,
   `client_id` int(11) NOT NULL,
-  `employee_id` int(11) NOT NULL,
-  `servicelineitem_id` int(11) NOT NULL,
-  `productlineitem_id` int(11) NOT NULL,
+  `receipt_id` int(11) NOT NULL,
+  `productlist_id` int(11) NOT NULL,
+  `servicelist_id` int(11) NOT NULL,
   `feedback` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`transaction_id`),
   UNIQUE KEY `transaction_id_UNIQUE` (`transaction_id`),
   KEY `client_id_idx` (`client_id`),
-  KEY `employee_id_idx` (`employee_id`),
-  KEY `servicelineitem_id_idx` (`servicelineitem_id`),
-  KEY `productlineitem_id_idx` (`productlineitem_id`),
+  KEY `receipt_id_idx` (`receipt_id`),
+  KEY `servicelist_id_idx` (`servicelist_id`),
+  KEY `productlist_id_idx` (`productlist_id`),
   CONSTRAINT `client_id` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `employee_id` FOREIGN KEY (`employee_id`) REFERENCES `employee` (`employee_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `productlineitem_id` FOREIGN KEY (`productlineitem_id`) REFERENCES `product line item` (`productlineitem_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `servicelineitem_id` FOREIGN KEY (`servicelineitem_id`) REFERENCES `service line item` (`servicelineitem_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `productlist_id` FOREIGN KEY (`productlist_id`) REFERENCES `productlist` (`productlist_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `servicelist_id` FOREIGN KEY (`servicelist_id`) REFERENCES `servicelist` (`servicelist_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `receipt_id` FOREIGN KEY (`receipt_id`) REFERENCES `receipt` (`receipt_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -395,4 +404,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-03-12 19:47:21
+-- Dump completed on 2015-03-12 20:11:50
