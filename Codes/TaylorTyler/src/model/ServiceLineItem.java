@@ -5,11 +5,13 @@ public class ServiceLineItem
 
 	private String sServiceLineItemId;
 	private Service service;
+	private int nQuantity;
 	
-	public ServiceLineItem( String sServiceLineItemId, Service service )
+	public ServiceLineItem( String sServiceLineItemId, Service service, int nQuantity )
 	{
 		this.sServiceLineItemId = sServiceLineItemId;
 		this.service = service;
+		this.nQuantity = nQuantity;
 	}
 
 	//getters
@@ -21,6 +23,11 @@ public class ServiceLineItem
 	public Service getService()
 	{
 		return service;
+	}
+	
+	public int getnQuantity()
+	{
+		return nQuantity;
 	}
 
 	//setters
@@ -34,4 +41,8 @@ public class ServiceLineItem
 		this.service = service;
 	}
 	
+	public void setnQuantity( int nQuantity )
+	{
+		this.nQuantity = nQuantity;
+	}
 }

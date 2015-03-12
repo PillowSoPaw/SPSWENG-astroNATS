@@ -7,18 +7,16 @@ public class Transaction
 
 	private String sTransactionId;
 	private Client client;
-	private Employee employee;
 	private ArrayList<ProductLineItem> products;
 	private ArrayList<ServiceLineItem> services;
 	private Receipt receipt;
 	private String sType;
 	private String sFeedback;
 	
-	public Transaction( String sTransactionId, Client client, Employee employee, Receipt receipt, String sType, String sFeedback )
+	public Transaction( String sTransactionId, Client client, Receipt receipt, String sType, String sFeedback )
 	{
 		this.sTransactionId = sTransactionId;
 		this.client = client;
-		this.employee = employee;
 		this.products = new ArrayList<ProductLineItem>(0);
 		this.services = new ArrayList<ServiceLineItem>(0);
 		this.receipt = receipt;
@@ -35,11 +33,6 @@ public class Transaction
 	public Client getClient()
 	{
 		return client;
-	}
-
-	public Employee getEmployee()
-	{
-		return employee;
 	}
 
 	public ArrayList<ProductLineItem> getProducts()
@@ -76,11 +69,6 @@ public class Transaction
 	public void setClient(Client client)
 	{
 		this.client = client;
-	}
-
-	public void setEmployee(Employee employee)
-	{
-		this.employee = employee;
 	}
 
 	public void setProducts(ArrayList<ProductLineItem> products)
