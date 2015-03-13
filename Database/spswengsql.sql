@@ -1,70 +1,31 @@
-CREATE DATABASE  IF NOT EXISTS `mydb` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `mydb`;
--- MySQL dump 10.13  Distrib 5.6.17, for Win32 (x86)
---
--- Host: localhost    Database: mydb
--- ------------------------------------------------------
--- Server version	5.6.19
+-- MySQL Workbench Forward Engineering
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
---
--- Table structure for table `account`
---
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
 
-DROP TABLE IF EXISTS `account`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `account` (
-  `account_id` int(11) NOT NULL AUTO_INCREMENT,
-  `employee_id` int(11) NOT NULL,
-  `username` varchar(45) NOT NULL,
-  `password` varchar(45) NOT NULL,
-  `type` varchar(45) NOT NULL,
-  PRIMARY KEY (`account_id`),
-  UNIQUE KEY `account_id_UNIQUE1` (`account_id`),
-  KEY `employee_id_id1` (`employee_id`),
-  CONSTRAINT `employee_id1` FOREIGN KEY (`employee_id`) REFERENCES `employee` (`employee_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+-- -----------------------------------------------------
+-- Schema mydb
+-- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `mydb` DEFAULT CHARACTER SET utf8 ;
+USE `mydb` ;
 
---
--- Dumping data for table `account`
---
-
-LOCK TABLES `account` WRITE;
-/*!40000 ALTER TABLE `account` DISABLE KEYS */;
-/*!40000 ALTER TABLE `account` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `branch`
---
-
-DROP TABLE IF EXISTS `branch`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `branch` (
-  `branch_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL,
-  `pettycash` float NOT NULL,
+-- -----------------------------------------------------
+-- Table `mydb`.`branch`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`branch` (
+  `branch_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `pettycash` FLOAT NOT NULL,
   PRIMARY KEY (`branch_id`),
-  UNIQUE KEY `branch_id_UNIQUEx` (`branch_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `branch`
---
+  UNIQUE INDEX `branch_id_UNIQUEx` (`branch_id` ASC))
+ENGINE = InnoDB
+AUTO_INCREMENT = 4
+DEFAULT CHARACTER SET = utf8;
 
 LOCK TABLES `branch` WRITE;
 /*!40000 ALTER TABLE `branch` DISABLE KEYS */;
@@ -72,29 +33,78 @@ INSERT INTO `branch` VALUES (1,'branch1',4000),(2,'branch2',4000),(3,'branch3',4
 /*!40000 ALTER TABLE `branch` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `client`
---
+-- -----------------------------------------------------
+-- Table `mydb`.`employee`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`employee` (
+  `employee_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `branch_id` INT(11) NOT NULL,
+  `name` VARCHAR(45) NOT NULL,
+  `dateStartedWorking` DATE NOT NULL,
+  `hoursRendered` FLOAT NOT NULL,
+  `type` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`employee_id`),
+  UNIQUE INDEX `employee_id_UNIQUE` (`employee_id` ASC),
+  INDEX `branch_id_idx` (`branch_id` ASC),
+  CONSTRAINT `branch_id`
+    FOREIGN KEY (`branch_id`)
+    REFERENCES `mydb`.`branch` (`branch_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 8
+DEFAULT CHARACTER SET = utf8;
 
-DROP TABLE IF EXISTS `client`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `client` (
-  `client_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL,
-  `address` varchar(45) NOT NULL,
-  `contactNumber` varchar(45) NOT NULL,
-  `picture` varchar(45) DEFAULT NULL,
-  `dateJoined` date NOT NULL,
-  `dateLastVisited` date NOT NULL,
+LOCK TABLES `employee` WRITE;
+/*!40000 ALTER TABLE `employee` DISABLE KEYS */;
+INSERT INTO `employee` VALUES (1,1,'Sen One','2013-01-02',10,'senior'),(2,3,'Sen Two','2014-07-10',20,'senior'),(3,2,'Jun Three','2015-03-12',1,'junior'),(4,3,'Jun Four','2015-03-12',5,'junior'),(5,1,'Man Five','2013-02-13',50,'salonmanager'),(6,3,'Taylor Tyler','2010-01-01',0,'owner'),(7,2,'Man Seven','2011-02-14',90,'salonmanager');
+/*!40000 ALTER TABLE `employee` ENABLE KEYS */;
+UNLOCK TABLES;
+
+
+-- -----------------------------------------------------
+-- Table `mydb`.`account`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`account` (
+  `account_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `employee_id` INT(11) NOT NULL,
+  `username` VARCHAR(45) NOT NULL,
+  `password` VARCHAR(45) NOT NULL,
+  `type` VARCHAR(45) NOT NULL,
+  PRIMARY KEY (`account_id`),
+  UNIQUE INDEX `account_id_UNIQUE1` (`account_id` ASC),
+  INDEX `employee_id_id1` (`employee_id` ASC),
+  CONSTRAINT `employee_id1`
+    FOREIGN KEY (`employee_id`)
+    REFERENCES `mydb`.`employee` (`employee_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+AUTO_INCREMENT = 4
+DEFAULT CHARACTER SET = utf8;
+
+LOCK TABLES `account` WRITE;
+/*!40000 ALTER TABLE `account` DISABLE KEYS */;
+INSERT INTO `account` VALUES (1,5,'manager5','123','salonmanager'),(2,6,'taylor','123','owner'),(3,7,'manager7','123','salonmanager');
+/*!40000 ALTER TABLE `account` ENABLE KEYS */;
+UNLOCK TABLES;
+
+-- -----------------------------------------------------
+-- Table `mydb`.`client`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`client` (
+  `client_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `address` VARCHAR(45) NOT NULL,
+  `contactNumber` VARCHAR(45) NOT NULL,
+  `picture` VARCHAR(45) NULL DEFAULT NULL,
+  `dateJoined` DATE NOT NULL,
+  `dateLastVisited` DATE NOT NULL,
   PRIMARY KEY (`client_id`),
-  UNIQUE KEY `idclient_UNIQUE` (`client_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `client`
---
+  UNIQUE INDEX `idclient_UNIQUE` (`client_id` ASC))
+ENGINE = InnoDB
+AUTO_INCREMENT = 5
+DEFAULT CHARACTER SET = utf8;
 
 LOCK TABLES `client` WRITE;
 /*!40000 ALTER TABLE `client` DISABLE KEYS */;
@@ -102,57 +112,20 @@ INSERT INTO `client` VALUES (1,'Client One','Manila','09000000001',NULL,'2015-01
 /*!40000 ALTER TABLE `client` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `employee`
---
 
-DROP TABLE IF EXISTS `employee`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `employee` (
-  `employee_id` int(11) NOT NULL AUTO_INCREMENT,
-  `branch_id` int(11) NOT NULL,
-  `name` varchar(45) NOT NULL,
-  `dateStartedWorking` date NOT NULL,
-  `hoursRendered` float NOT NULL,
-  `type` varchar(45) NOT NULL,
-  PRIMARY KEY (`employee_id`),
-  UNIQUE KEY `employee_id_UNIQUE` (`employee_id`),
-  KEY `branch_id_idx` (`branch_id`),
-  CONSTRAINT `branch_id` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `employee`
---
-
-LOCK TABLES `employee` WRITE;
-/*!40000 ALTER TABLE `employee` DISABLE KEYS */;
-INSERT INTO `employee` VALUES (1,1,'Sen One','2013-01-02',10,'senior'),(2,3,'Sen Two','2014-07-10',20,'senior'),(3,2,'Jun Three','2015-03-12',1,'junior'),(4,3,'Jun Four','2015-03-12',5,'junior'),(5,1,'Man Five','2013-02-13',50,'salonmanager'),(6,3,'Taylor Tyler','2010-01-01',0,'owner');
-/*!40000 ALTER TABLE `employee` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `product`
---
-
-DROP TABLE IF EXISTS `product`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `product` (
-  `product_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL,
-  `quantity` float NOT NULL,
-  `price` float DEFAULT NULL,
+-- -----------------------------------------------------
+-- Table `mydb`.`product`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`product` (
+  `product_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `quantity` FLOAT NOT NULL,
+  `price` FLOAT NULL DEFAULT NULL,
   PRIMARY KEY (`product_id`),
-  UNIQUE KEY `product_id_UNIQUE` (`product_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `product`
---
+  UNIQUE INDEX `product_id_UNIQUE` (`product_id` ASC))
+ENGINE = InnoDB
+AUTO_INCREMENT = 6
+DEFAULT CHARACTER SET = utf8;
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
@@ -160,110 +133,59 @@ INSERT INTO `product` VALUES (1,'Shampoo',50,100),(2,'Conditioner',40,90),(3,'He
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `product line item`
---
-
-DROP TABLE IF EXISTS `product line item`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `product line item` (
-  `productlineitem_id` int(11) NOT NULL AUTO_INCREMENT,
-  `product_id` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL,
+-- -----------------------------------------------------
+-- Table `mydb`.`product line item`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`product line item` (
+  `productlineitem_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `product_id` INT(11) NOT NULL,
+  `quantity` INT(11) NOT NULL,
   PRIMARY KEY (`productlineitem_id`),
-  KEY `product_id_idx` (`product_id`),
-  CONSTRAINT `product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  INDEX `product_id_idx` (`product_id` ASC),
+  CONSTRAINT `product_id`
+    FOREIGN KEY (`product_id`)
+    REFERENCES `mydb`.`product` (`product_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
---
--- Dumping data for table `product line item`
---
 
-LOCK TABLES `product line item` WRITE;
-/*!40000 ALTER TABLE `product line item` DISABLE KEYS */;
-/*!40000 ALTER TABLE `product line item` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `productlist`
---
-
-DROP TABLE IF EXISTS `productlist`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `productlist` (
-  `productlist_id` int(11) NOT NULL,
-  `transaction_id` int(11) NOT NULL,
-  `productlineitem_id` int(11) NOT NULL,
-  PRIMARY KEY (`productlist_id`),
-  UNIQUE KEY `productlist_id_UNIQUE` (`productlist_id`),
-  KEY `transaction_id_idx` (`transaction_id`),
-  KEY `productlineitem_id_idx` (`productlineitem_id`),
-  CONSTRAINT `transaction_id` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`transaction_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `productlineitem_id` FOREIGN KEY (`productlineitem_id`) REFERENCES `product line item` (`productlineitem_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `productlist`
---
-
-LOCK TABLES `productlist` WRITE;
-/*!40000 ALTER TABLE `productlist` DISABLE KEYS */;
-/*!40000 ALTER TABLE `productlist` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `receipt`
---
-
-DROP TABLE IF EXISTS `receipt`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `receipt` (
-  `receipt_id` int(11) NOT NULL AUTO_INCREMENT,
-  `client_id` int(11) NOT NULL,
-  `date` datetime NOT NULL,
-  `modeOfPayment` varchar(45) NOT NULL,
-  `totalBill` float NOT NULL,
+-- -----------------------------------------------------
+-- Table `mydb`.`receipt`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`receipt` (
+  `receipt_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `client_id` INT(11) NOT NULL,
+  `date` DATETIME NOT NULL,
+  `modeOfPayment` VARCHAR(45) NOT NULL,
+  `totalBill` FLOAT NOT NULL,
   PRIMARY KEY (`receipt_id`),
-  UNIQUE KEY `receipt_id_UNIQUE` (`receipt_id`),
-  KEY `client_id_idx` (`client_id`),
-  CONSTRAINT `client_id2` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  UNIQUE INDEX `receipt_id_UNIQUE` (`receipt_id` ASC),
+  INDEX `client_id_idx` (`client_id` ASC),
+  CONSTRAINT `client_id2`
+    FOREIGN KEY (`client_id`)
+    REFERENCES `mydb`.`client` (`client_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
---
--- Dumping data for table `receipt`
---
 
-LOCK TABLES `receipt` WRITE;
-/*!40000 ALTER TABLE `receipt` DISABLE KEYS */;
-/*!40000 ALTER TABLE `receipt` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `service`
---
-
-DROP TABLE IF EXISTS `service`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `service` (
-  `service_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL,
-  `description` varchar(45) NOT NULL,
-  `price` float NOT NULL,
+-- -----------------------------------------------------
+-- Table `mydb`.`service`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`service` (
+  `service_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(45) NOT NULL,
+  `description` VARCHAR(45) NOT NULL,
+  `price` FLOAT NOT NULL,
   PRIMARY KEY (`service_id`),
-  UNIQUE KEY `service_id_UNIQUE` (`service_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  UNIQUE INDEX `service_id_UNIQUE` (`service_id` ASC))
+ENGINE = InnoDB
+AUTO_INCREMENT = 7
+DEFAULT CHARACTER SET = utf8;
 
---
--- Dumping data for table `service`
---
 
 LOCK TABLES `service` WRITE;
 /*!40000 ALTER TABLE `service` DISABLE KEYS */;
@@ -271,137 +193,150 @@ INSERT INTO `service` VALUES (1,'Precision Hair Cut','description1',100),(2,'Sha
 /*!40000 ALTER TABLE `service` ENABLE KEYS */;
 UNLOCK TABLES;
 
---
--- Table structure for table `service line item`
---
-
-DROP TABLE IF EXISTS `service line item`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `service line item` (
-  `servicelineitem_id` int(11) NOT NULL AUTO_INCREMENT,
-  `service_id` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL,
+-- -----------------------------------------------------
+-- Table `mydb`.`service line item`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`service line item` (
+  `servicelineitem_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `service_id` INT(11) NOT NULL,
+  `quantity` INT(11) NOT NULL,
   PRIMARY KEY (`servicelineitem_id`),
-  UNIQUE KEY `servicelineitem_id_UNIQUE` (`servicelineitem_id`),
-  KEY `service_id_idx` (`service_id`),
-  CONSTRAINT `service_id` FOREIGN KEY (`service_id`) REFERENCES `service` (`service_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  UNIQUE INDEX `servicelineitem_id_UNIQUE` (`servicelineitem_id` ASC),
+  INDEX `service_id_idx` (`service_id` ASC),
+  CONSTRAINT `service_id`
+    FOREIGN KEY (`service_id`)
+    REFERENCES `mydb`.`service` (`service_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
---
--- Dumping data for table `service line item`
---
 
-LOCK TABLES `service line item` WRITE;
-/*!40000 ALTER TABLE `service line item` DISABLE KEYS */;
-/*!40000 ALTER TABLE `service line item` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `servicelist`
---
-
-DROP TABLE IF EXISTS `servicelist`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `servicelist` (
-  `servicelist_id` int(11) NOT NULL,
-  `transaction_id` int(11) NOT NULL,
-  `employee_id` int(11) NOT NULL,
-  `servicelineitem_id` int(11) NOT NULL,
+-- -----------------------------------------------------
+-- Table `mydb`.`servicelist`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`servicelist` (
+  `servicelist_id` INT(11) NOT NULL,
+  `transaction_id` INT(11) NOT NULL,
+  `employee_id` INT(11) NOT NULL,
+  `servicelineitem_id` INT(11) NOT NULL,
+  `employee_id2` INT NULL,
   PRIMARY KEY (`servicelist_id`),
-  UNIQUE KEY `servicelist_id_UNIQUE` (`servicelist_id`),
-  KEY `employee_id_idx4` (`employee_id`),
-  KEY `transaction_id_idx4` (`transaction_id`),
-  KEY `servicelineitem_id_idx` (`servicelineitem_id`),
-  CONSTRAINT `employee_id4` FOREIGN KEY (`employee_id`) REFERENCES `employee` (`employee_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `transaction_id4` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`transaction_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `servicelineitem_id` FOREIGN KEY (`servicelineitem_id`) REFERENCES `service line item` (`servicelineitem_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  UNIQUE INDEX `servicelist_id_UNIQUE` (`servicelist_id` ASC),
+  INDEX `employee_id_idx4` (`employee_id` ASC),
+  INDEX `transaction_id_idx4` (`transaction_id` ASC),
+  INDEX `servicelineitem_id_idx` (`servicelineitem_id` ASC),
+  INDEX `employee_id5_idx` (`employee_id2` ASC),
+  CONSTRAINT `employee_id4`
+    FOREIGN KEY (`employee_id`)
+    REFERENCES `mydb`.`employee` (`employee_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `servicelineitem_id`
+    FOREIGN KEY (`servicelineitem_id`)
+    REFERENCES `mydb`.`service line item` (`servicelineitem_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `transaction_id4`
+    FOREIGN KEY (`transaction_id`)
+    REFERENCES `mydb`.`transaction` (`transaction_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `employee_id5`
+    FOREIGN KEY (`employee_id2`)
+    REFERENCES `mydb`.`employee` (`employee_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
---
--- Dumping data for table `servicelist`
---
 
-LOCK TABLES `servicelist` WRITE;
-/*!40000 ALTER TABLE `servicelist` DISABLE KEYS */;
-/*!40000 ALTER TABLE `servicelist` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `timelog`
---
-
-DROP TABLE IF EXISTS `timelog`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `timelog` (
-  `timelog_id` int(11) NOT NULL AUTO_INCREMENT,
-  `employee_id` int(11) NOT NULL,
-  `date` date NOT NULL,
-  `timein` datetime NOT NULL,
-  `timeout` datetime NOT NULL,
-  PRIMARY KEY (`timelog_id`),
-  UNIQUE KEY `timelog_id_UNIQUE2` (`timelog_id`),
-  KEY `employee_id_id2` (`employee_id`),
-  CONSTRAINT `employee_id2` FOREIGN KEY (`employee_id`) REFERENCES `employee` (`employee_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `timelog`
---
-
-LOCK TABLES `timelog` WRITE;
-/*!40000 ALTER TABLE `timelog` DISABLE KEYS */;
-/*!40000 ALTER TABLE `timelog` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `transaction`
---
-
-DROP TABLE IF EXISTS `transaction`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `transaction` (
-  `transaction_id` int(11) NOT NULL AUTO_INCREMENT,
-  `client_id` int(11) NOT NULL,
-  `receipt_id` int(11) NOT NULL,
-  `productlist_id` int(11) NOT NULL,
-  `servicelist_id` int(11) NOT NULL,
-  `feedback` varchar(45) DEFAULT NULL,
+-- -----------------------------------------------------
+-- Table `mydb`.`transaction`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`transaction` (
+  `transaction_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `client_id` INT(11) NOT NULL,
+  `receipt_id` INT(11) NOT NULL,
+  `productlist_id` INT(11) NOT NULL,
+  `servicelist_id` INT(11) NOT NULL,
+  `feedback` VARCHAR(45) NULL DEFAULT NULL,
   PRIMARY KEY (`transaction_id`),
-  UNIQUE KEY `transaction_id_UNIQUE` (`transaction_id`),
-  KEY `client_id_idx` (`client_id`),
-  KEY `receipt_id_idx` (`receipt_id`),
-  KEY `servicelist_id_idx` (`servicelist_id`),
-  KEY `productlist_id_idx` (`productlist_id`),
-  CONSTRAINT `client_id` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `productlist_id` FOREIGN KEY (`productlist_id`) REFERENCES `productlist` (`productlist_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `servicelist_id` FOREIGN KEY (`servicelist_id`) REFERENCES `servicelist` (`servicelist_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `receipt_id` FOREIGN KEY (`receipt_id`) REFERENCES `receipt` (`receipt_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+  UNIQUE INDEX `transaction_id_UNIQUE` (`transaction_id` ASC),
+  INDEX `client_id_idx` (`client_id` ASC),
+  INDEX `receipt_id_idx` (`receipt_id` ASC),
+  INDEX `servicelist_id_idx` (`servicelist_id` ASC),
+  INDEX `productlist_id_idx` (`productlist_id` ASC),
+  CONSTRAINT `client_id`
+    FOREIGN KEY (`client_id`)
+    REFERENCES `mydb`.`client` (`client_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `productlist_id`
+    FOREIGN KEY (`productlist_id`)
+    REFERENCES `mydb`.`productlist` (`productlist_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `receipt_id`
+    FOREIGN KEY (`receipt_id`)
+    REFERENCES `mydb`.`receipt` (`receipt_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `servicelist_id`
+    FOREIGN KEY (`servicelist_id`)
+    REFERENCES `mydb`.`servicelist` (`servicelist_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
---
--- Dumping data for table `transaction`
---
 
-LOCK TABLES `transaction` WRITE;
-/*!40000 ALTER TABLE `transaction` DISABLE KEYS */;
-/*!40000 ALTER TABLE `transaction` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+-- -----------------------------------------------------
+-- Table `mydb`.`productlist`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`productlist` (
+  `productlist_id` INT(11) NOT NULL,
+  `transaction_id` INT(11) NOT NULL,
+  `productlineitem_id` INT(11) NOT NULL,
+  PRIMARY KEY (`productlist_id`),
+  UNIQUE INDEX `productlist_id_UNIQUE` (`productlist_id` ASC),
+  INDEX `transaction_id_idx` (`transaction_id` ASC),
+  INDEX `productlineitem_id_idx` (`productlineitem_id` ASC),
+  CONSTRAINT `productlineitem_id`
+    FOREIGN KEY (`productlineitem_id`)
+    REFERENCES `mydb`.`product line item` (`productlineitem_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `transaction_id`
+    FOREIGN KEY (`transaction_id`)
+    REFERENCES `mydb`.`transaction` (`transaction_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-03-12 20:11:50
+-- -----------------------------------------------------
+-- Table `mydb`.`timelog`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `mydb`.`timelog` (
+  `timelog_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `employee_id` INT(11) NOT NULL,
+  `date` DATE NOT NULL,
+  `timein` DATETIME NOT NULL,
+  `timeout` DATETIME NOT NULL,
+  PRIMARY KEY (`timelog_id`),
+  UNIQUE INDEX `timelog_id_UNIQUE2` (`timelog_id` ASC),
+  INDEX `employee_id_id2` (`employee_id` ASC),
+  CONSTRAINT `employee_id2`
+    FOREIGN KEY (`employee_id`)
+    REFERENCES `mydb`.`employee` (`employee_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
