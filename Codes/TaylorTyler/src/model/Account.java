@@ -7,8 +7,9 @@ public class Account
 	private Employee employee;
 	private String sUsername;
 	private String sPassword;
+	private String sType;
 	
-	public Account (String sAccountId, Employee employee, String sUsername, String sPassword)
+	public Account (String sAccountId, Employee employee, String sUsername, String sPassword, String sType)
 	{
 		this.sAccountId = sAccountId;
 		this.employee = employee;
@@ -36,7 +37,12 @@ public class Account
 	{
 		return sPassword;
 	}
-
+	
+	public String getsType()
+	{
+		return this.sType;
+	}
+	
 	//setters
 	public void setsAccountId(String sAccountId)
 	{
@@ -56,6 +62,10 @@ public class Account
 	public void setsPassword(String sPassword)
 	{
 		this.sPassword = sPassword;
+	}
+	public void setsType(String sType)
+	{
+		this.sType = sType;
 	}
 	
 }

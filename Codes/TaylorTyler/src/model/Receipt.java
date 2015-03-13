@@ -1,7 +1,7 @@
 package model;
 
 import java.sql.Date;
-
+import java.util.ArrayList;
 public class Receipt
 {
 
@@ -9,6 +9,7 @@ public class Receipt
 	private Client client;
 	private Date date;
 	private String sModeOfPayment;
+	private ArrayList<Transaction> transactions;
 	private double dTotalBill;
 	
 	public Receipt( String sReceiptId, Client client, Date date, String sModeOfPayment, double dTotalBill )
@@ -70,6 +71,12 @@ public class Receipt
 	public void setdTotalBill(double dTotalBill)
 	{
 		this.dTotalBill = dTotalBill;
+	}
+	
+	//Add transaction
+	public void addTransaction(Transaction t)
+	{
+		this.transactions.add(t);
 	}
 	
 }

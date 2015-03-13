@@ -9,18 +9,14 @@ public class Transaction
 	private Client client;
 	private ArrayList<ProductLineItem> products;
 	private ArrayList<ServiceLineItem> services;
-	private Receipt receipt;
-	private String sType;
 	private String sFeedback;
 	
-	public Transaction( String sTransactionId, Client client, Receipt receipt, String sType, String sFeedback )
+	public Transaction( String sTransactionId, Client client, String sFeedback )
 	{
 		this.sTransactionId = sTransactionId;
 		this.client = client;
-		this.products = new ArrayList<ProductLineItem>(0);
-		this.services = new ArrayList<ServiceLineItem>(0);
-		this.receipt = receipt;
-		this.sType = sType;
+		this.products = new ArrayList<ProductLineItem>(0);//Product List in Database
+		this.services = new ArrayList<ServiceLineItem>(0);//Service List in Database
 		this.sFeedback = sFeedback;
 	}
 	
@@ -43,16 +39,6 @@ public class Transaction
 	public ArrayList<ServiceLineItem> getServices()
 	{
 		return services;
-	}
-
-	public Receipt getReceipt()
-	{
-		return receipt;
-	}
-
-	public String getsType()
-	{
-		return sType;
 	}
 
 	public String getsFeedback()
@@ -79,16 +65,6 @@ public class Transaction
 	public void setServices(ArrayList<ServiceLineItem> services)
 	{
 		this.services = services;
-	}
-
-	public void setReceipt(Receipt receipt)
-	{
-		this.receipt = receipt;
-	}
-
-	public void setsType(String sType)
-	{
-		this.sType = sType;
 	}
 
 	public void setsFeedback(String sFeedback)

@@ -7,13 +7,15 @@ public class TimeLog
 {
 
 	private String sTimelogId;
+	private Employee employee;
 	private Date date;
 	private Time timein;
 	private Time timeout;
 	
-	public TimeLog(String sTimelogId, Date date, Time timein, Time timeout )
+	public TimeLog(String sTimelogId, Employee employee, Date date, Time timein, Time timeout )
 	{
 		this.sTimelogId = sTimelogId;
+		this.employee = employee;
 		this.date = date;
 		this.timein = timein;
 		this.timeout = timeout;
@@ -39,7 +41,11 @@ public class TimeLog
 	{
 		return timeout;
 	}
-
+	
+	public Employee getEmployee()
+	{
+		return this.employee;
+	}
 	//setters
 	public void setsTimelogId(String sTimelogId)
 	{
@@ -59,6 +65,11 @@ public class TimeLog
 	public void setTimeout(Time timeout)
 	{
 		this.timeout = timeout;
+	}
+	
+	public void setEmployee(Employee employee)
+	{
+		this.employee = employee;
 	}
 	
 }
