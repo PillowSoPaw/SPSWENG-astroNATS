@@ -1,6 +1,4 @@
 package model;
-
-import java.util.*;
 import java.sql.*;
 
 public class DatabaseConnector

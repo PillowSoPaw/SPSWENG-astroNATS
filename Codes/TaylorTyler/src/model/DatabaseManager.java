@@ -22,8 +22,10 @@ public class DatabaseManager
 	}
 	
 	//SELECT STATEMENTS
-	public Branch getBranch( int id ) throws SQLException
+	public Branch getBranch( int id )
 	{
+		try
+		{
 		PreparedStatement ps = con.prepareStatement("SELECT * FROM branch WHERE branch_id = ?");
 		ps.setInt(1, id);
 		ResultSet rs = ps.executeQuery();
@@ -34,10 +36,17 @@ public class DatabaseManager
 							   rs.getString("name"), 
 							   rs.getDouble("pettycash"));
 		return b;
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
-	public Iterator getAllEmployees() throws SQLException
+	public Iterator getAllEmployees()
 	{
+		try
+		{
 		PreparedStatement ps = con.prepareStatement("SELECT * FROM employee");
 		ResultSet rs = ps.executeQuery();
 		ArrayList<model.Employee> employees = new ArrayList<>(0);
@@ -52,10 +61,17 @@ public class DatabaseManager
 			employees.add(e);
 		}
 		return employees.iterator();
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
-	public Iterator getAllPoducts() throws SQLException
+	public Iterator getAllProducts()
 	{
+		try
+		{
 		PreparedStatement ps = con.prepareStatement("SELECT * FROM product");
 		ResultSet rs = ps.executeQuery();
 		ArrayList<model.Product> products = new ArrayList<>(0);
@@ -69,11 +85,51 @@ public class DatabaseManager
 			products.add(p);
 		}
 		return products.iterator();
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
-	//INSERT STATEMENTS
-	public int addClient( Client c ) throws SQLException
+	public Iterator getAllServices()
 	{
+		try
+		{
+		PreparedStatement ps = con.prepareStatement("SELECT * FROM service");
+		ResultSet rs = ps.executeQuery();
+		ArrayList<model.Service> services = new ArrayList<>(0);
+		
+		while( rs.next() )
+		{
+			model.Service p = new Service(Integer.toString(rs.getInt("service_id")), 
+									rs.getString("name"), 
+									rs.getString("description"), 
+									rs.getInt("price"));
+			services.add(p);
+		}
+		return services.iterator();
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	/*
+	public Iterator getAllTransactions()
+	{
+		ArrayList<Transaction> transactions;
+		
+		return transactions.iterator();
+	}
+	*/
+	
+	//INSERT STATEMENTS
+	public int addClient( Client c )
+	{
+		try
+		{
 		PreparedStatement ps = con.prepareStatement("INSERT INTO client(name, address, contactNumber, picture, dateJoined, dateLastVisited) "
 										  + "VALUES (?, ?, ?, ?, ?, ?)",Statement.RETURN_GENERATED_KEYS);
 		ps.setString(1, c.getsName());
@@ -99,10 +155,17 @@ public class DatabaseManager
 			else 
 				throw new SQLException("Creating user failed, no ID obtained.");
 		}
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return -999;
 	}
 	
-	public void addTransaction(Transaction t) throws SQLException
+	public void addTransaction(Transaction t)
 	{
+		try
+		{
 		PreparedStatement ps = con.prepareStatement("INSERT INTO transaction(client_id, productlist_id, servicelist_id, feedback) "
 										    + "VALUES (?, ?, ?, ?)");
 
@@ -110,11 +173,17 @@ public class DatabaseManager
 				ps.setInt(2, addProductList(t.getProducts()));
 				ps.setInt(3, addServiceList(t.getServices()));
 				ps.setString(4, t.getsFeedback());
-			ps.executeUpdate();
+				ps.executeUpdate();
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
-	private int addProductList(ArrayList<ProductLineItem> products) throws SQLException
+	private int addProductList(ArrayList<ProductLineItem> products)
 	{
+		try
+		{
 		PreparedStatement ps = con.prepareStatement("INSERT INTO productlist(productlineitem_id) "
 				  + "VALUES (?)",Statement.RETURN_GENERATED_KEYS);
 		
@@ -144,10 +213,17 @@ public class DatabaseManager
 		}
 		
 		return genID;
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return -999;
 	}
 	
-	private ArrayList<Integer> addProductLineItem(ArrayList<ProductLineItem> products) throws SQLException
+	private ArrayList<Integer> addProductLineItem(ArrayList<ProductLineItem> products)
 	{
+		try
+		{
 		PreparedStatement ps = con.prepareStatement("INSERT INTO product line item(product_id, quantity) "
 				  + "VALUES (?, ?)",Statement.RETURN_GENERATED_KEYS);
 		
@@ -166,10 +242,17 @@ public class DatabaseManager
 		}
 		
 		return lineItemIDs;
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
-	private int addServiceList(ArrayList<ServiceLineItem> services) throws SQLException
+	private int addServiceList(ArrayList<ServiceLineItem> services)
 	{
+		try
+		{
 		PreparedStatement ps = con.prepareStatement("INSERT INTO servicelist(servicelineitem_id) "
 				  + "VALUES (?)",Statement.RETURN_GENERATED_KEYS);
 		
@@ -199,10 +282,17 @@ public class DatabaseManager
 		}
 		
 		return genID;
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return -999;
 	}
 	
-	private ArrayList<Integer> addServiceLineItem(ArrayList<ServiceLineItem> services) throws SQLException
+	private ArrayList<Integer> addServiceLineItem(ArrayList<ServiceLineItem> services)
 	{
+		try
+		{
 		PreparedStatement ps = con.prepareStatement("INSERT INTO service line item(service_id, quantity, employee_id1, employee_id2) "
 				  + "VALUES (?, ?, ?, ?)",Statement.RETURN_GENERATED_KEYS);
 		
@@ -226,5 +316,10 @@ public class DatabaseManager
 		}
 		
 		return lineItemIDs;
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

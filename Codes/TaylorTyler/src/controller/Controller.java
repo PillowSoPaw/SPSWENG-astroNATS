@@ -3,46 +3,50 @@ package controller;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import model.DatabaseManager;
 import model.Employee;
 import model.Product;
 import model.Transaction;
+import model.ProductLineItem;
+import model.ServiceLineItem;
 
 public class Controller 
 {
-	private ArrayList<Employee> employees;
-	private ArrayList<Product> products;
-	private ArrayList<Transaction> transactions;
+	private static DatabaseManager DBManager;
 	
 	public Controller()
 	{
-		employees= new ArrayList<Employee>();
-		products= new ArrayList<Product>();
-		transactions= new ArrayList<Transaction>();
+		DBManager = DBManager.getInstance();
 	}
+	
 	// A function that displays all the employees
 	public Iterator getEmployees()
 	{
-        return employees.iterator();
+        return DBManager.getAllEmployees();
     }
 	//get product from model
 	public Iterator getProducts()
 	{
-        return products.iterator();
+        return DBManager.getAllProducts();
     }
+	//get servies from model
+	public Iterator getServices(){
+		return DBManager.getAllServices();
+	}
+	
 	//save transaction to database
-	public void addTransaction( String sTransactionId, String sClientId, String sServiceLineItemId, String sProductLineId )//not sure parameter
+	public void addTransaction(Transaction t)
 	{
 		try
 		{
-			//from dbm
-			//DBManager.addTransaction( sTransactionId, sClientId, sServiceLineItemId, sProductLineId);
+			DBManager.addTransaction(t);
 		}
 		catch (Exception e) 
 		{
 			e.printStackTrace();
 		}
-			
 	}
+	
 	// A function that returns the generated transaction (to be displayed in the table)
 	public Transaction getTransaction (Transaction transaction)
 	{
