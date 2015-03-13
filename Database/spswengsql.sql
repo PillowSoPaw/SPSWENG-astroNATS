@@ -117,6 +117,7 @@ UNLOCK TABLES;
 CREATE TABLE IF NOT EXISTS `mydb`.`product` (
   `product_id` INT(11) NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(45) NOT NULL,
+  `description` VARCHAR(45) NOT NULL,
   `quantity` FLOAT NOT NULL,
   `price` FLOAT NULL DEFAULT NULL,
   PRIMARY KEY (`product_id`),
@@ -127,7 +128,7 @@ DEFAULT CHARACTER SET = utf8;
 
 LOCK TABLES `mydb`.`product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `mydb`.`product` VALUES (1,'Shampoo',50,100),(2,'Conditioner',40,90),(3,'Herbal',30,200),(4,'Wax',20,150),(5,'Nail Polish',10,50);
+INSERT INTO `mydb`.`product` VALUES (1,'Shampoo', 'For the hair', 50,100),(2,'Conditioner','For the hair', 40,90),(3,'Herbal', 'for the hair', 30,200),(4,'Wax', 'for styling the hair', 20,150),(5,'Nail Polish','for the nails', 10,50);
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
