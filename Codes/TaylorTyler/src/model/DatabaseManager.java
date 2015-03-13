@@ -92,6 +92,31 @@ public class DatabaseManager
 		return null;
 	}
 	
+	public Iterator getAllConsumableProducts()
+	{
+		try
+		{
+		PreparedStatement ps = con.prepareStatement("SELECT * FROM product WHERE price = null");
+		ResultSet rs = ps.executeQuery();
+		ArrayList<model.Product> products = new ArrayList<>(0);
+		
+		while( rs.next() )
+		{
+			model.Product p = new Consumable(Integer.toString(rs.getInt("product_id")), 
+									rs.getString("name"), 
+									rs.getString("description"), 
+									rs.getInt("quantity"),
+									rs.getString("measurement"));
+			products.add(p);
+		}
+		return products.iterator();
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public Iterator getAllServices()
 	{
 		try

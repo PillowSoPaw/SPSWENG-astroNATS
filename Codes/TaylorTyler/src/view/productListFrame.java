@@ -1,63 +1,73 @@
 package view;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-public class productListFrame extends JFrame{
-    
-        private AddTransactionPanel mainFrame;
-	private JTable products;
-        private JScrollPane scroll;
-	private JButton add;
-	private Service service;
-        
-	public productListFrame(AddTransactionPanel mainFrame, Service service){
-            this.mainFrame = mainFrame;
+import controller.ProductController;
+import model.Product;
 
-            DefaultTableModel tModel = new DefaultTableModel();
-            tModel.addColumn("Product");
-            tModel.addColumn("Quantity");
-            
-            this.service = service;
+public class ProductListFrame extends JFrame
+{
+	private AddTransactionPanel	mainFrame;
+	private JTable				products;
+	private JScrollPane			scroll;
+	private JButton			add;
+	private Service			service;
+	private ArrayList<Product>	productsUsed;
 
-            products = new JTable(tModel);    
-            products.setBounds(10, 10, 275, 300);    
-            scroll = new JScrollPane(products);
-            scroll.setBounds(10, 10, 275, 300);  
-            add = new JButton("Add");
-            add.setBounds(10, 320, 275, 30);
+	public ProductListFrame(AddTransactionPanel mainFrame, Service service)
+	{
+		this.mainFrame = mainFrame;
 
-            this.setLayout(null);
+		DefaultTableModel tModel = new DefaultTableModel();
+		tModel.addColumn("Product");
+		tModel.addColumn("Quantity");
 
-            add(scroll);
-            add(add);
-            
-            loadProducts();
-            
-            this.setResizable(false);
+		this.service = service;
 
-            this.setSize(300, 400);
-            this.setVisible(true);
-            this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            this.setLocationRelativeTo(null);
-        }
+		products = new JTable(tModel);
+		products.setBounds(10, 10, 275, 300);
+		scroll = new JScrollPane(products);
+		scroll.setBounds(10, 10, 275, 300);
+		add = new JButton("Add");
+		add.setBounds(10, 320, 275, 30);
 
-        public void loadProducts(){
-                DefaultTableModel tModel = new DefaultTableModel();
-                tModel.addColumn("Product");
-                tModel.addColumn("Quantity");
+		this.setLayout(null);
 
-                int i = 0;
-                String[] names = service.getProductNames();
-                
-                while(i < names.length){
-                    Object[] entry = {names[i], "Input Quantity"};
-                    tModel.addRow(entry);
+		add(scroll);
+		add(add);
 
-                    i++;
-                }
+		loadProducts();
 
-                products.setModel(tModel);
-        }
+		this.setResizable(false);
+
+		this.setSize(300, 400);
+		this.setVisible(true);
+		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		this.setLocationRelativeTo(null);
+	}
+
+	public void loadProducts()
+	{
+		DefaultTableModel tModel = new DefaultTableModel();
+		tModel.addColumn("Product");
+		tModel.addColumn("Quantity");
+
+		int i = 0;
+		String[] names = service.getProductNames();
+
+		while (i < names.length)
+		{
+			Object[] entry = { names[i], "Input Quantity" };
+			tModel.addRow(entry);
+
+			i++;
+		}
+
+		products.setModel(tModel);
+	}
+
 }
-

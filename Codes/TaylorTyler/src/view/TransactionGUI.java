@@ -12,7 +12,8 @@ import javax.swing.*;
  *
  * @author Joseph
  */
-public class TransactionGUI extends JFrame{
+public class TransactionGUI extends JFrame
+{
     
     //declaration of variable for panels
     private JPanel mainPanel;  //main panel for background
@@ -61,7 +62,8 @@ public class TransactionGUI extends JFrame{
     private JButton cancelTransactionButton;
     private JButton saveTransactionButton;
     
-    public TransactionGUI(){
+    public TransactionGUI()
+    {
         mainPanel = new JPanel();
         menuPanel = new JPanel();
         transactionPanel = new JPanel();

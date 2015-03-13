@@ -7,12 +7,19 @@ import java.awt.event.ActionEvent;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.table.DefaultTableModel;
+
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Iterator;
+
 import javax.swing.table.AbstractTableModel;
 
-public class AddTransactionPanel extends JPanel {
-    
+import controller.Controller;
+import model.Service;
+
+public class AddTransactionPanel extends JPanel 
+{
+    private Controller controller;
     private int entries; //TURN THIS BLOCK INTO A CLASS called TransactionEntry
     private ArrayList<String> services;
     private ArrayList<String> customerNames;
@@ -68,9 +75,9 @@ public class AddTransactionPanel extends JPanel {
         
         isOpen = false;
         
-        serviceReference = new Service[4]; // Should load from Database all the Services
+        //serviceReference = new Service[4]; // Should load from Database all the Services
         
-        /* Instantiating Services, REMOVE AFTER TESTING */
+        /* Instantiating Services, REMOVE AFTER TESTING 
             serviceReference[0] = new Service(testOptions2[0]);
             serviceReference[1] = new Service(testOptions2[1]);
             serviceReference[2] = new Service(testOptions2[2]);
@@ -88,8 +95,8 @@ public class AddTransactionPanel extends JPanel {
             serviceReference[3].addProduct(new Product("Hair Dye Product", "Liter"));
             serviceReference[3].addProduct(new Product("Bleach", "Liter"));
         /* Instantiating Services, REMOVE AFTER TESTING */
-        
-        
+        controller.getServices();
+            
         Border blackline = BorderFactory.createLineBorder(Color.black);
 
         setBorder(blackline);
@@ -138,7 +145,7 @@ public class AddTransactionPanel extends JPanel {
         employee = new JButton("Add Employee");
         employee.addActionListener(new ActionListener(){
         	public void actionPerformed(ActionEvent e){
-        		employeeListFrame empList = new employeeListFrame(reference);
+        		EmployeeListFrame empList = new EmployeeListFrame(reference);
                         empList.addWindowListener(new WindowCloser());
         	}
         });
@@ -204,28 +211,32 @@ public class AddTransactionPanel extends JPanel {
         add(transScroll);
     }
     
-    private void updateTable(){
-        DefaultTableModel tModel = new DefaultTableModel(){
-        public boolean isCellEditable(int row, int column)
-        {
-            return false;//This causes all cells to be not editable
-        }
-        };
-        
-        tModel.addColumn("Service / Product");
-        tModel.addColumn("Customer Name");
-        tModel.addColumn("Price");
-        
-        int i = 0;
-        while(i < entries){
-            String[] entry = {services.get(i), customerNames.get(i), prices.get(i)};
-            tModel.addRow(entry);
-            
-            i++;
-        }
-        
-        transactionDetail.setModel(tModel);
-    }
+	private void updateTable()
+	{
+		DefaultTableModel tModel = new DefaultTableModel()
+		{
+			public boolean isCellEditable(int row, int column)
+			{
+				return false;// This causes all cells to be not editable
+			}
+		};
+
+		tModel.addColumn("Service / Product");
+		tModel.addColumn("Customer Name");
+		tModel.addColumn("Price");
+
+		int i = 0;
+		while (i < entries)
+		{
+			String[] entry = { services.get(i), customerNames.get(i),
+					prices.get(i) };
+			tModel.addRow(entry);
+
+			i++;
+		}
+
+		transactionDetail.setModel(tModel);
+	}
     
     public void toggleOpen(){
         isOpen = false;
@@ -260,7 +271,7 @@ public class AddTransactionPanel extends JPanel {
                     updateTable();
             }else if(e.getSource() == products){
                     if(isOpen == false){
-                        productListFrame temp = new productListFrame(reference, serviceReference[chooseService.getSelectedIndex()]);
+                        ProductListFrame temp = new ProductListFrame(reference, serviceReference[chooseService.getSelectedIndex()]);
                         temp.addWindowListener(new WindowCloser());
                         isOpen = true;
                     }
@@ -268,11 +279,30 @@ public class AddTransactionPanel extends JPanel {
         }
     }
     
-    public class WindowCloser extends WindowAdapter{
-        public void windowClosing(WindowEvent e)
-        {
-            toggleOpen();
-        }
-    }
+	public class WindowCloser extends WindowAdapter
+	{
+		public void windowClosing(WindowEvent e)
+		{
+			toggleOpen();
+		}
+	}
+
+	public void setController(Controller c)
+	{
+		this.controller = c;
+	}
+
+	public void getServiceList(Iterator i)
+	{
+		ArrayList<Object> s = new ArrayList<>(0);
+
+		while (i.hasNext() == true)
+		{
+			s.add((Service) i.next());
+		}
+
+		serviceReference = new Service[s.size()];
+		serviceReference = s.toArray(serviceReference);
+	}
 }
 
