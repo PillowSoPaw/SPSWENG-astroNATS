@@ -33,15 +33,15 @@ public class Controller
 	}
 
 	// get product from model
-	public Iterator getProducts()
+	public void getProducts()
 	{
-		return DBManager.getAllProducts();
+		transactionPanel.getProductList(DBManager.getAllProducts());
 	}
 
 	//get all consumable products from model
-	public Iterator getConsumables()
+	public void getConsumables()
 	{
-		return DBManager.getAllConsumableProducts();
+		transactionPanel.getConsumableList(DBManager.getAllConsumableProducts());
 	}
 	
 	// get servies from model then give data to view
@@ -49,7 +49,7 @@ public class Controller
 	{
 		transactionPanel.getServiceList(DBManager.getAllServices());
 	}
-
+	
 	// save transaction to database
 	public void addTransaction(Transaction t)
 	{

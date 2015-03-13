@@ -15,48 +15,51 @@ import java.util.Iterator;
 import javax.swing.table.AbstractTableModel;
 
 import controller.Controller;
+import model.Product;
 import model.Service;
 
 public class AddTransactionPanel extends JPanel 
 {
     private Controller controller;
-    private int entries; //TURN THIS BLOCK INTO A CLASS called TransactionEntry
-    private ArrayList<String> services;
-    private ArrayList<String> customerNames;
-    private ArrayList<String> prices;
+    private int nEntries; //TURN THIS BLOCK INTO A CLASS called TransactionEntry
+//    private ArrayList<String> services;
+//    private ArrayList<String> customerNames;
+//    private ArrayList<String> prices;
+    
+    private Iterator<Service> services;
+    private Iterator<Product> products;
+    private Iterator<Product> consumables;
     
     private JPanel leftPanel;
-    private JScrollPane transScroll;
+    private JScrollPane transScrollPane;
     private JPanel pTransactionDetail;
-    private JTextField customerName;
+    private JTextField customerNameLabel;
     private JTable transactionDetail;
-    private JButton bCancel;
-    private JButton bSave;
+    private JButton cancelButton;
+    private JButton saveButton;
     
     private JPanel rightPanel;
-    private JLabel titleService;
-    private JLabel titleLine;
-    private JLabel titleLine2;
-    private JLabel titleProduct;
+    private JLabel titleServiceLabel;
+    private JLabel titleLineLabel;
+    private JLabel titleLine2Label;
+    private JLabel titleProductLabel;
 
     private JPanel servicePanel;
-    private JLabel lChoose;
-    private JComboBox chooseService;
-    private JButton employee;
-    private JButton products;
-    private JButton addService;
+    private JLabel iChooseLabel;
+    private JComboBox chooseServiceComboBox;
+    private JButton employeeButton;
+    private JButton productsButton;
+    private JButton addServiceButton;
 
     private JPanel productsPanel;
-    private JLabel lChooseProduct;
-    private JComboBox chooseProduct;
-    private JLabel lQuantity;
-    private JTextArea quantity;
-    private JButton bAddProduct;
+    private JLabel iChooseProductLabel;
+    private JComboBox chooseProductComboBox;
+    private JLabel lQuantityLabel;
+    private JTextArea quantityTextArea;
+    private JButton addProductButton;
            
     private String[] testOptions = {"Shampoo", "Nail Polish", "Hair Dye Product"}; //Should get from DATABASE for DEVS
     private String[] testOptions2 = {"Manicure", "Pedicure", "Haircut", "Dye Hair"}; //Should get from DATABASE for DEVS
-    
-    private Service[] serviceReference;
     
     private double[] testPrice = {124.99, 99.99, 249.99};
     private double[] testPrice2 = {200.00, 200.00, 100.00, 300.00};
@@ -65,13 +68,14 @@ public class AddTransactionPanel extends JPanel
     
     private AddTransactionPanel reference;
     
-    public AddTransactionPanel() {
+    public AddTransactionPanel()
+    {
         setBounds(183, 120, 600, 440);
         setLayout(null);
 //        setBounds()
         pTransactionDetail = new JPanel();
         
-        entries = 0;
+        nEntries = 0;
         
         isOpen = false;
         
@@ -95,25 +99,27 @@ public class AddTransactionPanel extends JPanel
             serviceReference[3].addProduct(new Product("Hair Dye Product", "Liter"));
             serviceReference[3].addProduct(new Product("Bleach", "Liter"));
         /* Instantiating Services, REMOVE AFTER TESTING */
+        //get data from database
         controller.getServices();
+        controller.getConsumables();
             
         Border blackline = BorderFactory.createLineBorder(Color.black);
 
         setBorder(blackline);
         
-        services = new ArrayList();
-        customerNames = new ArrayList();
-        prices = new ArrayList();
+//        services = new ArrayList();
+//        customerNames = new ArrayList();
+//        prices = new ArrayList();
         
         leftPanel = new JPanel();
-        customerName = new JTextField("Customer Name"); // Retrieve Customer Name from Database
-        customerName.setBounds(10, 10, 200, 20);
-        bCancel = new JButton("Cancel");
-        bSave = new JButton("Save Transaction");
-        titleService = new JLabel("Service Rendered");
-        titleLine = new JLabel("______________________________________");
-        titleProduct = new JLabel("Product Availed");
-        titleLine2 = new JLabel("______________________________________");
+        customerNameLabel = new JTextField("Customer Name"); // Retrieve Customer Name from Database
+        customerNameLabel.setBounds(10, 10, 200, 20);
+        cancelButton = new JButton("Cancel");
+        saveButton = new JButton("Save Transaction");
+        titleServiceLabel = new JLabel("Service Rendered");
+        titleLineLabel = new JLabel("______________________________________");
+        titleProductLabel = new JLabel("Product Availed");
+        titleLine2Label = new JLabel("______________________________________");
         
         DefaultTableModel tModel = new DefaultTableModel();
         tModel.addColumn("Service / Product");
@@ -124,26 +130,26 @@ public class AddTransactionPanel extends JPanel
         transactionDetail.setBounds(10, 50, 300, 330);
         transactionDetail.setRowHeight(20);
         pTransactionDetail.add(transactionDetail);
-        bCancel.setBounds(10, 400, 75, 30);
-        bSave.setBounds(175, 400, 135, 30);
-        titleService.setBounds(480, 10, 120, 20);
-        titleProduct.setBounds(490, 240, 100, 20);
-        titleLine.setBounds(325, 20, 300, 20);
-        titleLine2.setBounds(325, 250, 300, 20);
-        transScroll = new JScrollPane(transactionDetail);
-        transScroll.setBounds(10, 50, 300, 330);
+        cancelButton.setBounds(10, 400, 75, 30);
+        saveButton.setBounds(175, 400, 135, 30);
+        titleServiceLabel.setBounds(480, 10, 120, 20);
+        titleProductLabel.setBounds(490, 240, 100, 20);
+        titleLineLabel.setBounds(325, 20, 300, 20);
+        titleLine2Label.setBounds(325, 250, 300, 20);
+        transScrollPane = new JScrollPane(transactionDetail);
+        transScrollPane.setBounds(10, 50, 300, 330);
         
         servicePanel = new JPanel();
-        lChoose = new JLabel("Choose Service:");
-        chooseService = new JComboBox(testOptions2);
+        iChooseLabel = new JLabel("Choose Service:");
+        chooseServiceComboBox = new JComboBox(testOptions2);
         
         //initialize the add employee button
         buttonListener ButtonListener = new buttonListener();
         
         reference = this;
         
-        employee = new JButton("Add Employee");
-        employee.addActionListener(new ActionListener(){
+        employeeButton = new JButton("Add Employee");
+        employeeButton.addActionListener(new ActionListener(){
         	public void actionPerformed(ActionEvent e){
         		EmployeeListFrame empList = new EmployeeListFrame(reference);
                         empList.addWindowListener(new WindowCloser());
@@ -151,64 +157,64 @@ public class AddTransactionPanel extends JPanel
         });
         
         //initialize add Products button
-        products = new JButton("Products Used");
-        products.addActionListener(ButtonListener);
+        productsButton = new JButton("Products Used");
+        productsButton.addActionListener(ButtonListener);
         
         //initialize the add service button
-        addService = new JButton("Add Service");
-        addService.addActionListener(ButtonListener);
+        addServiceButton = new JButton("Add Service");
+        addServiceButton.addActionListener(ButtonListener);
 
         servicePanel.setBorder(blackline);
         servicePanel.setLayout(null);
         servicePanel.setBounds(325, 50, 266, 180);
-        lChoose.setBounds(87, 10, 100, 25);
-        chooseService.setBounds(59, 40, 150, 25);
-        employee.setBounds(59, 70, 150, 25);
-        products.setBounds(59, 100, 150, 25);
-        addService.setBounds(59, 140, 150, 25);
+        iChooseLabel.setBounds(87, 10, 100, 25);
+        chooseServiceComboBox.setBounds(59, 40, 150, 25);
+        employeeButton.setBounds(59, 70, 150, 25);
+        productsButton.setBounds(59, 100, 150, 25);
+        addServiceButton.setBounds(59, 140, 150, 25);
         
-        servicePanel.add(lChoose);
-        servicePanel.add(chooseService);
-        servicePanel.add(employee);
-        servicePanel.add(products);
-        servicePanel.add(addService);
+        servicePanel.add(iChooseLabel);
+        servicePanel.add(chooseServiceComboBox);
+        servicePanel.add(employeeButton);
+        servicePanel.add(productsButton);
+        servicePanel.add(addServiceButton);
         add(servicePanel);
         
         productsPanel = new JPanel();
-        lChooseProduct = new JLabel("Choose Product:");
-        chooseProduct = new JComboBox(testOptions);
-        lQuantity = new JLabel("Quantity:");
-        quantity = new JTextArea("Enter quantity here");
-        bAddProduct = new JButton("Add Product"); 
+        iChooseProductLabel = new JLabel("Choose Product:");
+        chooseProductComboBox = new JComboBox(testOptions);
+        lQuantityLabel = new JLabel("Quantity:");
+        quantityTextArea = new JTextArea("Enter quantity here");
+        addProductButton = new JButton("Add Product"); 
         
-        bAddProduct.addActionListener(ButtonListener);
+        addProductButton.addActionListener(ButtonListener);
         
         productsPanel.setBorder(blackline);
         productsPanel.setLayout(null);
         productsPanel.setBounds(325, 280, 266, 150);
-        lChooseProduct.setBounds(87, 10, 100, 25);
-        chooseProduct.setBounds(59, 40, 150, 25);
-        lQuantity.setBounds(106, 65, 150, 25);
-        quantity.setBounds(59, 85, 150, 18);
-        quantity.setBorder(blackline);
-        bAddProduct.setBounds(59, 110, 150, 25);
+        iChooseProductLabel.setBounds(87, 10, 100, 25);
+        chooseProductComboBox.setBounds(59, 40, 150, 25);
+        lQuantityLabel.setBounds(106, 65, 150, 25);
+        quantityTextArea.setBounds(59, 85, 150, 18);
+        quantityTextArea.setBorder(blackline);
+        addProductButton.setBounds(59, 110, 150, 25);
         
-        productsPanel.add(lChooseProduct);
-        productsPanel.add(chooseProduct);
-        productsPanel.add(lQuantity);
-        productsPanel.add(quantity);
-        productsPanel.add(bAddProduct);
+        productsPanel.add(iChooseProductLabel);
+        productsPanel.add(chooseProductComboBox);
+        productsPanel.add(lQuantityLabel);
+        productsPanel.add(quantityTextArea);
+        productsPanel.add(addProductButton);
         
         add(productsPanel);
         
-        add(titleLine2);
-        add(titleProduct);
-        add(titleLine);
-        add(titleService);
-        add(bSave);
-        add(bCancel);
-        add(customerName);
-        add(transScroll);
+        add(titleLine2Label);
+        add(titleProductLabel);
+        add(titleLineLabel);
+        add(titleServiceLabel);
+        add(saveButton);
+        add(cancelButton);
+        add(customerNameLabel);
+        add(transScrollPane);
     }
     
 	private void updateTable()
@@ -226,7 +232,7 @@ public class AddTransactionPanel extends JPanel
 		tModel.addColumn("Price");
 
 		int i = 0;
-		while (i < entries)
+		while (i < nEntries)
 		{
 			String[] entry = { services.get(i), customerNames.get(i),
 					prices.get(i) };
@@ -245,33 +251,33 @@ public class AddTransactionPanel extends JPanel
     public class buttonListener implements ActionListener{
         @Override
         public void actionPerformed(ActionEvent e) {
-            if(e.getSource() == bAddProduct){
+            if(e.getSource() == addProductButton){
                 try {
-                    int temp = Integer.parseInt(quantity.getText());
+                    int temp = Integer.parseInt(quantityTextArea.getText());
                     
-                    services.add(testOptions[chooseProduct.getSelectedIndex()] + " (" + temp + ")");
-                    prices.add("" + (testPrice[chooseProduct.getSelectedIndex()] * temp));
-                    customerNames.add(customerName.getText());
+                    services.add(testOptions[chooseProductComboBox.getSelectedIndex()] + " (" + temp + ")");
+                    prices.add("" + (testPrice[chooseProductComboBox.getSelectedIndex()] * temp));
+                    customerNames.add(customerNameLabel.getText());
                     
-                    entries++;
+                    nEntries++;
                     
                     updateTable();
                 } catch (NumberFormatException ex) {
                     System.out.println("Quantity has to be double!");
                     
-                    quantity.setText("This has to be a number.");
+                    quantityTextArea.setText("This has to be a number.");
                 }
-            }else if(e.getSource() == addService){
-                    services.add(testOptions2[chooseService.getSelectedIndex()]);
-                    prices.add("" + testPrice2[chooseService.getSelectedIndex()]);
-                    customerNames.add(customerName.getText());
+            }else if(e.getSource() == addServiceButton){
+                    services.add(testOptions2[chooseServiceComboBox.getSelectedIndex()]);
+                    prices.add("" + testPrice2[chooseServiceComboBox.getSelectedIndex()]);
+                    customerNames.add(customerNameLabel.getText());
                     
-                    entries++;
+                    nEntries++;
                     
                     updateTable();
-            }else if(e.getSource() == products){
+            }else if(e.getSource() == productsButton){
                     if(isOpen == false){
-                        ProductListFrame temp = new ProductListFrame(reference, serviceReference[chooseService.getSelectedIndex()]);
+                        ProductListFrame temp = new ProductListFrame(reference, serviceReference[chooseServiceComboBox.getSelectedIndex()]);
                         temp.addWindowListener(new WindowCloser());
                         isOpen = true;
                     }
@@ -294,15 +300,40 @@ public class AddTransactionPanel extends JPanel
 
 	public void getServiceList(Iterator i)
 	{
-		ArrayList<Object> s = new ArrayList<>(0);
-
-		while (i.hasNext() == true)
-		{
-			s.add((Service) i.next());
-		}
-
-		serviceReference = new Service[s.size()];
-		serviceReference = s.toArray(serviceReference);
+		this.services = i;
+//		ArrayList<Object> s = new ArrayList<>(0);
+//
+//		while (i.hasNext() == true)
+//		{
+//			s.add((Service) i.next());
+//		}
+//
+//		serviceReference = new Service[s.size()];
+//		serviceReference = s.toArray(serviceReference);
+	}
+	
+	public void getConsumableList(Iterator i)
+	{
+		this.consumables = i;
+//		ArrayList<Object> c = new ArrayList<>(0);
+//
+//		while (i.hasNext() == true)
+//		{
+//			c.add((Product) i.next());
+//		}
+//
+//		consumables = new Product[c.size()];
+//		consumables = c.toArray(consumables);
+	}
+	
+	public void getProductList(Iterator i)
+	{
+		this.products = i;
+	}
+	
+	public void addTransaction()
+	{
+		
+		controller.addTransaction(t);
 	}
 }
-
