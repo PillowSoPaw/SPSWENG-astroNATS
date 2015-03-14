@@ -20,6 +20,8 @@ import model.Employee;
 import model.Product;
 import model.Service;
 import model.Transaction;
+import model.Consumable;
+import model.OverTheCounter;
 
 public class AddTransactionPanel extends JPanel 
 {
@@ -28,13 +30,14 @@ public class AddTransactionPanel extends JPanel
     private ArrayList<String> services;
     private ArrayList<String> customerNames;
     private ArrayList<String> prices;
-    
     private ArrayList<String> servicesAvailed;
     private ArrayList<String> productsBought;
+    private ArrayList<Integer> productsQuantity;
     
     private Iterator<Service> iServices;
     private Iterator<Product> iProducts;
-    private Iterator<Product> iConsumables;
+    private Iterator<Consumable> iConsumables;
+    private Iterator<OverTheCounter> iOverTheCounters;
     private Iterator<Employee> iEmployees;
     
     private JPanel leftPanel;
@@ -123,6 +126,7 @@ public class AddTransactionPanel extends JPanel
 		prices = new ArrayList<>(0);
 		servicesAvailed = new ArrayList<>(0);
 		productsBought = new ArrayList<>(0);
+		productsQuantity = new ArrayList<>(0);
 		
 		leftPanel = new JPanel();
 		customerNameTextField = new JTextField("Customer Name"); // Retrieve
@@ -278,15 +282,13 @@ public class AddTransactionPanel extends JPanel
 				try
 				{
 					int temp = Integer.parseInt(quantityTextArea.getText());
-
-					services.add(productOptions[chooseProductComboBox.getSelectedIndex()] + " (" + temp + ")");
+					
+					addToTable(productOptions[chooseProductComboBox.getSelectedIndex()] + " (" + temp + ")",
+							"" + (productQuantity[chooseProductComboBox.getSelectedIndex()] * temp),
+							customerNameTextField.getText());
 					productsBought.add(productOptions[chooseProductComboBox.getSelectedIndex()]);
-					prices.add("" + (productQuantity[chooseProductComboBox.getSelectedIndex()] * temp));
-					customerNames.add(customerNameTextField.getText());
-
-					nEntries++;
-
-					updateTable();
+					productsQuantity.add(temp);
+					
 				} 
 				catch (NumberFormatException ex)
 				{
@@ -297,14 +299,11 @@ public class AddTransactionPanel extends JPanel
 			} 
 			else if (e.getSource() == addServiceButton)
 			{
-				services.add(serviceOptions[chooseServiceComboBox.getSelectedIndex()]);
-				servicesAvailed.add(serviceOptions[chooseServiceComboBox.getSelectedIndex()]);
-				prices.add("" + servicePrice[chooseServiceComboBox.getSelectedIndex()]);
-				customerNames.add(customerNameTextField.getText());
 				
-				nEntries++;
-
-				updateTable();
+				addToTable(serviceOptions[chooseServiceComboBox.getSelectedIndex()], 
+						"" + servicePrice[chooseServiceComboBox.getSelectedIndex()],
+						customerNameTextField.getText());
+				servicesAvailed.add(serviceOptions[chooseServiceComboBox.getSelectedIndex()]);
 			} 
 			else if (e.getSource() == productsButton)
 			{
@@ -317,21 +316,7 @@ public class AddTransactionPanel extends JPanel
 			}
 			else if( e.getSource() == saveButton )
 			{
-				ArrayList<Service> s = new ArrayList<>(0);
-				
-				Client c = getInputClient(customerNameTextField.getText());
-				Transaction t = new Transaction("1", c, "");
-				
-				for( int i = 0; i < servicesAvailed.size(); i++ )
-				{
-					s.add(getAvailedService(servicesAvailed.get(i)));
-				}
-				
-				//t.add
-				
-//				int index = str.indexOf("(");
-//				System.out.println(str.substring(0, index));
-				//addTransaction(t);
+				controller.createTransaction(servicesAvailed, productsBought, productsQuantity, customerNameTextField.getText());
 			}
 		}
 		
@@ -344,13 +329,25 @@ public class AddTransactionPanel extends JPanel
 			toggleOpen();
 		}
 	}
+	
+	public void addToTable(String service, String price, String customerName)
+	{
+		services.add(service);
+		prices.add(price);
+		customerNames.add(customerName);
+		
+		nEntries++;
 
+		updateTable();
+	}
+	
+	//GETTERS
 	public void getData()
 	{
 		controller.getServices();
-		controller.getConsumables();
-		controller.getProducts();
+		controller.getConsumables();;
 		controller.getEmployees();
+		controller.getOverTheCounters();
 		this.repaint();
 		this.revalidate();
 	}
@@ -365,27 +362,37 @@ public class AddTransactionPanel extends JPanel
 		return controller.getService(name);
 	}
 	
-	public void getProductList(Iterator i)
-	{	
-		ArrayList<Product> p = new ArrayList<>(0);
+	public Product getAvailedProduct( String name )
+	{
+		return controller.getProduct(name);
+	}
+	
+	public void getOverTheCounterList(Iterator i)
+	{
+		ArrayList<OverTheCounter> otc = new ArrayList<>(0);
 		
 		while( i.hasNext() == true )
 		{
-			p.add((Product) i.next());
+			otc.add((OverTheCounter) i.next());
 		}
 		
-		productOptions = new String[p.size()];
-		productQuantity = new int[p.size()];
+		productOptions = new String[otc.size()];
+		productQuantity = new int[otc.size()];
 		
-		for( int x = 0; x < p.size(); x++ )
+		for( int x = 0; x < otc.size(); x++ )
 		{
-			productOptions[x] = ((Product) p.get(x)).getsName();
-			productQuantity[x] = ((Product) p.get(x)).getnQuantity();
+			productOptions[x] = ((OverTheCounter) otc.get(x)).getsName();
+			productQuantity[x] = ((OverTheCounter) otc.get(x)).getnQuantity();
 		}
 		
-		this.iProducts = p.iterator();
+		this.iOverTheCounters = otc.iterator();
 		productComboBoxModel = new DefaultComboBoxModel<>(productOptions);
 		chooseProductComboBox.setModel(productComboBoxModel);
+	}
+	
+	public void getConsumableList(Iterator i)
+	{
+		this.iConsumables = i;
 	}
 	
 	public void getServiceList(Iterator i)
@@ -411,19 +418,6 @@ public class AddTransactionPanel extends JPanel
 		chooseServiceComboBox.setModel(serviceComboBoxModel);
 	}
 	
-	public void getConsumableList(Iterator i)
-	{
-		this.iConsumables = i;
-//		ArrayList<Object> c = new ArrayList<>(0);
-//
-//		while (i.hasNext() == true)
-//		{
-//			c.add((Product) i.next());
-//		}
-//
-//		consumables = new Product[c.size()];
-//		consumables = c.toArray(consumables);
-	}
 	
 	public void getEmployeeList(Iterator i)
 	{
@@ -435,7 +429,6 @@ public class AddTransactionPanel extends JPanel
 		controller.addTransaction(t);
 	}
 	
-	//GETTERS
 	public Controller getController()
 	{
 		return controller;
@@ -446,15 +439,9 @@ public class AddTransactionPanel extends JPanel
 		return iServices;
 	}
 
-	public Iterator<Product> getProducts()
+	public Iterator<Consumable> getConsumables()
 	{
-		controller.getProducts();
-		
-		return iProducts;
-	}
-
-	public Iterator<Product> getConsumables()
-	{
+		controller.getConsumables();
 		return iConsumables;
 	}
 	
@@ -462,6 +449,12 @@ public class AddTransactionPanel extends JPanel
 	{
 		controller.getEmployees();
 		return iEmployees;
+	}
+	
+	public Iterator<OverTheCounter> getOverTheCounters()
+	{
+		controller.getOverTheCounters();
+		return iOverTheCounters;
 	}
 	
 	//SETTERS

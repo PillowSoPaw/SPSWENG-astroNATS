@@ -28,9 +28,6 @@ public class Controller
 		transactionGUI.setController(this);
 		this.transactionGUI = transactionGUI;
 		transactionGUI.getAddTransactionPanel().getData();
-		//transactionPanel.setController(this);
-		//this.transactionPanel = transactionPanel;
-		//transactionPanel.getData();
 	}
 
 	//get client based on name
@@ -44,16 +41,55 @@ public class Controller
 		return DBManager.getService(name);
 	}
 	
+	public Product getProduct(String name)
+	{
+		return DBManager.getProduct(name);
+	}
+	
+	public Employee getEmployee(String name)
+	{
+		return DBManager.getEmployee(name);
+	}
 	// get employees from model
 	public void getEmployees()
 	{
 		transactionGUI.getAddTransactionPanel().getEmployeeList(DBManager.getAllEmployees());
 	}
 
-	// get product from model
-	public void getProducts()
+	// create transaction with information from view
+	public void createTransaction(ArrayList<String> servicesAvailed, ArrayList<String> productsBought, ArrayList<Integer> productsQuantity, String clientName)
 	{
-		transactionGUI.getAddTransactionPanel().getProductList(DBManager.getAllProducts());
+		ArrayList<Service> s = new ArrayList<>(0);
+		ArrayList<Product> p = new ArrayList<>(0);
+		
+		Client c = getClient(clientName);
+		Transaction t = new Transaction("", c, "");
+		
+		for( int i = 0; i < servicesAvailed.size(); i++ )
+		{
+			s.add(getService(servicesAvailed.get(i)));
+		}
+		
+		for( int i = 0; i < productsBought.size(); i++ )
+		{
+			p.add(getProduct(productsBought.get(i)));
+		}
+		
+		ArrayList<ServiceLineItem> sli = new ArrayList<>(0);
+		ArrayList<ProductLineItem> pli = new ArrayList<>(0);
+		
+		for( int i = 0; i < p.size(); i++ )
+		{
+			t.addProductLineItem(new ProductLineItem("", p.get(i), productsQuantity.get(i)));
+		}
+		
+		for( int i = 0; i < s.size(); i++ )
+		{
+			t.addServiceLineItem(new ServiceLineItem("", s.get(i), 1, getEmployee("Sen One"), null));
+		}
+		
+		
+		DBManager.addTransaction(t);
 	}
 
 	//get all consumable products from model
@@ -62,6 +98,10 @@ public class Controller
 		transactionGUI.getAddTransactionPanel().getConsumableList(DBManager.getAllConsumableProducts());
 	}
 	
+	public void getOverTheCounters()
+	{
+		transactionGUI.getAddTransactionPanel().getOverTheCounterList(DBManager.getAllOverTheCounterProducts());
+	}
 	// get servies from model then give data to view
 	public void getServices()
 	{

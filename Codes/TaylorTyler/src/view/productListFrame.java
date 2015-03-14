@@ -1,5 +1,7 @@
 package view;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -7,7 +9,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import model.Employee;
-import model.Product;
+import model.Consumable;
 
 public class ProductListFrame extends JFrame
 {
@@ -15,11 +17,12 @@ public class ProductListFrame extends JFrame
 	private JTable				productsTable;
 	private JScrollPane			scroll;
 	private JButton			addButton;
-
+	private DefaultTableModel tModel;
+	
 	public ProductListFrame(AddTransactionPanel mainFrame)
 	{
 
-		DefaultTableModel tModel = new DefaultTableModel();
+		tModel = new DefaultTableModel();
 		tModel.addColumn("Product");
 		tModel.addColumn("Quantity");
 		
@@ -29,13 +32,12 @@ public class ProductListFrame extends JFrame
 		scroll.setBounds(10, 10, 275, 300);
 		addButton = new JButton("Add");
 		addButton.setBounds(10, 320, 275, 30);
-
 		getContentPane().setLayout(null);
 
 		getContentPane().add(scroll);
 		getContentPane().add(addButton);
 
-		loadProducts(mainFrame.getProducts());
+		loadProducts(mainFrame.getConsumables());
 		
 		this.setResizable(false);
 
@@ -44,19 +46,19 @@ public class ProductListFrame extends JFrame
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 	}
-
+	
 	public void loadProducts( Iterator products )
 	{
-		DefaultTableModel tModel = new DefaultTableModel();
+		tModel = new DefaultTableModel();
 		tModel.addColumn("Product");
 		tModel.addColumn("Quantity");
 
 		while ( products.hasNext() == true )
 		{
 			Object o = new Object();
-			o = ((Product) products.next());
+			o = ((Consumable) products.next());
 			
-			String[] entry = { ((Product) o).getsName(), Integer.toString(((Product) o).getnQuantity()) };
+			String[] entry = { ((Consumable) o).getsName(), ((Consumable) o).getsMeasurement() };
 			tModel.addRow(entry);
 		}
 

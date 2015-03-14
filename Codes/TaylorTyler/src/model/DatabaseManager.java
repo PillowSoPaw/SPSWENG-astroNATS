@@ -90,6 +90,52 @@ public class DatabaseManager
 		return null;
 	}
 	
+	public Product getProduct( String name )
+	{
+		try
+		{
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM product WHERE name = ?");
+			ps.setString(1, name);
+			ResultSet rs = ps.executeQuery();
+			
+			rs.first();
+			
+			model.Product p = new Product(Integer.toString(rs.getInt("product_id")), 
+									rs.getString("name"), 
+									rs.getString("description"), 
+									rs.getInt("quantity"));
+			return p;
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Employee getEmployee( String name )
+	{
+		try
+		{
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE name = ?");
+			ps.setString(1, name);
+			ResultSet rs = ps.executeQuery();
+			
+			rs.first();
+			
+			model.Employee e = new Employee(Integer.toString(rs.getInt("employee_id")), 
+					  getBranch(rs.getInt("branch_id")), 
+					  rs.getString("name"), 
+					  rs.getDate("dateStartedWorking"), 
+					  rs.getDouble("hoursRendered"),
+					  rs.getString("type"));
+			return e;
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public Iterator getAllEmployees()
 	{
 		try
@@ -144,13 +190,13 @@ public class DatabaseManager
 	{
 		try
 		{
-			PreparedStatement ps = connection.prepareStatement("SELECT * FROM product WHERE price IS null");
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM product WHERE measurement IS NOT null");
 			ResultSet rs = ps.executeQuery();
-			ArrayList<model.Product> products = new ArrayList<>(0);
+			ArrayList<model.Consumable> products = new ArrayList<>(0);
 			
 			while( rs.next() )
 			{
-				model.Product p = new Consumable(Integer.toString(rs.getInt("product_id")), 
+				model.Consumable p = new Consumable(Integer.toString(rs.getInt("product_id")), 
 										rs.getString("name"), 
 										rs.getString("description"), 
 										rs.getInt("quantity"),
@@ -171,11 +217,11 @@ public class DatabaseManager
 		{
 			PreparedStatement ps = connection.prepareStatement("SELECT * FROM product WHERE price IS NOT null");
 			ResultSet rs = ps.executeQuery();
-			ArrayList<model.Product> products = new ArrayList<>(0);
+			ArrayList<model.OverTheCounter> products = new ArrayList<>(0);
 			
 			while( rs.next() )
 			{
-				model.Product p = new OverTheCounter(Integer.toString(rs.getInt("product_id")), 
+				model.OverTheCounter p = new OverTheCounter(Integer.toString(rs.getInt("product_id")), 
 										rs.getString("name"), 
 										rs.getString("description"), 
 										rs.getInt("quantity"),
@@ -290,7 +336,7 @@ public class DatabaseManager
 			
 			ArrayList<Integer> lineItemIDs;
 			lineItemIDs = addProductLineItem(products);
-			int genID = 1000;
+			int genID = -999;
 			
 			ps.setInt(1, lineItemIDs.get(0));
 			ps.executeUpdate();
@@ -298,7 +344,7 @@ public class DatabaseManager
 			ResultSet generatedKeys = ps.getGeneratedKeys();
 			if(generatedKeys.next())
 			{
-			genID = generatedKeys.getInt("productlist_id");
+			genID = generatedKeys.getInt(1);
 			}
 			
 			if(lineItemIDs.size() > 1)
@@ -325,7 +371,7 @@ public class DatabaseManager
 	{
 		try
 		{
-			PreparedStatement ps = connection.prepareStatement("INSERT INTO product line item(product_id, quantity) "
+			PreparedStatement ps = connection.prepareStatement("INSERT INTO `product line item`(product_id, quantity) "
 					  + "VALUES (?, ?)",Statement.RETURN_GENERATED_KEYS);
 			
 			for(int i = 0; i < products.size(); i ++)
@@ -337,9 +383,10 @@ public class DatabaseManager
 			ResultSet generatedKeys = ps.getGeneratedKeys();
 			ArrayList<Integer> lineItemIDs = new ArrayList<Integer>();
 			
+			generatedKeys.beforeFirst();
 			while(generatedKeys.next())
 			{
-				lineItemIDs.add(generatedKeys.getInt("productlineitem_id"));
+				lineItemIDs.add(generatedKeys.getInt(1));
 			}
 			
 			return lineItemIDs;
@@ -367,7 +414,7 @@ public class DatabaseManager
 			ResultSet generatedKeys = ps.getGeneratedKeys();
 			if(generatedKeys.next())
 			{
-				genID = generatedKeys.getInt("servicelist_id");
+				genID = generatedKeys.getInt(1);
 			}
 			
 			if(lineItemIDs.size() > 1)
@@ -394,17 +441,20 @@ public class DatabaseManager
 	{
 		try
 		{
-			PreparedStatement ps = connection.prepareStatement("INSERT INTO service line item(service_id, quantity, employee_id1, employee_id2) "
+			PreparedStatement ps = connection.prepareStatement("INSERT INTO `service line item`(service_id, quantity, employee_id1, employee_id2) "
 					  + "VALUES (?, ?, ?, ?)",Statement.RETURN_GENERATED_KEYS);
 			
 			for(int i = 0; i < services.size(); i ++)
 			{
 				ps.setInt(1, Integer.parseInt(services.get(i).getService().getsServiceId()));
 				ps.setInt(2, services.get(i).getnQuantity());
-				ps.setInt(3, Integer.parseInt(services.get(i).getEmployee(0).getsEmployeeId()));
-				if(services.get(i).getEmployee(1) != null)
+				ps.setInt(3, Integer.parseInt(services.get(i).getEmployee(1).getsEmployeeId()));
+				if(services.get(i).getEmployee(2) != null)
 				{
-					ps.setInt(4, Integer.parseInt(services.get(i).getEmployee(1).getsEmployeeId()));
+					ps.setInt(4, Integer.parseInt(services.get(i).getEmployee(2).getsEmployeeId()));
+				}else 
+				{
+					ps.setNull(4, java.sql.Types.INTEGER);
 				}
 				ps.executeUpdate();
 			}
@@ -413,7 +463,7 @@ public class DatabaseManager
 			
 			while(generatedKeys.next())
 			{
-				lineItemIDs.add(generatedKeys.getInt("productlineitem_id"));
+				lineItemIDs.add(generatedKeys.getInt(1));
 			}
 			
 			return lineItemIDs;

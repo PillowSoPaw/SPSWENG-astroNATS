@@ -197,7 +197,7 @@ DROP TABLE IF EXISTS `productlist`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `productlist` (
-  `productlist_id` int(11) NOT NULL,
+  `productlist_id` int(11) NOT NULL AUTO_INCREMENT,
   `productlineitem_id` int(11) NOT NULL,
   PRIMARY KEY (`productlist_id`),
   UNIQUE KEY `productlist_id_UNIQUE` (`productlist_id`),
@@ -311,7 +311,7 @@ DROP TABLE IF EXISTS `servicelist`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `servicelist` (
-  `servicelist_id` int(11) NOT NULL,
+  `servicelist_id` int(11) NOT NULL AUTO_INCREMENT,
   `servicelineitem_id` int(11) NOT NULL,
   PRIMARY KEY (`servicelist_id`),
   UNIQUE KEY `servicelist_id_UNIQUE` (`servicelist_id`),
