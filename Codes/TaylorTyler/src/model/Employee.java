@@ -12,17 +12,17 @@ public class Employee
 	private Branch branch;
 	private String sName;
 	private Date dateStartedWorking;
-	private double hoursRendered;
+	private double dHoursRendered;
 	private String sType;
 	
-	public Employee(String sEmployeeId, Branch branch, String sName, Date dateStartedWorking, double hoursRendered, String sType )
+	public Employee(String sEmployeeId, Branch branch, String sName, Date dateStartedWorking, double dHoursRendered, String sType )
 	{
 		this.sEmployeeId = sEmployeeId;
 		this.timelog = new ArrayList<TimeLog>(0);
 		this.branch = branch;
 		this.sName = sName;
 		this.dateStartedWorking = dateStartedWorking;
-		this.hoursRendered = hoursRendered;
+		this.dHoursRendered = dHoursRendered;
 		this.sType = sType;
 	}
 	
@@ -52,9 +52,9 @@ public class Employee
 		return dateStartedWorking;
 	}
 
-	public double getHoursRendered()
+	public double getdHoursRendered()
 	{
-		return hoursRendered;
+		return dHoursRendered;
 	}
 	
 	public String getsType()
@@ -88,9 +88,9 @@ public class Employee
 		this.dateStartedWorking = dateStartedWorking;
 	}
 
-	public void setHoursRendered(double hoursRendered)
+	public void setdHoursRendered(double hoursRendered)
 	{
-		this.hoursRendered = hoursRendered;
+		this.dHoursRendered = hoursRendered;
 	}
 
 	public void setsType( String sType )

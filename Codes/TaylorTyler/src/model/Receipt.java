@@ -7,16 +7,16 @@ public class Receipt
 
 	private String sReceiptId;
 	private Client client;
-	private Date date;
+	private Date dateOfReceipt;
 	private String sModeOfPayment;
 	private ArrayList<Transaction> transactions;
 	private double dTotalBill;
 	
-	public Receipt( String sReceiptId, Client client, Date date, String sModeOfPayment, double dTotalBill )
+	public Receipt( String sReceiptId, Client client, Date dateOfReceipt, String sModeOfPayment, double dTotalBill )
 	{
 		this.sReceiptId = sReceiptId;
 		this.client = client;
-		this.date = date;
+		this.dateOfReceipt = dateOfReceipt;
 		this.sModeOfPayment = sModeOfPayment;
 		this.dTotalBill = dTotalBill;
 	}
@@ -32,9 +32,9 @@ public class Receipt
 		return client;
 	}
 
-	public Date getDate()
+	public Date getDateOfReceipt()
 	{
-		return date;
+		return dateOfReceipt;
 	}
 
 	public String getsModeOfPayment()
@@ -58,9 +58,9 @@ public class Receipt
 		this.client = client;
 	}
 
-	public void setDate(Date date)
+	public void setDateOfReceipt(Date dateOfReceipt)
 	{
-		this.date = date;
+		this.dateOfReceipt = dateOfReceipt;
 	}
 
 	public void setsModeOfPayment(String sModeOfPayment)

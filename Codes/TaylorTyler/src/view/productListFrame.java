@@ -15,19 +15,14 @@ public class ProductListFrame extends JFrame
 	private JTable				productsTable;
 	private JScrollPane			scroll;
 	private JButton			addButton;
-//	private Service			service;
-	private Iterator<Product>	productsUsed;
 
-	public ProductListFrame(Iterator<Product> products)
+	public ProductListFrame(AddTransactionPanel mainFrame)
 	{
-		this.productsUsed = products;
-		
+
 		DefaultTableModel tModel = new DefaultTableModel();
 		tModel.addColumn("Product");
 		tModel.addColumn("Quantity");
-
-		//this.service = service;
-
+		
 		productsTable = new JTable(tModel);
 		productsTable.setBounds(10, 10, 275, 300);
 		scroll = new JScrollPane(productsTable);
@@ -40,8 +35,8 @@ public class ProductListFrame extends JFrame
 		getContentPane().add(scroll);
 		getContentPane().add(addButton);
 
-		loadProducts();
-
+		loadProducts(mainFrame.getProducts());
+		
 		this.setResizable(false);
 
 		this.setSize(300, 400);
@@ -50,22 +45,24 @@ public class ProductListFrame extends JFrame
 		this.setLocationRelativeTo(null);
 	}
 
-	public void loadProducts()
+	public void loadProducts( Iterator products )
 	{
 		DefaultTableModel tModel = new DefaultTableModel();
 		tModel.addColumn("Product");
 		tModel.addColumn("Quantity");
 
-		while ( productsUsed.hasNext() == true )
+		while ( products.hasNext() == true )
 		{
 			Object o = new Object();
-			o = ((Product) productsUsed.next());
+			o = ((Product) products.next());
 			
 			String[] entry = { ((Product) o).getsName(), Integer.toString(((Product) o).getnQuantity()) };
 			tModel.addRow(entry);
 		}
 
 		productsTable.setModel(tModel);
+		this.repaint();
+		this.revalidate();
 	}
 
 }

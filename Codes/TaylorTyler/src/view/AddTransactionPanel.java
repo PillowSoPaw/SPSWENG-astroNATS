@@ -15,6 +15,7 @@ import java.util.Iterator;
 import javax.swing.table.AbstractTableModel;
 
 import controller.Controller;
+import model.Client;
 import model.Employee;
 import model.Product;
 import model.Service;
@@ -28,6 +29,9 @@ public class AddTransactionPanel extends JPanel
     private ArrayList<String> customerNames;
     private ArrayList<String> prices;
     
+    private ArrayList<String> servicesAvailed;
+    private ArrayList<String> productsBought;
+    
     private Iterator<Service> iServices;
     private Iterator<Product> iProducts;
     private Iterator<Product> iConsumables;
@@ -36,7 +40,7 @@ public class AddTransactionPanel extends JPanel
     private JPanel leftPanel;
     private JScrollPane transScrollPane;
     private JPanel pTransactionDetail;
-    private JTextField customerNameLabel;
+    private JTextField customerNameTextField;
     private JTable transactionDetail;
     private JButton cancelButton;
     private JButton saveButton;
@@ -65,7 +69,7 @@ public class AddTransactionPanel extends JPanel
     private String[] serviceOptions;// = {"Manicure", "Pedicure", "Haircut", "Dye Hair"}; //Should get from DATABASE for DEVS
     
     private int[] productQuantity;// = {124.99, 99.99, 249.99};
-    	private double[] servicePrice;// = {200.00, 200.00, 100.00, 300.00};
+    private double[] servicePrice;// = {200.00, 200.00, 100.00, 300.00};
     
     private boolean isOpen;
     
@@ -117,13 +121,15 @@ public class AddTransactionPanel extends JPanel
 		services = new ArrayList<>(0);
 		customerNames = new ArrayList<>(0);
 		prices = new ArrayList<>(0);
-        
+		servicesAvailed = new ArrayList<>(0);
+		productsBought = new ArrayList<>(0);
+		
 		leftPanel = new JPanel();
-		customerNameLabel = new JTextField("Customer Name"); // Retrieve
+		customerNameTextField = new JTextField("Customer Name"); // Retrieve
 													// Customer
 													// Name from
 													// Database
-		customerNameLabel.setBounds(10, 10, 200, 20);
+		customerNameTextField.setBounds(10, 10, 200, 20);
 		cancelButton = new JButton("Cancel");
 		saveButton = new JButton("Save Transaction");
 		titleServiceLabel = new JLabel("Service Rendered");
@@ -226,7 +232,7 @@ public class AddTransactionPanel extends JPanel
 		add(titleServiceLabel);
 		add(saveButton);
 		add(cancelButton);
-		add(customerNameLabel);
+		add(customerNameTextField);
 		add(transScrollPane);
 	}
     
@@ -274,8 +280,9 @@ public class AddTransactionPanel extends JPanel
 					int temp = Integer.parseInt(quantityTextArea.getText());
 
 					services.add(productOptions[chooseProductComboBox.getSelectedIndex()] + " (" + temp + ")");
+					productsBought.add(productOptions[chooseProductComboBox.getSelectedIndex()]);
 					prices.add("" + (productQuantity[chooseProductComboBox.getSelectedIndex()] * temp));
-					customerNames.add(customerNameLabel.getText());
+					customerNames.add(customerNameTextField.getText());
 
 					nEntries++;
 
@@ -291,9 +298,10 @@ public class AddTransactionPanel extends JPanel
 			else if (e.getSource() == addServiceButton)
 			{
 				services.add(serviceOptions[chooseServiceComboBox.getSelectedIndex()]);
+				servicesAvailed.add(serviceOptions[chooseServiceComboBox.getSelectedIndex()]);
 				prices.add("" + servicePrice[chooseServiceComboBox.getSelectedIndex()]);
-				customerNames.add(customerNameLabel.getText());
-
+				customerNames.add(customerNameTextField.getText());
+				
 				nEntries++;
 
 				updateTable();
@@ -302,17 +310,31 @@ public class AddTransactionPanel extends JPanel
 			{
 				if (isOpen == false)
 				{
-					ProductListFrame temp = new ProductListFrame(iProducts);
+					ProductListFrame temp = new ProductListFrame(reference);
 					temp.addWindowListener(new WindowCloser());
 					isOpen = true;
 				}
 			}
 			else if( e.getSource() == saveButton )
 			{
-				//Transaction t = new Transaction();
+				ArrayList<Service> s = new ArrayList<>(0);
+				
+				Client c = getInputClient(customerNameTextField.getText());
+				Transaction t = new Transaction("1", c, "");
+				
+				for( int i = 0; i < servicesAvailed.size(); i++ )
+				{
+					s.add(getAvailedService(servicesAvailed.get(i)));
+				}
+				
+				//t.add
+				
+//				int index = str.indexOf("(");
+//				System.out.println(str.substring(0, index));
 				//addTransaction(t);
 			}
 		}
+		
 	}
     
 	public class WindowCloser extends WindowAdapter
@@ -331,6 +353,16 @@ public class AddTransactionPanel extends JPanel
 		controller.getEmployees();
 		this.repaint();
 		this.revalidate();
+	}
+	
+	public Client getInputClient( String name )
+	{
+		return controller.getClient(name);
+	}
+	
+	public Service getAvailedService( String name )
+	{
+		return controller.getService(name);
 	}
 	
 	public void getProductList(Iterator i)

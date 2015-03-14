@@ -7,9 +7,11 @@ import view.AddTransactionPanel;
 import view.EmployeeListFrame;
 import view.ProductListFrame;
 import view.TransactionGUI;
+import model.Client;
 import model.DatabaseManager;
 import model.Employee;
 import model.Product;
+import model.Service;
 import model.Transaction;
 import model.ProductLineItem;
 import model.ServiceLineItem;
@@ -31,7 +33,18 @@ public class Controller
 		//transactionPanel.getData();
 	}
 
-	// A function that displays all the employees
+	//get client based on name
+	public Client getClient(String name)
+	{
+		return DBManager.getClient(name);
+	}
+	
+	public Service getService(String name)
+	{
+		return DBManager.getService(name);
+	}
+	
+	// get employees from model
 	public void getEmployees()
 	{
 		transactionGUI.getAddTransactionPanel().getEmployeeList(DBManager.getAllEmployees());

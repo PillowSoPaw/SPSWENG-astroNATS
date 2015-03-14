@@ -3,7 +3,7 @@ import java.sql.*;
 
 public class DatabaseConnector
 {
-	private Connection	con;
+	private Connection	connection;
 	private static DatabaseConnector dbConn;
 
 	private DatabaseConnector()
@@ -16,8 +16,8 @@ public class DatabaseConnector
 		try
 		{
 			Class.forName("com.mysql.jdbc.Driver").newInstance();
-			con = DriverManager.getConnection(connurl, username, password);
-			System.out.println("It fucking works!");
+			connection = DriverManager.getConnection(connurl, username, password);
+			System.out.println("It works!");
 		} 
 		catch (Exception e)
 		{
@@ -42,7 +42,7 @@ public class DatabaseConnector
 
 	public Connection getConnection()
 	{
-		return con;
+		return connection;
 	}
 	
 	public static DatabaseConnector getInstance()
@@ -56,6 +56,6 @@ public class DatabaseConnector
 	
 	public static void main(String[] args)
 	{
-		DatabaseConnector con = new DatabaseConnector();
+		DatabaseConnector connection = new DatabaseConnector();
 	}
 }

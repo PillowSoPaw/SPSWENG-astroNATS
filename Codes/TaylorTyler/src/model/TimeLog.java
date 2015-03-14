@@ -8,15 +8,15 @@ public class TimeLog
 
 	private String sTimelogId;
 	private Employee employee;
-	private Date date;
+	private Date dateOfTimelog;
 	private Time timein;
 	private Time timeout;
 	
-	public TimeLog(String sTimelogId, Employee employee, Date date, Time timein, Time timeout )
+	public TimeLog(String sTimelogId, Employee employee, Date dateOfTimelog, Time timein, Time timeout )
 	{
 		this.sTimelogId = sTimelogId;
 		this.employee = employee;
-		this.date = date;
+		this.dateOfTimelog = dateOfTimelog;
 		this.timein = timein;
 		this.timeout = timeout;
 	}
@@ -27,9 +27,9 @@ public class TimeLog
 		return sTimelogId;
 	}
 
-	public Date getDate()
+	public Date getDateOfTimelog()
 	{
-		return date;
+		return dateOfTimelog;
 	}
 
 	public Time getTimein()
@@ -52,9 +52,9 @@ public class TimeLog
 		this.sTimelogId = sTimelogId;
 	}
 
-	public void setDate(Date date)
+	public void setDateOfTimelog(Date dateOfTimelog)
 	{
-		this.date = date;
+		this.dateOfTimelog = dateOfTimelog;
 	}
 
 	public void setTimein(Time timein)

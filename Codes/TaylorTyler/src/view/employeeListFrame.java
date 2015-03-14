@@ -11,7 +11,6 @@ import controller.Controller;
 
 public class EmployeeListFrame extends JFrame
 {
-	private Controller controller;
 	private JTable		employeesTable;
 	private JScrollPane	scroll;
 	private JButton	add;
@@ -42,11 +41,6 @@ public class EmployeeListFrame extends JFrame
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 
-		String[][] test = { { "John Smith", "Senior" },
-				{ "Jim Moriarty", "Senior" }, { "Michael Bay", "Junior" } };// For
-																// testing
-
-		
 		loadEmployees(mainFrame.getEmployees()); // Should be called by controller by getting
 							// Results from database
 	}
@@ -67,11 +61,7 @@ public class EmployeeListFrame extends JFrame
 		}
 
 		employeesTable.setModel(tModel);
-	}
-	
-	//SETTERS
-	public void setController(Controller c)
-	{
-		this.controller = c;
+		this.repaint();
+		this.revalidate();
 	}
 }
