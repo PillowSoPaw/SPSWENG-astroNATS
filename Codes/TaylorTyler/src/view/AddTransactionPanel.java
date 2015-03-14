@@ -448,8 +448,6 @@ public class AddTransactionPanel extends JPanel
 
 	public Iterator<Product> getProducts()
 	{
-		controller.getProducts();
-		
 		return iProducts;
 	}
 
