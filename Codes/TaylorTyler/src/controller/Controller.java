@@ -6,6 +6,7 @@ import java.util.Iterator;
 import view.AddTransactionPanel;
 import view.EmployeeListFrame;
 import view.ProductListFrame;
+import view.TransactionGUI;
 import model.DatabaseManager;
 import model.Employee;
 import model.Product;
@@ -16,38 +17,42 @@ import model.ServiceLineItem;
 public class Controller
 {
 	private static DatabaseManager	DBManager;
-	private AddTransactionPanel transactionPanel;
+	private TransactionGUI transactionGUI;
+	//private AddTransactionPanel transactionPanel;
 
-	public Controller( AddTransactionPanel transactionPanel )
+	public Controller(TransactionGUI transactionGUI)// AddTransactionPanel transactionPanel )
 	{
 		DBManager = DBManager.getInstance();
-		transactionPanel.setController(this);
-		this.transactionPanel = transactionPanel;
-		transactionPanel.getData();
+		transactionGUI.setController(this);
+		this.transactionGUI = transactionGUI;
+		transactionGUI.getAddTransactionPanel().getData();
+		//transactionPanel.setController(this);
+		//this.transactionPanel = transactionPanel;
+		//transactionPanel.getData();
 	}
 
 	// A function that displays all the employees
 	public void getEmployees()
 	{
-		transactionPanel.getEmployeeList(DBManager.getAllEmployees());
+		transactionGUI.getAddTransactionPanel().getEmployeeList(DBManager.getAllEmployees());
 	}
 
 	// get product from model
 	public void getProducts()
 	{
-		transactionPanel.getProductList(DBManager.getAllProducts());
+		transactionGUI.getAddTransactionPanel().getProductList(DBManager.getAllProducts());
 	}
 
 	//get all consumable products from model
 	public void getConsumables()
 	{
-		transactionPanel.getConsumableList(DBManager.getAllConsumableProducts());
+		transactionGUI.getAddTransactionPanel().getConsumableList(DBManager.getAllConsumableProducts());
 	}
 	
 	// get servies from model then give data to view
 	public void getServices()
 	{
-		transactionPanel.getServiceList(DBManager.getAllServices());
+		transactionGUI.getAddTransactionPanel().getServiceList(DBManager.getAllServices());
 	}
 	
 	// save transaction to database

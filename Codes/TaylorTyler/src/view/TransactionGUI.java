@@ -64,6 +64,7 @@ public class TransactionGUI extends JFrame
     private JButton cancelTransactionButton;
     private JButton saveTransactionButton;
     
+    private AddTransactionPanel yes;
     private Controller controller;
     
     public TransactionGUI()
@@ -72,6 +73,7 @@ public class TransactionGUI extends JFrame
         menuPanel = new JPanel();
         transactionPanel = new JPanel();
         addTransPanel = new JPanel();
+        
         transactionLabel = new JLabel("Transactions");
         addTransactionLabel = new JLabel("Add Transactions");
         viewTransactionLabel = new JLabel("View Transactions");
@@ -112,10 +114,11 @@ public class TransactionGUI extends JFrame
         
         add(transactionPanel);
         JPanel derp = new JPanel();
-        JPanel yes = new AddTransactionPanel();
+        //JPanel yes = new AddTransactionPanel();
+        yes = new AddTransactionPanel();
         derp = yes;
         add(derp);
-        
+      
         lineLabel = new JLabel("|");
         lineLabel.setBounds(716, 6, 200, 20);
         manageAccountLabel.setBounds(610,6,200,20);
@@ -143,9 +146,15 @@ public class TransactionGUI extends JFrame
         this.setLocationRelativeTo(null);
     }
     
-    public void setController()
+    public void setController( Controller controller)
     {
-	    
+	    this.controller = controller;
+	    yes.setController(controller);
+    }
+    
+    public AddTransactionPanel getAddTransactionPanel()
+    {
+	    return yes;
     }
     
     public static void main(String[] args) {
