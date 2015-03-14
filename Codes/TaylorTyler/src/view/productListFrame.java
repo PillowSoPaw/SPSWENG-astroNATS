@@ -6,7 +6,6 @@ import java.util.Iterator;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-import controller.ProductController;
 import model.Product;
 
 public class ProductListFrame extends JFrame
@@ -16,12 +15,13 @@ public class ProductListFrame extends JFrame
 	private JScrollPane			scroll;
 	private JButton			add;
 	private Service			service;
-	private ArrayList<Product>	productsUsed;
+	private Iterator<Product>	productsUsed;
 
 	public ProductListFrame(AddTransactionPanel mainFrame, Service service)
 	{
 		this.mainFrame = mainFrame;
-
+		productsUsed = mainFrame.getConsumables();
+		
 		DefaultTableModel tModel = new DefaultTableModel();
 		tModel.addColumn("Product");
 		tModel.addColumn("Quantity");

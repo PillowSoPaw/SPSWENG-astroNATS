@@ -1,16 +1,18 @@
 package view;
 
 import java.awt.Dimension;
+import java.util.Iterator;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import model.Employee;
 import controller.Controller;
 
 public class EmployeeListFrame extends JFrame
 {
-
-	private JTable		employees;
+	private Controller controller;
+	private JTable		employeesTable;
 	private JScrollPane	scroll;
 	private JButton	add;
 
@@ -21,17 +23,17 @@ public class EmployeeListFrame extends JFrame
 		tModel.addColumn("Name");
 		tModel.addColumn("Type");
 
-		employees = new JTable(tModel);
-		employees.setBounds(10, 10, 275, 300);
-		scroll = new JScrollPane(employees);
+		employeesTable = new JTable(tModel);
+		employeesTable.setBounds(10, 10, 275, 300);
+		scroll = new JScrollPane(employeesTable);
 		scroll.setBounds(10, 10, 275, 300);
 		add = new JButton("Add");
 		add.setBounds(10, 320, 275, 30);
 
-		this.setLayout(null);
+		getContentPane().setLayout(null);
 
-		add(scroll);
-		add(add);
+		getContentPane().add(scroll);
+		getContentPane().add(add);
 
 		this.setResizable(false);
 
@@ -44,11 +46,12 @@ public class EmployeeListFrame extends JFrame
 				{ "Jim Moriarty", "Senior" }, { "Michael Bay", "Junior" } };// For
 																// testing
 
-		loadEmployees(test); // Should be called by controller by getting
+		controller.getEmployees();
+		//loadEmployees(test); // Should be called by controller by getting
 							// Results from database
 	}
 
-	public void loadEmployees(String[][] entries)
+	public void loadEmployees(Iterator entries)
 	{
 		DefaultTableModel tModel = new DefaultTableModel();
 		tModel.addColumn("Name");
@@ -64,6 +67,12 @@ public class EmployeeListFrame extends JFrame
 			i++;
 		}
 
-		employees.setModel(tModel);
+		employeesTable.setModel(tModel);
+	}
+	
+	//SETTERS
+	public void setController(Controller c)
+	{
+		this.controller = c;
 	}
 }
