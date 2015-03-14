@@ -8,6 +8,8 @@ package view;
 
 import javax.swing.*;
 
+import controller.Controller;
+
 /**
  *
  * @author Joseph
@@ -62,13 +64,14 @@ public class TransactionGUI extends JFrame
     private JButton cancelTransactionButton;
     private JButton saveTransactionButton;
     
+    private Controller controller;
+    
     public TransactionGUI()
     {
         mainPanel = new JPanel();
         menuPanel = new JPanel();
         transactionPanel = new JPanel();
         addTransPanel = new JPanel();
-        
         transactionLabel = new JLabel("Transactions");
         addTransactionLabel = new JLabel("Add Transactions");
         viewTransactionLabel = new JLabel("View Transactions");
@@ -139,6 +142,12 @@ public class TransactionGUI extends JFrame
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setLocationRelativeTo(null);
     }
+    
+    public void setController()
+    {
+	    
+    }
+    
     public static void main(String[] args) {
         
         new TransactionGUI();

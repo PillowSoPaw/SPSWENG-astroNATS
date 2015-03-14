@@ -24,19 +24,20 @@ public class DatabaseConnector
 			e.printStackTrace();
 			System.err.println("Exception: " + e.getMessage());
 		} 
-		finally
-		{
-			try
-			{
-				if (con != null)
-				{
-					con.close();
-				}
-			} 
-			catch (SQLException e)
-			{
-			}
-		}
+//		finally
+//		{
+//			try
+//			{
+//				if (con != null)
+//				{
+//					//con.close();
+//					System.out.println("Connection Closed");
+//				}
+//			} 
+//			catch (SQLException e)
+//			{
+//			}
+//		}
 	}
 
 	public Connection getConnection()

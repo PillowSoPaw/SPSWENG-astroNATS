@@ -15,6 +15,7 @@ import java.util.Iterator;
 import javax.swing.table.AbstractTableModel;
 
 import controller.Controller;
+import model.Employee;
 import model.Product;
 import model.Service;
 import model.Transaction;
@@ -23,13 +24,14 @@ public class AddTransactionPanel extends JPanel
 {
     private Controller controller;
     private int nEntries; //TURN THIS BLOCK INTO A CLASS called TransactionEntry
-//    private ArrayList<String> services;
-//    private ArrayList<String> customerNames;
-//    private ArrayList<String> prices;
+    private ArrayList<String> services;
+    private ArrayList<String> customerNames;
+    private ArrayList<String> prices;
     
-    private Iterator<Service> services;
-    private Iterator<Product> products;
-    private Iterator<Product> consumables;
+    private Iterator<Service> iServices;
+    private Iterator<Product> iProducts;
+    private Iterator<Product> iConsumables;
+    private Iterator<Employee> iEmployees;
     
     private JPanel leftPanel;
     private JScrollPane transScrollPane;
@@ -59,13 +61,16 @@ public class AddTransactionPanel extends JPanel
     private JTextArea quantityTextArea;
     private JButton addProductButton;
            
-    private String[] testOptions = {"Shampoo", "Nail Polish", "Hair Dye Product"}; //Should get from DATABASE for DEVS
-    private String[] testOptions2 = {"Manicure", "Pedicure", "Haircut", "Dye Hair"}; //Should get from DATABASE for DEVS
+    private String[] productOptions;// = {"Shampoo", "Nail Polish", "Hair Dye Product"}; //Should get from DATABASE for DEVS
+    private String[] serviceOptions;// = {"Manicure", "Pedicure", "Haircut", "Dye Hair"}; //Should get from DATABASE for DEVS
     
-    private double[] testPrice = {124.99, 99.99, 249.99};
-    	private double[] testPrice2 = {200.00, 200.00, 100.00, 300.00};
+    private int[] productQuantity;// = {124.99, 99.99, 249.99};
+    	private double[] servicePrice;// = {200.00, 200.00, 100.00, 300.00};
     
     private boolean isOpen;
+    
+    private DefaultComboBoxModel<String> serviceComboBoxModel;
+    private DefaultComboBoxModel<String> productComboBoxModel;
     
     private AddTransactionPanel reference;
 
@@ -80,6 +85,9 @@ public class AddTransactionPanel extends JPanel
 
 		isOpen = false;
         
+		serviceComboBoxModel = new DefaultComboBoxModel<>();
+		productComboBoxModel = new DefaultComboBoxModel<>();
+		
         //serviceReference = new Service[4]; // Should load from Database all the Services
         
         /* Instantiating Services, REMOVE AFTER TESTING 
@@ -101,17 +109,14 @@ public class AddTransactionPanel extends JPanel
             serviceReference[3].addProduct(new Product("Bleach", "Liter"));
         /* Instantiating Services, REMOVE AFTER TESTING */
         //get data from database
-		controller.getServices();
-		controller.getConsumables();
-		controller.getProducts();
-
+		
 		Border blackline = BorderFactory.createLineBorder(Color.black);
 
 		setBorder(blackline);
         
-//        services = new ArrayList();
-//        customerNames = new ArrayList();
-//        prices = new ArrayList();
+		services = new ArrayList<>(0);
+		customerNames = new ArrayList<>(0);
+		prices = new ArrayList<>(0);
         
 		leftPanel = new JPanel();
 		customerNameLabel = new JTextField("Customer Name"); // Retrieve
@@ -146,7 +151,7 @@ public class AddTransactionPanel extends JPanel
 
 		servicePanel = new JPanel();
 		iChooseLabel = new JLabel("Choose Service:");
-		chooseServiceComboBox = new JComboBox(testOptions2);
+		chooseServiceComboBox = new JComboBox(serviceComboBoxModel);
 
 		// initialize the add employee button
 		ButtonListener buttonListener = new ButtonListener();
@@ -189,7 +194,7 @@ public class AddTransactionPanel extends JPanel
 
 		productsPanel = new JPanel();
 		iChooseProductLabel = new JLabel("Choose Product:");
-		chooseProductComboBox = new JComboBox(testOptions);
+		chooseProductComboBox = new JComboBox(productComboBoxModel);
 		lQuantityLabel = new JLabel("Quantity:");
 		quantityTextArea = new JTextArea("Enter quantity here");
 		addProductButton = new JButton("Add Product");
@@ -268,8 +273,8 @@ public class AddTransactionPanel extends JPanel
 				{
 					int temp = Integer.parseInt(quantityTextArea.getText());
 
-					services.add(testOptions[chooseProductComboBox.getSelectedIndex()] + " (" + temp + ")");
-					prices.add("" + (testPrice[chooseProductComboBox.getSelectedIndex()] * temp));
+					services.add(productOptions[chooseProductComboBox.getSelectedIndex()] + " (" + temp + ")");
+					prices.add("" + (productQuantity[chooseProductComboBox.getSelectedIndex()] * temp));
 					customerNames.add(customerNameLabel.getText());
 
 					nEntries++;
@@ -285,8 +290,8 @@ public class AddTransactionPanel extends JPanel
 			} 
 			else if (e.getSource() == addServiceButton)
 			{
-				services.add(testOptions2[chooseServiceComboBox.getSelectedIndex()]);
-				prices.add("" + testPrice2[chooseServiceComboBox.getSelectedIndex()]);
+				services.add(serviceOptions[chooseServiceComboBox.getSelectedIndex()]);
+				prices.add("" + servicePrice[chooseServiceComboBox.getSelectedIndex()]);
 				customerNames.add(customerNameLabel.getText());
 
 				nEntries++;
@@ -297,7 +302,7 @@ public class AddTransactionPanel extends JPanel
 			{
 				if (isOpen == false)
 				{
-					ProductListFrame temp = new ProductListFrame(products);
+					ProductListFrame temp = new ProductListFrame(iProducts);
 					temp.addWindowListener(new WindowCloser());
 					isOpen = true;
 				}
@@ -318,23 +323,66 @@ public class AddTransactionPanel extends JPanel
 		}
 	}
 
+	public void getData()
+	{
+		controller.getServices();
+		controller.getConsumables();
+		controller.getProducts();
+		controller.getEmployees();
+		this.repaint();
+		this.revalidate();
+	}
+	
+	public void getProductList(Iterator i)
+	{
+		this.iProducts = i;
+		
+		ArrayList<Object> p = new ArrayList<>(0);
+		
+		while( i.hasNext() == true )
+		{
+			p.add((Product) i.next());
+		}
+		
+		productOptions = new String[p.size()];
+		productQuantity = new int[p.size()];
+		
+		for( int x = 0; x < p.size(); x++ )
+		{
+			productOptions[x] = ((Product) p.get(x)).getsName();
+			productQuantity[x] = ((Product) p.get(x)).getnQuantity();
+		}
+		
+		productComboBoxModel = new DefaultComboBoxModel<>(productOptions);
+		chooseProductComboBox.setModel(productComboBoxModel);
+	}
+	
 	public void getServiceList(Iterator i)
 	{
-		this.services = i;
-//		ArrayList<Object> s = new ArrayList<>(0);
-//
-//		while (i.hasNext() == true)
-//		{
-//			s.add((Service) i.next());
-//		}
-//
-//		serviceReference = new Service[s.size()];
-//		serviceReference = s.toArray(serviceReference);
+		this.iServices = i;
+		ArrayList<Object> s = new ArrayList<>(0);
+
+		while (i.hasNext() == true)
+		{
+			s.add((Service) i.next());
+		}
+
+		serviceOptions = new String[s.size()];
+		servicePrice = new double[s.size()];
+		
+		for( int x = 0; x < s.size(); x++ )
+		{
+			serviceOptions[x] = ((Service) s.get(x)).getsName();
+			servicePrice[x] = ((Service) s.get(x)).getdPrice();
+		}
+		
+		serviceComboBoxModel = new DefaultComboBoxModel<>(serviceOptions);
+		chooseServiceComboBox.setModel(serviceComboBoxModel);
 	}
 	
 	public void getConsumableList(Iterator i)
 	{
-		this.consumables = i;
+		this.iConsumables = i;
 //		ArrayList<Object> c = new ArrayList<>(0);
 //
 //		while (i.hasNext() == true)
@@ -346,16 +394,16 @@ public class AddTransactionPanel extends JPanel
 //		consumables = c.toArray(consumables);
 	}
 	
-	public void getProductList(Iterator i)
+	public void getEmployeeList(Iterator i)
 	{
-		this.products = i;
+		this.iEmployees = i;
 	}
 	
 	public void addTransaction( Transaction t )
 	{
 		controller.addTransaction(t);
 	}
-
+	
 	//GETTERS
 	public Controller getController()
 	{
@@ -364,17 +412,22 @@ public class AddTransactionPanel extends JPanel
 	
 	public Iterator<Service> getServices()
 	{
-		return services;
+		return iServices;
 	}
 
 	public Iterator<Product> getProducts()
 	{
-		return products;
+		return iProducts;
 	}
 
 	public Iterator<Product> getConsumables()
 	{
-		return consumables;
+		return iConsumables;
+	}
+	
+	public Iterator<Employee> getEmployees()
+	{
+		return iEmployees;
 	}
 	
 	//SETTERS

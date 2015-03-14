@@ -17,21 +17,19 @@ public class Controller
 {
 	private static DatabaseManager	DBManager;
 	private AddTransactionPanel transactionPanel;
-	private EmployeeListFrame	employeeListPanel;
 
-	public Controller( AddTransactionPanel transactionPanel, EmployeeListFrame employeeListFrame )
+	public Controller( AddTransactionPanel transactionPanel )
 	{
 		DBManager = DBManager.getInstance();
 		transactionPanel.setController(this);
 		this.transactionPanel = transactionPanel;
-		employeeListFrame.setController(this);
-		this.employeeListPanel = employeeListFrame;
+		transactionPanel.getData();
 	}
 
 	// A function that displays all the employees
 	public void getEmployees()
 	{
-		employeeListPanel.loadEmployees(DBManager.getAllEmployees());
+		transactionPanel.getEmployeeList(DBManager.getAllEmployees());
 	}
 
 	// get product from model

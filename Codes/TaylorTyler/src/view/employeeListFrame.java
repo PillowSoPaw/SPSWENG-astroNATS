@@ -46,8 +46,8 @@ public class EmployeeListFrame extends JFrame
 				{ "Jim Moriarty", "Senior" }, { "Michael Bay", "Junior" } };// For
 																// testing
 
-		controller.getEmployees();
-		//loadEmployees(test); // Should be called by controller by getting
+		
+		loadEmployees(mainFrame.getEmployees()); // Should be called by controller by getting
 							// Results from database
 	}
 

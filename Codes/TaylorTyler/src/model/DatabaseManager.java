@@ -57,7 +57,7 @@ public class DatabaseManager
 									  getBranch(rs.getInt("branch_id")), 
 									  rs.getString("name"), 
 									  rs.getDate("dateStartedWorking"), 
-									  rs.getTime("hoursRendered"),
+									  rs.getDouble("hoursRendered"),
 									  rs.getString("type"));
 			employees.add(e);
 		}
@@ -97,7 +97,7 @@ public class DatabaseManager
 	{
 		try
 		{
-		PreparedStatement ps = con.prepareStatement("SELECT * FROM product WHERE price = null");
+		PreparedStatement ps = con.prepareStatement("SELECT * FROM product WHERE price IS null");
 		ResultSet rs = ps.executeQuery();
 		ArrayList<model.Product> products = new ArrayList<>(0);
 		
@@ -118,23 +118,48 @@ public class DatabaseManager
 		return null;
 	}
 	
+	public Iterator getAllOverTheCounterProducts()
+	{
+		try
+		{
+		PreparedStatement ps = con.prepareStatement("SELECT * FROM product WHERE price IS NOT null");
+		ResultSet rs = ps.executeQuery();
+		ArrayList<model.Product> products = new ArrayList<>(0);
+		
+		while( rs.next() )
+		{
+			model.Product p = new OverTheCounter(Integer.toString(rs.getInt("product_id")), 
+									rs.getString("name"), 
+									rs.getString("description"), 
+									rs.getInt("quantity"),
+									rs.getDouble("price"));
+			products.add(p);
+		}
+		return products.iterator();
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public Iterator getAllServices()
 	{
 		try
 		{
-		PreparedStatement ps = con.prepareStatement("SELECT * FROM service");
-		ResultSet rs = ps.executeQuery();
-		ArrayList<model.Service> services = new ArrayList<>(0);
-		
-		while( rs.next() )
-		{
-			model.Service p = new Service(Integer.toString(rs.getInt("service_id")), 
-									rs.getString("name"), 
-									rs.getString("description"), 
-									rs.getInt("price"));
-			services.add(p);
-		}
-		return services.iterator();
+			PreparedStatement ps = con.prepareStatement("SELECT * FROM service");
+			ResultSet rs = ps.executeQuery();
+			ArrayList<model.Service> services = new ArrayList<>(0);
+			
+			while( rs.next() )
+			{
+				model.Service p = new Service(Integer.toString(rs.getInt("service_id")), 
+										rs.getString("name"), 
+										rs.getString("description"), 
+										rs.getInt("price"));
+				services.add(p);
+			}
+			return services.iterator();
 		}catch(SQLException e)
 		{
 			e.printStackTrace();

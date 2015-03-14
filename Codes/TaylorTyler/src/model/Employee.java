@@ -12,10 +12,10 @@ public class Employee
 	private Branch branch;
 	private String sName;
 	private Date dateStartedWorking;
-	private Time hoursRendered;
+	private double hoursRendered;
 	private String sType;
 	
-	public Employee(String sEmployeeId, Branch branch, String sName, Date dateStartedWorking, Time hoursRendered, String sType )
+	public Employee(String sEmployeeId, Branch branch, String sName, Date dateStartedWorking, double hoursRendered, String sType )
 	{
 		this.sEmployeeId = sEmployeeId;
 		this.timelog = new ArrayList<TimeLog>(0);
@@ -52,7 +52,7 @@ public class Employee
 		return dateStartedWorking;
 	}
 
-	public Time getHoursRendered()
+	public double getHoursRendered()
 	{
 		return hoursRendered;
 	}
@@ -88,7 +88,7 @@ public class Employee
 		this.dateStartedWorking = dateStartedWorking;
 	}
 
-	public void setHoursRendered(Time hoursRendered)
+	public void setHoursRendered(double hoursRendered)
 	{
 		this.hoursRendered = hoursRendered;
 	}
