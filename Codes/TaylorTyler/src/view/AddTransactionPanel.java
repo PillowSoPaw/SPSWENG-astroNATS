@@ -366,10 +366,8 @@ public class AddTransactionPanel extends JPanel
 	}
 	
 	public void getProductList(Iterator i)
-	{
-		this.iProducts = i;
-		
-		ArrayList<Object> p = new ArrayList<>(0);
+	{	
+		ArrayList<Product> p = new ArrayList<>(0);
 		
 		while( i.hasNext() == true )
 		{
@@ -385,6 +383,7 @@ public class AddTransactionPanel extends JPanel
 			productQuantity[x] = ((Product) p.get(x)).getnQuantity();
 		}
 		
+		this.iProducts = p.iterator();
 		productComboBoxModel = new DefaultComboBoxModel<>(productOptions);
 		chooseProductComboBox.setModel(productComboBoxModel);
 	}
@@ -449,6 +448,8 @@ public class AddTransactionPanel extends JPanel
 
 	public Iterator<Product> getProducts()
 	{
+		controller.getProducts();
+		
 		return iProducts;
 	}
 
@@ -459,6 +460,7 @@ public class AddTransactionPanel extends JPanel
 	
 	public Iterator<Employee> getEmployees()
 	{
+		controller.getEmployees();
 		return iEmployees;
 	}
 	
