@@ -57,14 +57,13 @@ public class EmployeeListFrame extends JFrame
 		tModel.addColumn("Name");
 		tModel.addColumn("Type");
 
-		int i = 0;
-
-		while (i < entries.length)
+		while ( entries.hasNext() == true )
 		{
-			String[] entry = { entries[i][0], entries[i][1] };
+			Object o = new Object();
+			o = ((Employee) entries.next());
+			
+			String[] entry = { ((Employee) o).getsName(), ((Employee) o).getsType() };
 			tModel.addRow(entry);
-
-			i++;
 		}
 
 		employeesTable.setModel(tModel);

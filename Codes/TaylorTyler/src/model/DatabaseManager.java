@@ -57,7 +57,8 @@ public class DatabaseManager
 									  getBranch(rs.getInt("branch_id")), 
 									  rs.getString("name"), 
 									  rs.getDate("dateStartedWorking"), 
-									  rs.getTime("hoursRendered"));
+									  rs.getTime("hoursRendered"),
+									  rs.getString("type"));
 			employees.add(e);
 		}
 		return employees.iterator();

@@ -149,8 +149,8 @@ public class AddTransactionPanel extends JPanel
 		chooseServiceComboBox = new JComboBox(testOptions2);
 
 		// initialize the add employee button
-		buttonListener ButtonListener = new buttonListener();
-
+		ButtonListener buttonListener = new ButtonListener();
+		saveButton.addActionListener(buttonListener);
 		reference = this;
         
 		employeeButton = new JButton("Add Employee");
@@ -165,11 +165,11 @@ public class AddTransactionPanel extends JPanel
         
 		// initialize add Products button
 		productsButton = new JButton("Products Used");
-		productsButton.addActionListener(ButtonListener);
+		productsButton.addActionListener(buttonListener);
         
 		// initialize the add service button
 		addServiceButton = new JButton("Add Service");
-		addServiceButton.addActionListener(ButtonListener);
+		addServiceButton.addActionListener(buttonListener);
 
 		servicePanel.setBorder(blackline);
 		servicePanel.setLayout(null);
@@ -194,8 +194,9 @@ public class AddTransactionPanel extends JPanel
 		quantityTextArea = new JTextArea("Enter quantity here");
 		addProductButton = new JButton("Add Product");
 
-		addProductButton.addActionListener(ButtonListener);
-
+		addProductButton.addActionListener(buttonListener);
+		
+		
 		productsPanel.setBorder(blackline);
 		productsPanel.setLayout(null);
 		productsPanel.setBounds(325, 280, 266, 150);
@@ -256,7 +257,7 @@ public class AddTransactionPanel extends JPanel
 		isOpen = false;
 	}
 
-	public class buttonListener implements ActionListener
+	public class ButtonListener implements ActionListener
 	{
 		@Override
 		public void actionPerformed(ActionEvent e)
@@ -296,13 +297,15 @@ public class AddTransactionPanel extends JPanel
 			{
 				if (isOpen == false)
 				{
-					ProductListFrame temp = new ProductListFrame(
-							reference,
-							serviceReference[chooseServiceComboBox
-									.getSelectedIndex()]);
+					ProductListFrame temp = new ProductListFrame(products);
 					temp.addWindowListener(new WindowCloser());
 					isOpen = true;
 				}
+			}
+			else if( e.getSource() == saveButton )
+			{
+				//Transaction t = new Transaction();
+				//addTransaction(t);
 			}
 		}
 	}
@@ -348,9 +351,8 @@ public class AddTransactionPanel extends JPanel
 		this.products = i;
 	}
 	
-	public void addTransaction()
+	public void addTransaction( Transaction t )
 	{
-		Transaction t = null;
 		controller.addTransaction(t);
 	}
 

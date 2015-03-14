@@ -6,39 +6,39 @@ import java.util.Iterator;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import model.Employee;
 import model.Product;
 
 public class ProductListFrame extends JFrame
 {
 	private AddTransactionPanel	mainFrame;
-	private JTable				products;
+	private JTable				productsTable;
 	private JScrollPane			scroll;
-	private JButton			add;
-	private Service			service;
+	private JButton			addButton;
+//	private Service			service;
 	private Iterator<Product>	productsUsed;
 
-	public ProductListFrame(AddTransactionPanel mainFrame, Service service)
+	public ProductListFrame(Iterator<Product> products)
 	{
-		this.mainFrame = mainFrame;
-		productsUsed = mainFrame.getConsumables();
+		this.productsUsed = products;
 		
 		DefaultTableModel tModel = new DefaultTableModel();
 		tModel.addColumn("Product");
 		tModel.addColumn("Quantity");
 
-		this.service = service;
+		//this.service = service;
 
-		products = new JTable(tModel);
-		products.setBounds(10, 10, 275, 300);
-		scroll = new JScrollPane(products);
+		productsTable = new JTable(tModel);
+		productsTable.setBounds(10, 10, 275, 300);
+		scroll = new JScrollPane(productsTable);
 		scroll.setBounds(10, 10, 275, 300);
-		add = new JButton("Add");
-		add.setBounds(10, 320, 275, 30);
+		addButton = new JButton("Add");
+		addButton.setBounds(10, 320, 275, 30);
 
-		this.setLayout(null);
+		getContentPane().setLayout(null);
 
-		add(scroll);
-		add(add);
+		getContentPane().add(scroll);
+		getContentPane().add(addButton);
 
 		loadProducts();
 
@@ -56,18 +56,16 @@ public class ProductListFrame extends JFrame
 		tModel.addColumn("Product");
 		tModel.addColumn("Quantity");
 
-		int i = 0;
-		String[] names = service.getProductNames();
-
-		while (i < names.length)
+		while ( productsUsed.hasNext() == true )
 		{
-			Object[] entry = { names[i], "Input Quantity" };
+			Object o = new Object();
+			o = ((Product) productsUsed.next());
+			
+			String[] entry = { ((Product) o).getsName(), Integer.toString(((Product) o).getnQuantity()) };
 			tModel.addRow(entry);
-
-			i++;
 		}
 
-		products.setModel(tModel);
+		productsTable.setModel(tModel);
 	}
 
 }

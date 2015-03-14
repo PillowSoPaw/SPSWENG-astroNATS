@@ -13,8 +13,9 @@ public class Employee
 	private String sName;
 	private Date dateStartedWorking;
 	private Time hoursRendered;
+	private String sType;
 	
-	public Employee(String sEmployeeId, Branch branch, String sName, Date dateStartedWorking, Time hoursRendered )
+	public Employee(String sEmployeeId, Branch branch, String sName, Date dateStartedWorking, Time hoursRendered, String sType )
 	{
 		this.sEmployeeId = sEmployeeId;
 		this.timelog = new ArrayList<TimeLog>(0);
@@ -22,6 +23,7 @@ public class Employee
 		this.sName = sName;
 		this.dateStartedWorking = dateStartedWorking;
 		this.hoursRendered = hoursRendered;
+		this.sType = sType;
 	}
 	
 	//getters
@@ -55,6 +57,11 @@ public class Employee
 		return hoursRendered;
 	}
 	
+	public String getsType()
+	{
+		return sType;
+	}
+	
 	//setters
 	public void setsEmployeeId(String sEmployeeId)
 	{
@@ -86,6 +93,11 @@ public class Employee
 		this.hoursRendered = hoursRendered;
 	}
 
+	public void setsType( String sType )
+	{
+		this.sType = sType;
+	}
+	
 	//add timelogs
 	public void addTimeLog( TimeLog timelog )
 	{
