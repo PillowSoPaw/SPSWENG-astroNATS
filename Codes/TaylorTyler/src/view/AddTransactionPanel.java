@@ -37,12 +37,14 @@ public class AddTransactionPanel extends JPanel
     private ArrayList<String> servicesAvailed;
     private ArrayList<String> productsBought;
     private ArrayList<Integer> productsQuantity;
+    private ArrayList<String[]> employeesAssigned;
+    private String[] selectedEmployee;
     
     private Iterator<Service> iServices;
     private Iterator<Product> iProducts;
     private Iterator<Consumable> iConsumables;
     private Iterator<OverTheCounter> iOverTheCounters;
-    private Iterator<Employee> iEmployees;
+    private Iterator<Employee> iWorkingEmployees;
     
     private JPanel leftPanel;
     private JScrollPane transScrollPane;
@@ -99,29 +101,7 @@ public class AddTransactionPanel extends JPanel
         
 		serviceComboBoxModel = new DefaultComboBoxModel<>();
 		productComboBoxModel = new DefaultComboBoxModel<>();
-		
-        //serviceReference = new Service[4]; // Should load from Database all the Services
-        
-        /* Instantiating Services, REMOVE AFTER TESTING 
-            serviceReference[0] = new Service(testOptions2[0]);
-            serviceReference[1] = new Service(testOptions2[1]);
-            serviceReference[2] = new Service(testOptions2[2]);
-            serviceReference[3] = new Service(testOptions2[3]);
-            
-            serviceReference[0].addProduct(new Product("Nail Polish", "Liter"));
-            serviceReference[0].addProduct(new Product("Nail Color", "Liter"));
-            
-            serviceReference[1].addProduct(new Product("Nail Polish", "Liter"));
-            serviceReference[1].addProduct(new Product("Nail Color", "Liter"));
-            
-            serviceReference[2].addProduct(new Product("Shampoo", "Liter"));
-            serviceReference[2].addProduct(new Product("Hair Spray", "Liter"));
-            
-            serviceReference[3].addProduct(new Product("Hair Dye Product", "Liter"));
-            serviceReference[3].addProduct(new Product("Bleach", "Liter"));
-        /* Instantiating Services, REMOVE AFTER TESTING */
-        //get data from database
-		
+	
 		Border blackline = BorderFactory.createLineBorder(Color.black);
 
 		setBorder(blackline);
@@ -132,6 +112,10 @@ public class AddTransactionPanel extends JPanel
 		servicesAvailed = new ArrayList<>(0);
 		productsBought = new ArrayList<>(0);
 		productsQuantity = new ArrayList<>(0);
+		employeesAssigned = new ArrayList<>(0);
+		selectedEmployee = new String[2];
+		selectedEmployee[0] = null;
+		selectedEmployee[1] = null;
 		
 		leftPanel = new JPanel();
 		customerNameTextField = new JTextField("Customer Name"); // Retrieve
@@ -341,10 +325,16 @@ public class AddTransactionPanel extends JPanel
 				{
 					if( checkClient() == true )
 					{
-						addToTable(serviceOptions[chooseServiceComboBox.getSelectedIndex()], 
-								"" + servicePrice[chooseServiceComboBox.getSelectedIndex()],
-								customerNameTextField.getText());
-						servicesAvailed.add(serviceOptions[chooseServiceComboBox.getSelectedIndex()]);
+						if( selectedEmployee[0] != null )
+						{
+							employeesAssigned.add(selectedEmployee);
+							addToTable(serviceOptions[chooseServiceComboBox.getSelectedIndex()], 
+									 "" + servicePrice[chooseServiceComboBox.getSelectedIndex()],
+									 customerNameTextField.getText());
+							servicesAvailed.add(serviceOptions[chooseServiceComboBox.getSelectedIndex()]);
+						}
+						else
+							JOptionPane.showMessageDialog(null, "No senior employee specified. Please choose senior employee.", "No Senior Employee", JOptionPane.WARNING_MESSAGE);
 					}
 				}
 				else
@@ -380,7 +370,7 @@ public class AddTransactionPanel extends JPanel
 				{
 					if( checkClient() == true )
 					{
-						controller.createTransaction(servicesAvailed, productsBought, productsQuantity, customerNameTextField.getText());
+						controller.createTransaction(servicesAvailed, employeesAssigned, productsBought, productsQuantity, customerNameTextField.getText());
 						resetAll();
 					}
 				}
@@ -451,7 +441,7 @@ public class AddTransactionPanel extends JPanel
 	{
 		String s = customerNameTextField.getText();
 		if( s.equalsIgnoreCase("Client one") || s.equalsIgnoreCase("Client two") ||
-		    s.equalsIgnoreCase("Client three") || s.equalsIgnoreCase("Client 4") )
+		    s.equalsIgnoreCase("Client three") || s.equalsIgnoreCase("Client four") )
 		{
 			return true;
 		}
@@ -468,11 +458,13 @@ public class AddTransactionPanel extends JPanel
 		{
 			((DefaultTableModel) transactionDetail.getModel()).removeRow(i);
 		}
+		
 		customerNameTextField.setText("Customer Name");
 		quantityTextArea.setText("Input Positive Integer");
 		productsBought.clear();
 		productsQuantity.clear();
 		servicesAvailed.clear();
+		employeesAssigned.clear();
 	}
 	
 	//GETTERS
@@ -480,7 +472,7 @@ public class AddTransactionPanel extends JPanel
 	{
 		controller.getServices();
 		controller.getConsumables();;
-		controller.getEmployees();
+		controller.getWorkingEmployees();
 		controller.getOverTheCounters();
 		this.repaint();
 		this.revalidate();
@@ -552,10 +544,9 @@ public class AddTransactionPanel extends JPanel
 		chooseServiceComboBox.setModel(serviceComboBoxModel);
 	}
 	
-	
-	public void getEmployeeList(Iterator i)
+	public void getWorkingEmployeeList(Iterator i)
 	{
-		this.iEmployees = i;
+		this.iWorkingEmployees = i;
 	}
 	
 	public void addTransaction( Transaction t )
@@ -579,10 +570,10 @@ public class AddTransactionPanel extends JPanel
 		return iConsumables;
 	}
 	
-	public Iterator<Employee> getEmployees()
+	public Iterator<Employee> getWorkingEmployees()
 	{
-		controller.getEmployees();
-		return iEmployees;
+		controller.getWorkingEmployees();
+		return iWorkingEmployees;
 	}
 	
 	public Iterator<OverTheCounter> getOverTheCounters()
@@ -595,5 +586,15 @@ public class AddTransactionPanel extends JPanel
 	public void setController(Controller c)
 	{
 		this.controller = c;
+	}
+	
+	public void setSelectedEmployee1( String selectedEmployee1 )
+	{
+		this.selectedEmployee[0] = selectedEmployee1;
+	}
+	
+	public void setSelectedEmployee2( String selectedEmployee2 )
+	{
+		this.selectedEmployee[1] = selectedEmployee2;
 	}
 }

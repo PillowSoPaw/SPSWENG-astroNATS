@@ -164,6 +164,32 @@ public class DatabaseManager
 		return null;
 	}
 	
+	public Iterator getWorkingEmployees()
+	{
+		try
+		{
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE type LIKE 'senior' OR type LIKE 'junior'");
+			ResultSet rs = ps.executeQuery();
+			ArrayList<model.Employee> wEmployees = new ArrayList<>(0);
+			
+			while( rs.next() )
+			{
+				model.Employee e = new Employee(Integer.toString(rs.getInt("employee_id")), 
+										  getBranch(rs.getInt("branch_id")), 
+										  rs.getString("name"), 
+										  rs.getDate("dateStartedWorking"), 
+										  rs.getDouble("hoursRendered"),
+										  rs.getString("type"));
+				wEmployees.add(e);
+			}
+			return wEmployees.iterator();
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public Iterator getAllProducts()
 	{
 		try
