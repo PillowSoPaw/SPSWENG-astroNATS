@@ -26,6 +26,7 @@ public class EmployeeListFrame extends JFrame
 		ActListener actListener = new ActListener();
 		this.mainFrame = mainFrame;
 		DefaultTableModel tModel = new DefaultTableModel();
+		
 		tModel.addColumn("Name");
 		tModel.addColumn("Type");
 
@@ -66,7 +67,13 @@ public class EmployeeListFrame extends JFrame
 
 	public void loadEmployees(Iterator entries)
 	{
-		DefaultTableModel tModel = new DefaultTableModel();
+		DefaultTableModel tModel = new DefaultTableModel()
+		{
+			public boolean isCellEditable(int row, int column)
+			{
+				return false;// This causes all cells to be not editable
+			}
+		};
 		tModel.addColumn("Name");
 		tModel.addColumn("Type");
 

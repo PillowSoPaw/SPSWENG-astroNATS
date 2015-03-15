@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import model.Employee;
@@ -21,17 +23,31 @@ public class ProductListFrame extends JFrame
 	
 	public ProductListFrame(AddTransactionPanel mainFrame)
 	{
-
+		this.mainFrame = mainFrame;
 		tModel = new DefaultTableModel();
 		tModel.addColumn("Product");
 		tModel.addColumn("Quantity");
 		
+		ActListener actListener = new ActListener();
+	
 		productsTable = new JTable(tModel);
 		productsTable.setBounds(10, 10, 275, 300);
 		scroll = new JScrollPane(productsTable);
 		scroll.setBounds(10, 10, 275, 300);
 		addButton = new JButton("Add");
 		addButton.setBounds(10, 320, 275, 30);
+		addButton.setEnabled(false);
+		addButton.addActionListener(actListener);
+		ListSelectionModel listSelectionModel = productsTable.getSelectionModel();
+		listSelectionModel.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) 
+			{ 
+				ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+				addButton.setEnabled(!lsm.isSelectionEmpty());
+			};
+			});
+		
+		
 		getContentPane().setLayout(null);
 
 		getContentPane().add(scroll);
@@ -49,7 +65,13 @@ public class ProductListFrame extends JFrame
 	
 	public void loadProducts( Iterator products )
 	{
-		tModel = new DefaultTableModel();
+		tModel = new DefaultTableModel()
+		{
+			public boolean isCellEditable(int row, int column)
+			{
+				return false;// This causes all cells to be not editable
+			}
+		};
 		tModel.addColumn("Product");
 		tModel.addColumn("Quantity");
 
@@ -66,5 +88,21 @@ public class ProductListFrame extends JFrame
 		this.repaint();
 		this.revalidate();
 	}
-
+	
+	private class ActListener implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			if( e.getSource() == addButton )
+			{
+				int x = productsTable.getSelectedRow();
+				String consumable = (String) productsTable.getModel().getValueAt(x, 0);
+				mainFrame.setSelectedProduct(consumable);
+				JOptionPane.showMessageDialog(null, consumable + " assigned", "Add Consumable", JOptionPane.INFORMATION_MESSAGE);
+				dispose();
+			}
+		}
+		
+	}
 }

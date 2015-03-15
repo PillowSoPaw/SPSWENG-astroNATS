@@ -39,6 +39,7 @@ public class AddTransactionPanel extends JPanel
     private ArrayList<Integer> productsQuantity;
     private ArrayList<String[]> employeesAssigned;
     private String[] selectedEmployee;
+    private String selectedProduct;
     
     private Iterator<Service> iServices;
     private Iterator<Product> iProducts;
@@ -62,6 +63,8 @@ public class AddTransactionPanel extends JPanel
 
     private JPanel servicePanel;
     private JLabel iChooseLabel;
+    private JLabel seniorEmployeeLabel;
+    private JLabel juniorEmployeeLabel;
     private JComboBox chooseServiceComboBox;
     private JButton employeeButton;
     private JButton productsButton;
@@ -74,11 +77,11 @@ public class AddTransactionPanel extends JPanel
     private JTextArea quantityTextArea;
     private JButton addProductButton;
            
-    private String[] productOptions;// = {"Shampoo", "Nail Polish", "Hair Dye Product"}; //Should get from DATABASE for DEVS
-    private String[] serviceOptions;// = {"Manicure", "Pedicure", "Haircut", "Dye Hair"}; //Should get from DATABASE for DEVS
+    private String[] productOptions;
+    private String[] serviceOptions;
     
-    private double[] productPrice;// = {124.99, 99.99, 249.99};
-    private double[] servicePrice;// = {200.00, 200.00, 100.00, 300.00};
+    private double[] productPrice;
+    private double[] servicePrice;
     
     private boolean isOpen;
     private boolean isEmpty = true;
@@ -87,6 +90,7 @@ public class AddTransactionPanel extends JPanel
     private DefaultComboBoxModel<String> productComboBoxModel;
     
     private AddTransactionPanel reference;
+    private JLabel productUsedLabel;
 
 	public AddTransactionPanel()
 	{
@@ -118,10 +122,8 @@ public class AddTransactionPanel extends JPanel
 		selectedEmployee[1] = null;
 		
 		leftPanel = new JPanel();
-		customerNameTextField = new JTextField("Customer Name"); // Retrieve
-													// Customer
-													// Name from
-													// Database
+		customerNameTextField = new JTextField("Customer Name");
+													
 		customerNameTextField.setBounds(10, 10, 200, 20);
 		cancelButton = new JButton("Cancel");
 		saveButton = new JButton("Save Transaction");
@@ -162,8 +164,11 @@ public class AddTransactionPanel extends JPanel
 		{
 			public void actionPerformed(ActionEvent e)
 			{
-				EmployeeListFrame empList = new EmployeeListFrame(reference);
-				empList.addWindowListener(new WindowCloser());
+				if( checkClient() == true )
+				{
+					EmployeeListFrame empList = new EmployeeListFrame(reference);
+					empList.addWindowListener(new WindowCloser());
+				}
 			}
 		});
         
@@ -180,8 +185,8 @@ public class AddTransactionPanel extends JPanel
 		servicePanel.setBounds(325, 50, 266, 180);
 		iChooseLabel.setBounds(87, 10, 100, 25);
 		chooseServiceComboBox.setBounds(59, 40, 150, 25);
-		employeeButton.setBounds(59, 70, 150, 25);
-		productsButton.setBounds(59, 100, 150, 25);
+		employeeButton.setBounds(20, 70, 150, 25);
+		productsButton.setBounds(20, 100, 150, 25);
 		addServiceButton.setBounds(59, 140, 150, 25);
 
 		servicePanel.add(iChooseLabel);
@@ -190,6 +195,18 @@ public class AddTransactionPanel extends JPanel
 		servicePanel.add(productsButton);
 		servicePanel.add(addServiceButton);
 		add(servicePanel);
+		
+		seniorEmployeeLabel = new JLabel("E1:");
+		seniorEmployeeLabel.setBounds(180, 70, 76, 14);
+		servicePanel.add(seniorEmployeeLabel);
+		
+		juniorEmployeeLabel = new JLabel("E2:");
+		juniorEmployeeLabel.setBounds(180, 83, 76, 14);
+		servicePanel.add(juniorEmployeeLabel);
+		
+		productUsedLabel = new JLabel("P:");
+		productUsedLabel.setBounds(180, 105, 76, 14);
+		servicePanel.add(productUsedLabel);
 
 		productsPanel = new JPanel();
 		iChooseProductLabel = new JLabel("Choose Product:");
@@ -297,12 +314,15 @@ public class AddTransactionPanel extends JPanel
 							if( temp <= 0 )
 								throw new IllegalArgumentException();
 							
-							addToTable(productOptions[chooseProductComboBox.getSelectedIndex()] + " (" + temp + ")",
-									"" + (productPrice[chooseProductComboBox.getSelectedIndex()] * temp),
-									customerNameTextField.getText());
-							productsBought.add(productOptions[chooseProductComboBox.getSelectedIndex()]);
-							productsQuantity.add(temp);
-							
+							if( checkProductQuantity(productOptions[chooseProductComboBox.getSelectedIndex()], temp) == true )
+							{
+								addToTable(productOptions[chooseProductComboBox.getSelectedIndex()] + " (" + temp + ")",
+										"" + (productPrice[chooseProductComboBox.getSelectedIndex()] * temp),
+										customerNameTextField.getText());
+								productsBought.add(productOptions[chooseProductComboBox.getSelectedIndex()]);
+								productsQuantity.add(temp);
+								chooseProductComboBox.setSelectedIndex(0);
+							}
 						} 
 						catch (NumberFormatException ex)
 						{
@@ -325,16 +345,27 @@ public class AddTransactionPanel extends JPanel
 				{
 					if( checkClient() == true )
 					{
-						if( selectedEmployee[0] != null )
+						if( selectedEmployee[0] != null  && selectedProduct != null )
 						{
 							employeesAssigned.add(selectedEmployee);
 							addToTable(serviceOptions[chooseServiceComboBox.getSelectedIndex()], 
 									 "" + servicePrice[chooseServiceComboBox.getSelectedIndex()],
 									 customerNameTextField.getText());
 							servicesAvailed.add(serviceOptions[chooseServiceComboBox.getSelectedIndex()]);
+							selectedEmployee[0] = null;
+							selectedEmployee[1] = null;
+							selectedProduct = null;
+							chooseServiceComboBox.setSelectedIndex(0);
+							seniorEmployeeLabel.setText("E1 :");
+							juniorEmployeeLabel.setText("E2 :");
+							productUsedLabel.setText("P:  ");
 						}
-						else
+						else if( selectedEmployee[0] == null && selectedProduct == null )
+							JOptionPane.showMessageDialog(null, "No senior employee and consumable specified. Please choose senior employee and consumable.", "No Input", JOptionPane.WARNING_MESSAGE);
+						else if( selectedEmployee[0] == null )
 							JOptionPane.showMessageDialog(null, "No senior employee specified. Please choose senior employee.", "No Senior Employee", JOptionPane.WARNING_MESSAGE);
+						else if( selectedProduct == null )
+							JOptionPane.showMessageDialog(null, "No consumable selected. Please choose a consumable.", "No Consumable", JOptionPane.WARNING_MESSAGE);
 					}
 				}
 				else
@@ -346,17 +377,15 @@ public class AddTransactionPanel extends JPanel
 				{
 					ProductListFrame temp = new ProductListFrame(reference);
 					temp.addWindowListener(new WindowCloser());
-					isOpen = true;
+				//	isOpen = true;
 				}
 			}
 			else if( e.getSource() == cancelButton )
 			{
-//				int x = transactionDetail.getSelectedRow();
-//				String selectedItem = (String) transactionDetail.getModel().getValueAt(x, 0);
-//				removeElementFromList(selectedItem);
-//				deleteFromTable(x);
-//				nEntries--;
-				
+				int x = transactionDetail.getSelectedRow();
+				String selectedItem = (String) transactionDetail.getModel().getValueAt(x, 0);
+				removeElementFromList(selectedItem);
+				deleteFromTable(x);
 			}
 			else if( e.getSource() == saveButton )
 			{
@@ -370,7 +399,7 @@ public class AddTransactionPanel extends JPanel
 				{
 					if( checkClient() == true )
 					{
-						controller.createTransaction(servicesAvailed, employeesAssigned, productsBought, productsQuantity, customerNameTextField.getText());
+						controller.createTransaction(servicesAvailed, employeesAssigned, selectedProduct, productsBought, productsQuantity, customerNameTextField.getText());
 						resetAll();
 					}
 				}
@@ -452,6 +481,27 @@ public class AddTransactionPanel extends JPanel
 		}
 	}
 	
+	public boolean checkProductQuantity( String name, int temp )
+	{
+		Product p = controller.getProduct(name);
+		int quantity = 0;
+
+		for( int i = 0; i < productsBought.size(); i++ )
+		{
+			if( productsBought.get(i).equalsIgnoreCase(name) == true )
+				quantity += productsQuantity.get(i);
+		}
+		
+		if( p.getnQuantity() - quantity - temp >= 0 )
+			return true;
+		else
+		{
+			JOptionPane.showMessageDialog(null, "Error " + Integer.toString(p.getnQuantity() - quantity) + " " + name + " remaining. "
+					+ "Not enough supply to meet client's demand.", "Insufficient Supply", JOptionPane.WARNING_MESSAGE);
+			return false;
+		}
+	}
+	
 	public void resetAll()
 	{	
 		for (int i = transactionDetail.getModel().getRowCount() - 1; i > -1; i--) 
@@ -465,6 +515,10 @@ public class AddTransactionPanel extends JPanel
 		productsQuantity.clear();
 		servicesAvailed.clear();
 		employeesAssigned.clear();
+		selectedEmployee[0] = null;
+		selectedEmployee[1] = null;
+		chooseProductComboBox.setSelectedIndex(0);
+		chooseServiceComboBox.setSelectedIndex(0);
 	}
 	
 	//GETTERS
@@ -591,10 +645,18 @@ public class AddTransactionPanel extends JPanel
 	public void setSelectedEmployee1( String selectedEmployee1 )
 	{
 		this.selectedEmployee[0] = selectedEmployee1;
+		seniorEmployeeLabel.setText("E1: " + selectedEmployee1);
 	}
 	
 	public void setSelectedEmployee2( String selectedEmployee2 )
 	{
 		this.selectedEmployee[1] = selectedEmployee2;
+		juniorEmployeeLabel.setText("E2: " + selectedEmployee2);
+	}
+	
+	public void setSelectedProduct( String selectedProduct )
+	{
+		this.selectedProduct = selectedProduct;
+		productUsedLabel.setText("P:  " + selectedProduct);
 	}
 }

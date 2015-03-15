@@ -57,8 +57,8 @@ public class Controller
 	}
 
 	// create transaction with information from view
-	public void createTransaction(ArrayList<String> servicesAvailed, ArrayList<String[]> employeesAssigned, ArrayList<String> productsBought, 
-							ArrayList<Integer> productsQuantity, String clientName)
+	public void createTransaction(ArrayList<String> servicesAvailed, ArrayList<String[]> employeesAssigned, String consumable,
+							ArrayList<String> productsBought, ArrayList<Integer> productsQuantity, String clientName)
 	{
 		boolean success;
 		ArrayList<Service> s = new ArrayList<>(0);
@@ -86,8 +86,11 @@ public class Controller
 		}
 		
 		for( int i = 0; i < s.size(); i++ )
-		{
-			t.addServiceLineItem(new ServiceLineItem("", s.get(i), 1, getEmployee(employeesAssigned.get(i)[0]), getEmployee(employeesAssigned.get(i)[1])));
+		{	
+		//	if( employeesAssigned.get(i)[1] != null )
+				t.addServiceLineItem(new ServiceLineItem("", s.get(i), 1, getEmployee(employeesAssigned.get(i)[0]), getEmployee(employeesAssigned.get(i)[1])));
+		//	else
+		//		t.addServiceLineItem(new ServiceLineItem("", s.get(i), 1, getEmployee(employeesAssigned.get(i)[0]), null));
 		}
 		
 		
@@ -95,6 +98,7 @@ public class Controller
 		if( success == true )
 		{
 			DBManager.updateProductQuantity( t.getProducts() );
+			DBManager.updateConsumableQuantity(consumable);
 		}
 	}
 
