@@ -371,7 +371,7 @@ public class DatabaseManager
 	{
 		try
 		{
-			PreparedStatement ps = connection.prepareStatement("INSERT INTO `product line item`(product_id, quantity) "
+			PreparedStatement ps = connection.prepareStatement("INSERT INTO productlineitem(product_id, quantity) "
 					  + "VALUES (?, ?)",Statement.RETURN_GENERATED_KEYS);
 			
 			for(int i = 0; i < products.size(); i ++)
@@ -441,7 +441,7 @@ public class DatabaseManager
 	{
 		try
 		{
-			PreparedStatement ps = connection.prepareStatement("INSERT INTO `service line item`(service_id, quantity, employee_id1, employee_id2) "
+			PreparedStatement ps = connection.prepareStatement("INSERT INTO servicelineitem(service_id, quantity, employee_id1, employee_id2) "
 					  + "VALUES (?, ?, ?, ?)",Statement.RETURN_GENERATED_KEYS);
 			
 			for(int i = 0; i < services.size(); i ++)

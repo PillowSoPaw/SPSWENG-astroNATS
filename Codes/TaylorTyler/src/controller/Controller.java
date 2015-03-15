@@ -102,7 +102,7 @@ public class Controller
 	{
 		transactionGUI.getAddTransactionPanel().getOverTheCounterList(DBManager.getAllOverTheCounterProducts());
 	}
-	// get servies from model then give data to view
+	// get services from model then give data to view
 	public void getServices()
 	{
 		transactionGUI.getAddTransactionPanel().getServiceList(DBManager.getAllServices());

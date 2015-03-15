@@ -164,13 +164,13 @@ INSERT INTO `product` VALUES (1,'Shampoo','For the hair',50,100,'Cups'),(2,'Cond
 UNLOCK TABLES;
 
 --
--- Table structure for table `product line item`
+-- Table structure for table `productlineitem`
 --
 
-DROP TABLE IF EXISTS `product line item`;
+DROP TABLE IF EXISTS `productlineitem`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `product line item` (
+CREATE TABLE `productlineitem` (
   `productlineitem_id` int(11) NOT NULL AUTO_INCREMENT,
   `product_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
@@ -181,12 +181,12 @@ CREATE TABLE `product line item` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `product line item`
+-- Dumping data for table `productlineitem`
 --
 
-LOCK TABLES `product line item` WRITE;
-/*!40000 ALTER TABLE `product line item` DISABLE KEYS */;
-/*!40000 ALTER TABLE `product line item` ENABLE KEYS */;
+LOCK TABLES `productlineitem` WRITE;
+/*!40000 ALTER TABLE `productlineitem` DISABLE KEYS */;
+/*!40000 ALTER TABLE `productlineitem` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -202,7 +202,7 @@ CREATE TABLE `productlist` (
   PRIMARY KEY (`productlist_id`),
   UNIQUE KEY `productlist_id_UNIQUE` (`productlist_id`),
   KEY `productlineitem_id_idx` (`productlineitem_id`),
-  CONSTRAINT `productlineitem_id` FOREIGN KEY (`productlineitem_id`) REFERENCES `product line item` (`productlineitem_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `productlineitem_id` FOREIGN KEY (`productlineitem_id`) REFERENCES `productlineitem` (`productlineitem_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -275,13 +275,13 @@ INSERT INTO `service` VALUES (1,'Precision Hair Cut','description1',100),(2,'Sha
 UNLOCK TABLES;
 
 --
--- Table structure for table `service line item`
+-- Table structure for table `servicelineitem`
 --
 
-DROP TABLE IF EXISTS `service line item`;
+DROP TABLE IF EXISTS `servicelineitem`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `service line item` (
+CREATE TABLE `servicelineitem` (
   `servicelineitem_id` int(11) NOT NULL AUTO_INCREMENT,
   `service_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
@@ -295,12 +295,12 @@ CREATE TABLE `service line item` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `service line item`
+-- Dumping data for table `servicelineitem`
 --
 
-LOCK TABLES `service line item` WRITE;
-/*!40000 ALTER TABLE `service line item` DISABLE KEYS */;
-/*!40000 ALTER TABLE `service line item` ENABLE KEYS */;
+LOCK TABLES `servicelineitem` WRITE;
+/*!40000 ALTER TABLE `servicelineitem` DISABLE KEYS */;
+/*!40000 ALTER TABLE `servicelineitem` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -316,7 +316,7 @@ CREATE TABLE `servicelist` (
   PRIMARY KEY (`servicelist_id`),
   UNIQUE KEY `servicelist_id_UNIQUE` (`servicelist_id`),
   KEY `servicelineitem_id_idx` (`servicelineitem_id`),
-  CONSTRAINT `servicelineitem_id` FOREIGN KEY (`servicelineitem_id`) REFERENCES `service line item` (`servicelineitem_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `servicelineitem_id` FOREIGN KEY (`servicelineitem_id`) REFERENCES `servicelineitem` (`servicelineitem_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -424,4 +424,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-03-14  0:47:08
+-- Dump completed on 2015-03-15  9:41:59
