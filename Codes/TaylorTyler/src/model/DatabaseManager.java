@@ -315,14 +315,17 @@ public class DatabaseManager
 	{
 		try
 		{
-			PreparedStatement ps = connection.prepareStatement("INSERT INTO transaction(client_id, productlist_id, servicelist_id, feedback) "
-										    + "VALUES (?, ?, ?, ?)");
+			PreparedStatement ps = connection.prepareStatement("INSERT INTO transaction(client_id, feedback) "
+										    + "VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
 
 			ps.setInt(1, Integer.parseInt(t.getClient().getsClientId()));
-			ps.setInt(2, addProductList(t.getProducts()));
-			ps.setInt(3, addServiceList(t.getServices()));
-			ps.setString(4, t.getsFeedback());
+			ps.setString(2, t.getsFeedback());
 			ps.executeUpdate();
+			ResultSet generatedKeys = ps.getGeneratedKeys();
+			generatedKeys.next();
+			addProductList(t.getProducts(), generatedKeys.getInt(1));
+			addServiceList(t.getServices(), generatedKeys.getInt(1));
+			
 			JOptionPane.showMessageDialog(null, "Transaction has been successfully saved!", "Save Transaction", JOptionPane.INFORMATION_MESSAGE);
 		}catch(SQLException e)
 		{
@@ -330,36 +333,22 @@ public class DatabaseManager
 		}
 	}
 	
-	private int addProductList(ArrayList<ProductLineItem> products)
+	private int addProductList(ArrayList<ProductLineItem> products, int nTransactionID)
 	{
 		try
 		{
-			PreparedStatement ps = connection.prepareStatement("INSERT INTO productlist(productlineitem_id) "
-					  + "VALUES (?)",Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement ps = connection.prepareStatement("INSERT INTO productlist(productlineitem_id, transaction_id) "
+					  + "VALUES (?, ?)",Statement.RETURN_GENERATED_KEYS);
 			
 			ArrayList<Integer> lineItemIDs;
 			lineItemIDs = addProductLineItem(products);
 			int genID = -999;
 			
-			ps.setInt(1, lineItemIDs.get(0));
-			ps.executeUpdate();
-			
-			ResultSet generatedKeys = ps.getGeneratedKeys();
-			if(generatedKeys.next())
+			for(int i = 0; i < lineItemIDs.size(); i++)
 			{
-				genID = generatedKeys.getInt(1);
-			}
-			
-			if(lineItemIDs.size() > 1)
-			{
-				ps = connection.prepareStatement("INSERT INTO productlist(productlist_id, productlineitem_id) "
-						  + "VALUES (?, ?)",Statement.RETURN_GENERATED_KEYS);
-				for(int i = 1; i < lineItemIDs.size(); i++)
-				{
-					ps.setInt(1, genID);
-					ps.setInt(2, lineItemIDs.get(i));
-					ps.executeUpdate();
-				}
+				ps.setInt(1, lineItemIDs.get(i));
+				ps.setInt(2, nTransactionID);
+				ps.executeUpdate();
 			}
 			
 			return genID;
@@ -377,18 +366,15 @@ public class DatabaseManager
 			PreparedStatement ps = connection.prepareStatement("INSERT INTO productlineitem(product_id, quantity) "
 					  + "VALUES (?, ?)",Statement.RETURN_GENERATED_KEYS);
 			
+			ArrayList<Integer> lineItemIDs = new ArrayList<Integer>();
+			
 			for(int i = 0; i < products.size(); i ++)
 			{
 				ps.setInt(1, Integer.parseInt(products.get(i).getProduct().getsProductId()));
 				ps.setInt(2, products.get(i).getnQuantity());
 				ps.executeUpdate();
-			}
-			ResultSet generatedKeys = ps.getGeneratedKeys();
-			ArrayList<Integer> lineItemIDs = new ArrayList<Integer>();
-			
-			generatedKeys.beforeFirst();
-			while(generatedKeys.next())
-			{
+				ResultSet generatedKeys = ps.getGeneratedKeys();
+				generatedKeys.next();
 				lineItemIDs.add(generatedKeys.getInt(1));
 			}
 			
@@ -400,36 +386,22 @@ public class DatabaseManager
 		return null;
 	}
 	
-	private int addServiceList(ArrayList<ServiceLineItem> services)
+	private int addServiceList(ArrayList<ServiceLineItem> services, int nTransactionID)
 	{
 		try
 		{
-			PreparedStatement ps = connection.prepareStatement("INSERT INTO servicelist(servicelineitem_id) "
-					  + "VALUES (?)",Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement ps = connection.prepareStatement("INSERT INTO servicelist(servicelineitem_id, transaction_id) "
+					  + "VALUES (?, ?)",Statement.RETURN_GENERATED_KEYS);
 			
 			ArrayList<Integer> lineItemIDs;
 			lineItemIDs = addServiceLineItem(services);
-			int genID = 1000;
+			int genID = -999;
 			
-			ps.setInt(1, lineItemIDs.get(0));
-			ps.executeUpdate();
-			
-			ResultSet generatedKeys = ps.getGeneratedKeys();
-			if(generatedKeys.next())
+			for(int i = 0; i < lineItemIDs.size(); i++)
 			{
-				genID = generatedKeys.getInt(1);
-			}
-			
-			if(lineItemIDs.size() > 1)
-			{
-				ps = connection.prepareStatement("INSERT INTO servicelist(servicelist_id, servicelineitem_id) "
-						  + "VALUES (?,?)",Statement.RETURN_GENERATED_KEYS);
-				for(int i = 1; i < lineItemIDs.size(); i++)
-				{
-				ps.setInt(1, genID);
-				ps.setInt(2, lineItemIDs.get(i));
+				ps.setInt(1, lineItemIDs.get(i));
+				ps.setInt(2, nTransactionID);
 				ps.executeUpdate();
-				}
 			}
 			
 			return genID;
@@ -447,6 +419,8 @@ public class DatabaseManager
 			PreparedStatement ps = connection.prepareStatement("INSERT INTO servicelineitem(service_id, quantity, employee_id1, employee_id2) "
 					  + "VALUES (?, ?, ?, ?)",Statement.RETURN_GENERATED_KEYS);
 			
+			ArrayList<Integer> lineItemIDs = new ArrayList<Integer>();
+			
 			for(int i = 0; i < services.size(); i ++)
 			{
 				ps.setInt(1, Integer.parseInt(services.get(i).getService().getsServiceId()));
@@ -460,12 +434,8 @@ public class DatabaseManager
 					ps.setNull(4, java.sql.Types.INTEGER);
 				}
 				ps.executeUpdate();
-			}
-			ResultSet generatedKeys = ps.getGeneratedKeys();
-			ArrayList<Integer> lineItemIDs = new ArrayList<Integer>();
-			
-			while(generatedKeys.next())
-			{
+				ResultSet generatedKeys = ps.getGeneratedKeys();
+				generatedKeys.next();
 				lineItemIDs.add(generatedKeys.getInt(1));
 			}
 			
