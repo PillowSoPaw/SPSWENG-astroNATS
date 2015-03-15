@@ -266,7 +266,7 @@ public class AddTransactionPanel extends JPanel
 				return false;// This causes all cells to be not editable
 			}
 		};
-
+		
 		tModel.addColumn("Service / Product");
 		tModel.addColumn("Customer Name");
 		tModel.addColumn("Price");
@@ -508,13 +508,12 @@ public class AddTransactionPanel extends JPanel
 	
 	public void resetAll()
 	{	
-		for (int i = transactionDetail.getModel().getRowCount() - 1; i > -1; i--) 
-		{
-			((DefaultTableModel) transactionDetail.getModel()).removeRow(i);
-		}
-		
+		nEntries = 0;
 		customerNameTextField.setText("Customer Name");
 		quantityTextArea.setText("Input Positive Integer");
+		services.clear();
+		customerNames.clear();
+		prices.clear();
 		productsBought.clear();
 		productsQuantity.clear();
 		servicesAvailed.clear();
@@ -523,6 +522,7 @@ public class AddTransactionPanel extends JPanel
 		selectedEmployee[1] = null;
 		chooseProductComboBox.setSelectedIndex(0);
 		chooseServiceComboBox.setSelectedIndex(0);
+		updateTable();
 	}
 	
 	//GETTERS
