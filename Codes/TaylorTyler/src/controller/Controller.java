@@ -59,6 +59,7 @@ public class Controller
 	// create transaction with information from view
 	public void createTransaction(ArrayList<String> servicesAvailed, ArrayList<String> productsBought, ArrayList<Integer> productsQuantity, String clientName)
 	{
+		boolean success;
 		ArrayList<Service> s = new ArrayList<>(0);
 		ArrayList<Product> p = new ArrayList<>(0);
 		
@@ -89,7 +90,11 @@ public class Controller
 		}
 		
 		
-		DBManager.addTransaction(t);
+		success = DBManager.addTransaction(t);
+		if( success == true )
+		{
+			DBManager.updateProductQuantity( t.getProducts() );
+		}
 	}
 
 	//get all consumable products from model

@@ -311,7 +311,7 @@ public class DatabaseManager
 		return -999;
 	}
 	
-	public void addTransaction(Transaction t)
+	public boolean addTransaction(Transaction t)
 	{
 		try
 		{
@@ -327,10 +327,12 @@ public class DatabaseManager
 			addServiceList(t.getServices(), generatedKeys.getInt(1));
 			
 			JOptionPane.showMessageDialog(null, "Transaction has been successfully saved!", "Save Transaction", JOptionPane.INFORMATION_MESSAGE);
+			return true;
 		}catch(SQLException e)
 		{
 			e.printStackTrace();
 		}
+		return false;
 	}
 	
 	private int addProductList(ArrayList<ProductLineItem> products, int nTransactionID)
@@ -445,5 +447,27 @@ public class DatabaseManager
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	//UPDATE STATEMENS
+	public void updateProductQuantity( ArrayList<ProductLineItem> pLineItem )
+	{
+		try
+		{
+			PreparedStatement ps = connection.prepareStatement("UPDATE product SET quantity = ? WHERE name = ?");
+			
+			for( int i = 0; i < pLineItem.size(); i++ )
+			{
+				ps.setInt(1, pLineItem.get(i).getProduct().getnQuantity() - pLineItem.get(i).getnQuantity());
+				ps.setString(2, pLineItem.get(i).getProduct().getsName());
+
+				ps.execute();
+			}
+			
+		} catch (SQLException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }
