@@ -71,7 +71,7 @@ public class AddTransactionPanel extends JPanel
     private String[] productOptions;// = {"Shampoo", "Nail Polish", "Hair Dye Product"}; //Should get from DATABASE for DEVS
     private String[] serviceOptions;// = {"Manicure", "Pedicure", "Haircut", "Dye Hair"}; //Should get from DATABASE for DEVS
     
-    private int[] productQuantity;// = {124.99, 99.99, 249.99};
+    private double[] productPrice;// = {124.99, 99.99, 249.99};
     private double[] servicePrice;// = {200.00, 200.00, 100.00, 300.00};
     
     private boolean isOpen;
@@ -284,7 +284,7 @@ public class AddTransactionPanel extends JPanel
 					int temp = Integer.parseInt(quantityTextArea.getText());
 					
 					addToTable(productOptions[chooseProductComboBox.getSelectedIndex()] + " (" + temp + ")",
-							"" + (productQuantity[chooseProductComboBox.getSelectedIndex()] * temp),
+							"" + (productPrice[chooseProductComboBox.getSelectedIndex()] * temp),
 							customerNameTextField.getText());
 					productsBought.add(productOptions[chooseProductComboBox.getSelectedIndex()]);
 					productsQuantity.add(temp);
@@ -377,12 +377,12 @@ public class AddTransactionPanel extends JPanel
 		}
 		
 		productOptions = new String[otc.size()];
-		productQuantity = new int[otc.size()];
+		productPrice = new double[otc.size()];
 		
 		for( int x = 0; x < otc.size(); x++ )
 		{
 			productOptions[x] = ((OverTheCounter) otc.get(x)).getsName();
-			productQuantity[x] = ((OverTheCounter) otc.get(x)).getnQuantity();
+			productPrice[x] = ((OverTheCounter) otc.get(x)).getdPrice();
 		}
 		
 		this.iOverTheCounters = otc.iterator();
