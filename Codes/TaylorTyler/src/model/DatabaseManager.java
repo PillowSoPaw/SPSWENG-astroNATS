@@ -4,6 +4,8 @@ import java.util.*;
 import java.sql.*;
 import java.sql.Date;
 
+import javax.swing.JOptionPane;
+
 public class DatabaseManager
 {
 	private static DatabaseManager db = new DatabaseManager();
@@ -321,6 +323,7 @@ public class DatabaseManager
 			ps.setInt(3, addServiceList(t.getServices()));
 			ps.setString(4, t.getsFeedback());
 			ps.executeUpdate();
+			JOptionPane.showMessageDialog(null, "Transaction has been successfully saved!", "Save Transaction", JOptionPane.INFORMATION_MESSAGE);
 		}catch(SQLException e)
 		{
 			e.printStackTrace();
@@ -344,7 +347,7 @@ public class DatabaseManager
 			ResultSet generatedKeys = ps.getGeneratedKeys();
 			if(generatedKeys.next())
 			{
-			genID = generatedKeys.getInt(1);
+				genID = generatedKeys.getInt(1);
 			}
 			
 			if(lineItemIDs.size() > 1)

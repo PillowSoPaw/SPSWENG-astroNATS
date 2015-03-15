@@ -1,8 +1,8 @@
-CREATE DATABASE  IF NOT EXISTS `mydb` /*!40100 DEFAULT CHARACTER SET utf8 */;
-USE `mydb`;
+CREATE DATABASE  IF NOT EXISTS `taylortyler` /*!40100 DEFAULT CHARACTER SET utf8 */;
+USE `taylortyler`;
 -- MySQL dump 10.13  Distrib 5.6.17, for Win32 (x86)
 --
--- Host: localhost    Database: mydb
+-- Host: localhost    Database: taylortyler
 -- ------------------------------------------------------
 -- Server version	5.6.19
 
@@ -196,15 +196,22 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `productlist`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `productlist` (
-  `productlist_id` int(11) NOT NULL AUTO_INCREMENT,
-  `productlineitem_id` int(11) NOT NULL,
-  PRIMARY KEY (`productlist_id`),
-  UNIQUE KEY `productlist_id_UNIQUE` (`productlist_id`),
-  KEY `productlineitem_id_idx` (`productlineitem_id`),
-  CONSTRAINT `productlineitem_id` FOREIGN KEY (`productlineitem_id`) REFERENCES `productlineitem` (`productlineitem_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE `taylortyler`.`productlist` (
+  `productlineitem_id` INT(11) NOT NULL,
+  `transaction_id` INT(11) NOT NULL,
+  PRIMARY KEY (`productlineitem_id`, `transaction_id`),
+  CONSTRAINT `productlineitem_id`
+    FOREIGN KEY (`productlineitem_id`)
+    REFERENCES `taylortyler`.`productlineitem` (`productlineitem_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `transaction_id`
+    FOREIGN KEY (`transaction_id`)
+    REFERENCES `taylortyler`.`transaction` (`transaction_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
 --
 -- Dumping data for table `productlist`
@@ -225,16 +232,13 @@ DROP TABLE IF EXISTS `receipt`;
 CREATE TABLE `receipt` (
   `receipt_id` int(11) NOT NULL AUTO_INCREMENT,
   `client_id` int(11) NOT NULL,
-  `transactionlist_id` int(11) NOT NULL,
   `date` datetime NOT NULL,
   `modeOfPayment` varchar(45) NOT NULL,
   `totalBill` float NOT NULL,
   PRIMARY KEY (`receipt_id`),
   UNIQUE KEY `receipt_id_UNIQUE` (`receipt_id`),
   KEY `client_id_idx` (`client_id`),
-  KEY `transactionlist_id_idx` (`transactionlist_id`),
-  CONSTRAINT `client_id2` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `transactionlist_id` FOREIGN KEY (`transactionlist_id`) REFERENCES `transactionlist` (`transactionlist_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `client_id2` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -310,15 +314,22 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `servicelist`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `servicelist` (
-  `servicelist_id` int(11) NOT NULL AUTO_INCREMENT,
-  `servicelineitem_id` int(11) NOT NULL,
-  PRIMARY KEY (`servicelist_id`),
-  UNIQUE KEY `servicelist_id_UNIQUE` (`servicelist_id`),
-  KEY `servicelineitem_id_idx` (`servicelineitem_id`),
-  CONSTRAINT `servicelineitem_id` FOREIGN KEY (`servicelineitem_id`) REFERENCES `servicelineitem` (`servicelineitem_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE `taylortyler`.`servicelist` (
+  `servicelineitem_id` INT(11) NOT NULL,
+  `transaction_id` INT(11) NOT NULL,
+  PRIMARY KEY (`servicelineitem_id`, `transaction_id`),
+  CONSTRAINT `servicelineitem_id2`
+    FOREIGN KEY (`servicelineitem_id`)
+    REFERENCES `taylortyler`.`servicelineitem` (`servicelineitem_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `transaction_id2`
+    FOREIGN KEY (`transaction_id`)
+    REFERENCES `taylortyler`.`transaction` (`transaction_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
 --
 -- Dumping data for table `servicelist`
@@ -368,17 +379,11 @@ DROP TABLE IF EXISTS `transaction`;
 CREATE TABLE `transaction` (
   `transaction_id` int(11) NOT NULL AUTO_INCREMENT,
   `client_id` int(11) NOT NULL,
-  `productlist_id` int(11) NOT NULL,
-  `servicelist_id` int(11) NOT NULL,
   `feedback` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`transaction_id`),
   UNIQUE KEY `transaction_id_UNIQUE` (`transaction_id`),
   KEY `client_id_idx` (`client_id`),
-  KEY `servicelist_id_idx` (`servicelist_id`),
-  KEY `productlist_id_idx` (`productlist_id`),
-  CONSTRAINT `client_id` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `productlist_id` FOREIGN KEY (`productlist_id`) REFERENCES `productlist` (`productlist_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `servicelist_id` FOREIGN KEY (`servicelist_id`) REFERENCES `servicelist` (`servicelist_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `client_id` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -398,13 +403,23 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `transactionlist`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `transactionlist` (
-  `transactionlist_id` int(11) NOT NULL,
-  `transaction_id` int(11) NOT NULL,
-  PRIMARY KEY (`transactionlist_id`),
-  UNIQUE KEY `transactionlist_id_UNIQUE` (`transactionlist_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE `taylortyler`.`transactionlist` (
+  `transaction_id` INT(11) NOT NULL,
+  `receipt_id` INT(11) NOT NULL,
+  PRIMARY KEY (`transaction_id`, `receipt_id`),
+  INDEX `receipt_id_idx` (`receipt_id` ASC),
+  CONSTRAINT `transaction_id3`
+    FOREIGN KEY (`transaction_id`)
+    REFERENCES `taylortyler`.`transaction` (`transaction_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `receipt_id3`
+    FOREIGN KEY (`receipt_id`)
+    REFERENCES `taylortyler`.`receipt` (`receipt_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 
 --
 -- Dumping data for table `transactionlist`
@@ -424,4 +439,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-03-15  9:41:59
+-- Dump completed on 2015-03-15 14:14:39
