@@ -57,7 +57,7 @@ public class Controller
 	}
 
 	// create transaction with information from view
-	public void createTransaction(ArrayList<String> servicesAvailed, ArrayList<String[]> employeesAssigned, String consumable,
+	public void createTransaction(ArrayList<String> servicesAvailed, ArrayList<String[]> employeesAssigned, ArrayList<String> consumable,
 							ArrayList<String> productsBought, ArrayList<Integer> productsQuantity, String clientName)
 	{
 		boolean success;

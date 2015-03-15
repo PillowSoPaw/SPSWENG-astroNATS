@@ -38,6 +38,7 @@ public class AddTransactionPanel extends JPanel
     private ArrayList<String> productsBought;
     private ArrayList<Integer> productsQuantity;
     private ArrayList<String[]> employeesAssigned;
+    private ArrayList<String> consumablesUsed;
     private String[] selectedEmployee;
     private String selectedProduct;
     
@@ -117,6 +118,7 @@ public class AddTransactionPanel extends JPanel
 		productsBought = new ArrayList<>(0);
 		productsQuantity = new ArrayList<>(0);
 		employeesAssigned = new ArrayList<>(0);
+		consumablesUsed = new ArrayList<>(0);
 		selectedEmployee = new String[2];
 		selectedEmployee[0] = null;
 		selectedEmployee[1] = null;
@@ -322,6 +324,7 @@ public class AddTransactionPanel extends JPanel
 								productsBought.add(productOptions[chooseProductComboBox.getSelectedIndex()]);
 								productsQuantity.add(temp);
 								chooseProductComboBox.setSelectedIndex(0);
+								quantityTextArea.setText("Input Positive Integer");
 							}
 						} 
 						catch (NumberFormatException ex)
@@ -348,13 +351,13 @@ public class AddTransactionPanel extends JPanel
 						if( selectedEmployee[0] != null  && selectedProduct != null )
 						{
 							employeesAssigned.add(selectedEmployee);
+							consumablesUsed.add(selectedProduct);
 							addToTable(serviceOptions[chooseServiceComboBox.getSelectedIndex()], 
 									 "" + servicePrice[chooseServiceComboBox.getSelectedIndex()],
 									 customerNameTextField.getText());
 							servicesAvailed.add(serviceOptions[chooseServiceComboBox.getSelectedIndex()]);
-							selectedEmployee[0] = null;
-							selectedEmployee[1] = null;
-							selectedProduct = null;
+							selectedEmployee = new String[2];
+							selectedProduct = "";
 							chooseServiceComboBox.setSelectedIndex(0);
 							seniorEmployeeLabel.setText("E1 :");
 							juniorEmployeeLabel.setText("E2 :");
@@ -399,7 +402,7 @@ public class AddTransactionPanel extends JPanel
 				{
 					if( checkClient() == true )
 					{
-						controller.createTransaction(servicesAvailed, employeesAssigned, selectedProduct, productsBought, productsQuantity, customerNameTextField.getText());
+						controller.createTransaction(servicesAvailed, employeesAssigned, consumablesUsed, productsBought, productsQuantity, customerNameTextField.getText());
 						resetAll();
 					}
 				}
@@ -464,6 +467,7 @@ public class AddTransactionPanel extends JPanel
 				}
 			}
 		}
+		updateTable();
 	}
 	
 	public boolean checkClient()

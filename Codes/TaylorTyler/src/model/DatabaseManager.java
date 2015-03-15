@@ -453,10 +453,10 @@ public class DatabaseManager
 			{
 				ps.setInt(1, Integer.parseInt(services.get(i).getService().getsServiceId()));
 				ps.setInt(2, services.get(i).getnQuantity());
-				ps.setInt(3, Integer.parseInt(services.get(i).getEmployee(0).getsEmployeeId()));
+				ps.setInt(3, Integer.parseInt(services.get(i).getEmployee(1).getsEmployeeId()));
 				if(services.get(i).getEmployee(2) != null)
 				{
-					ps.setInt(4, Integer.parseInt(services.get(i).getEmployee(1).getsEmployeeId()));
+					ps.setInt(4, Integer.parseInt(services.get(i).getEmployee(2).getsEmployeeId()));
 				}else 
 				{
 					ps.setNull(4, java.sql.Types.INTEGER);
@@ -497,16 +497,19 @@ public class DatabaseManager
 		}
 	}
 	
-	public void updateConsumableQuantity( String consumable )
+	public void updateConsumableQuantity( ArrayList<String> consumable )
 	{
 		try
 		{
 			PreparedStatement ps = connection.prepareStatement("UPDATE product SET quantity = ? WHERE name = ?");
 			
-			ps.setInt(1, getProduct(consumable).getnQuantity() - 1);
-			ps.setString(2, getProduct(consumable).getsName());
+			for( int i = 0; i < consumable.size(); i++ )
+			{
+				ps.setInt(1, getProduct(consumable.get(i)).getnQuantity() - 1);
+				ps.setString(2, getProduct(consumable.get(i)).getsName());
 
-			ps.execute();
+				ps.execute();
+			}
 			
 		} catch (SQLException e)
 		{
