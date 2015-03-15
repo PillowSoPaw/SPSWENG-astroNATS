@@ -6,6 +6,10 @@ import java.awt.event.ActionEvent;
 
 import javax.swing.*;
 import javax.swing.border.Border;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import java.awt.event.*;
@@ -75,6 +79,7 @@ public class AddTransactionPanel extends JPanel
     private double[] servicePrice;// = {200.00, 200.00, 100.00, 300.00};
     
     private boolean isOpen;
+    private boolean isEmpty = true;
     
     private DefaultComboBoxModel<String> serviceComboBoxModel;
     private DefaultComboBoxModel<String> productComboBoxModel;
@@ -210,8 +215,8 @@ public class AddTransactionPanel extends JPanel
 		addProductButton = new JButton("Add Product");
 
 		addProductButton.addActionListener(buttonListener);
-		
-		
+		cancelButton.addActionListener(buttonListener);
+			
 		productsPanel.setBorder(blackline);
 		productsPanel.setLayout(null);
 		productsPanel.setBounds(325, 280, 266, 150);
@@ -238,6 +243,15 @@ public class AddTransactionPanel extends JPanel
 		add(cancelButton);
 		add(customerNameTextField);
 		add(transScrollPane);
+		cancelButton.setEnabled(false);
+		ListSelectionModel listSelectionModel = transactionDetail.getSelectionModel();
+		listSelectionModel.addListSelectionListener(new ListSelectionListener() {
+		        public void valueChanged(ListSelectionEvent e) 
+		        { 
+		            ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+		            cancelButton.setEnabled(!lsm.isSelectionEmpty());
+		        };
+		});
 	}
     
 	private void updateTable()
@@ -277,33 +291,64 @@ public class AddTransactionPanel extends JPanel
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
+			if (customerNameTextField.getText().equals(""))
+			{
+				isEmpty = true;
+			}
+			else 
+			{
+				isEmpty = false;
+			}
+			
 			if (e.getSource() == addProductButton)
 			{
-				try
+				if( isEmpty == false)
 				{
-					int temp = Integer.parseInt(quantityTextArea.getText());
-					
-					addToTable(productOptions[chooseProductComboBox.getSelectedIndex()] + " (" + temp + ")",
-							"" + (productPrice[chooseProductComboBox.getSelectedIndex()] * temp),
-							customerNameTextField.getText());
-					productsBought.add(productOptions[chooseProductComboBox.getSelectedIndex()]);
-					productsQuantity.add(temp);
-					
-				} 
-				catch (NumberFormatException ex)
-				{
-					System.out.println("Quantity has to be double!");
-
-					quantityTextArea.setText("This has to be a number.");
+					if( checkClient() == true )
+					{
+						try
+						{
+							int temp = Integer.parseInt(quantityTextArea.getText());
+							
+							if( temp <= 0 )
+								throw new IllegalArgumentException();
+							
+							addToTable(productOptions[chooseProductComboBox.getSelectedIndex()] + " (" + temp + ")",
+									"" + (productPrice[chooseProductComboBox.getSelectedIndex()] * temp),
+									customerNameTextField.getText());
+							productsBought.add(productOptions[chooseProductComboBox.getSelectedIndex()]);
+							productsQuantity.add(temp);
+							
+						} 
+						catch (NumberFormatException ex)
+						{
+							JOptionPane.showMessageDialog(null, "Input must be a positive integer!", "Invalid Input", JOptionPane.WARNING_MESSAGE);
+							quantityTextArea.setText("Input positive integer.");
+						}
+						catch (IllegalArgumentException ex)
+						{
+							JOptionPane.showMessageDialog(null, "Input must be a positive integer!", "Invalid Input", JOptionPane.WARNING_MESSAGE);
+							quantityTextArea.setText("Input positive integer.");
+						}
+					}
 				}
+				else
+					JOptionPane.showMessageDialog(null, "No client specified. Please input client name.", "No Client", JOptionPane.WARNING_MESSAGE);
 			} 
 			else if (e.getSource() == addServiceButton)
 			{
-				
-				addToTable(serviceOptions[chooseServiceComboBox.getSelectedIndex()], 
-						"" + servicePrice[chooseServiceComboBox.getSelectedIndex()],
-						customerNameTextField.getText());
-				servicesAvailed.add(serviceOptions[chooseServiceComboBox.getSelectedIndex()]);
+				if( isEmpty == false )
+				{
+					if( checkClient() == true )
+					{
+						addToTable(serviceOptions[chooseServiceComboBox.getSelectedIndex()], 
+								"" + servicePrice[chooseServiceComboBox.getSelectedIndex()],
+								customerNameTextField.getText());
+						servicesAvailed.add(serviceOptions[chooseServiceComboBox.getSelectedIndex()]);
+					}
+				}
+				else
+					JOptionPane.showMessageDialog(null, "No client specified. Please input client name.", "No Client", JOptionPane.WARNING_MESSAGE);
 			} 
 			else if (e.getSource() == productsButton)
 			{
@@ -314,9 +359,31 @@ public class AddTransactionPanel extends JPanel
 					isOpen = true;
 				}
 			}
+			else if( e.getSource() == cancelButton )
+			{
+//				int x = transactionDetail.getSelectedRow();
+//				String selectedItem = (String) transactionDetail.getModel().getValueAt(x, 0);
+//				removeElementFromList(selectedItem);
+//				deleteFromTable(x);
+//				nEntries--;
+				
+			}
 			else if( e.getSource() == saveButton )
 			{
-				controller.createTransaction(servicesAvailed, productsBought, productsQuantity, customerNameTextField.getText());
+				if( nEntries == 0 && isEmpty == true )
+					JOptionPane.showMessageDialog(null, "No client and input found. Please enter client name and add service or product.", "No Input", JOptionPane.WARNING_MESSAGE);
+				else if( nEntries == 0 )
+					JOptionPane.showMessageDialog(null, "No input found. Please add service or product.", "No Input", JOptionPane.WARNING_MESSAGE);
+				else if( isEmpty == true )
+					JOptionPane.showMessageDialog(null, "No client specified. Please input client name.", "No Client", JOptionPane.WARNING_MESSAGE);
+				else
+				{
+					if( checkClient() == true )
+					{
+						controller.createTransaction(servicesAvailed, productsBought, productsQuantity, customerNameTextField.getText());
+						resetAll();
+					}
+				}
 			}
 		}
 		
@@ -339,6 +406,73 @@ public class AddTransactionPanel extends JPanel
 		nEntries++;
 
 		updateTable();
+	}
+	
+	public void deleteFromTable(int item)
+	{
+		services.remove(item);
+		prices.remove(item);
+		customerNames.remove(item);
+		
+		nEntries--;
+
+		updateTable();
+	}
+	
+	public void removeElementFromList(String name)
+	{
+		boolean found = false;
+		
+		for( int i = 0; i < servicesAvailed.size(); i++ )
+		{
+			if( servicesAvailed.get(i).equalsIgnoreCase(name) == true )
+			{
+				servicesAvailed.remove(name);
+				found = true;
+				break;
+			}
+		}
+		
+		if( found == false )
+		{
+			for( int i = 0; i < productsBought.size(); i++ )
+			{
+				if( productsBought.get(i).equalsIgnoreCase(name) == true )
+				{
+					productsBought.remove(name);
+					productsQuantity.remove(i);
+					break;
+				}
+			}
+		}
+	}
+	
+	public boolean checkClient()
+	{
+		String s = customerNameTextField.getText();
+		if( s.equalsIgnoreCase("Client one") || s.equalsIgnoreCase("Client two") ||
+		    s.equalsIgnoreCase("Client three") || s.equalsIgnoreCase("Client 4") )
+		{
+			return true;
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(null, "Client cannot be found in the database. Please choose from client one to client four.", "Client Not Found", JOptionPane.WARNING_MESSAGE);
+			return false;
+		}
+	}
+	
+	public void resetAll()
+	{	
+		for (int i = transactionDetail.getModel().getRowCount() - 1; i > -1; i--) 
+		{
+			((DefaultTableModel) transactionDetail.getModel()).removeRow(i);
+		}
+		customerNameTextField.setText("Customer Name");
+		quantityTextArea.setText("Input Positive Integer");
+		productsBought.clear();
+		productsQuantity.clear();
+		servicesAvailed.clear();
 	}
 	
 	//GETTERS

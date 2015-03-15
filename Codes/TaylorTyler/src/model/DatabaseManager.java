@@ -458,7 +458,7 @@ public class DatabaseManager
 			
 			for( int i = 0; i < pLineItem.size(); i++ )
 			{
-				ps.setInt(1, pLineItem.get(i).getProduct().getnQuantity() - pLineItem.get(i).getnQuantity());
+				ps.setInt(1, getProduct(pLineItem.get(i).getProduct().getsName()).getnQuantity() - pLineItem.get(i).getnQuantity());
 				ps.setString(2, pLineItem.get(i).getProduct().getsName());
 
 				ps.execute();
