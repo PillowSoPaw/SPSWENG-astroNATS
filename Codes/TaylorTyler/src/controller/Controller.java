@@ -87,9 +87,11 @@ public class Controller
 		
 		for( int i = 0; i < s.size(); i++ )
 		{	
-			if( employeesAssigned.get(i)[1] != null )
+			if( employeesAssigned.get(i)[0] != null && employeesAssigned.get(i)[1] != null )
 				t.addServiceLineItem(new ServiceLineItem("", s.get(i), 1, getEmployee(employeesAssigned.get(i)[0]), getEmployee(employeesAssigned.get(i)[1])));
-			else
+			else if( employeesAssigned.get(i)[0] == null )
+				t.addServiceLineItem(new ServiceLineItem("", s.get(i), 1, null, getEmployee(employeesAssigned.get(i)[1])));
+			else if( employeesAssigned.get(i)[1] == null )
 				t.addServiceLineItem(new ServiceLineItem("", s.get(i), 1, getEmployee(employeesAssigned.get(i)[0]), null));
 		}
 		

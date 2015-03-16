@@ -453,11 +453,21 @@ public class DatabaseManager
 			{
 				ps.setInt(1, Integer.parseInt(services.get(i).getService().getsServiceId()));
 				ps.setInt(2, services.get(i).getnQuantity());
-				ps.setInt(3, Integer.parseInt(services.get(i).getEmployee(1).getsEmployeeId()));
+				
+				if(services.get(i).getEmployee(1) != null)
+				{
+					ps.setInt(3, Integer.parseInt(services.get(i).getEmployee(1).getsEmployeeId()));
+				}
+				else if(services.get(i).getEmployee(1) == null)
+				{
+					ps.setNull(3, java.sql.Types.INTEGER);
+				}
+				
 				if(services.get(i).getEmployee(2) != null)
 				{
 					ps.setInt(4, Integer.parseInt(services.get(i).getEmployee(2).getsEmployeeId()));
-				}else 
+				}
+				else if(services.get(i).getEmployee(2) == null)
 				{
 					ps.setNull(4, java.sql.Types.INTEGER);
 				}

@@ -316,7 +316,7 @@ public class AddTransactionPanel extends JPanel
 							if( temp <= 0 )
 								throw new IllegalArgumentException();
 							
-							if( checkProductQuantity(productOptions[chooseProductComboBox.getSelectedIndex()], temp) == true )
+							if( checkProductQuantity(productOptions[chooseProductComboBox.getSelectedIndex()], temp, "product") == true )
 							{
 								addToTable(productOptions[chooseProductComboBox.getSelectedIndex()] + " (" + temp + ")",
 										"" + (productPrice[chooseProductComboBox.getSelectedIndex()] * temp),
@@ -326,6 +326,7 @@ public class AddTransactionPanel extends JPanel
 								chooseProductComboBox.setSelectedIndex(0);
 								quantityTextArea.setText("Input Positive Integer");
 							}
+							temp = 0;
 						} 
 						catch (NumberFormatException ex)
 						{
@@ -348,25 +349,28 @@ public class AddTransactionPanel extends JPanel
 				{
 					if( checkClient() == true )
 					{
-						if( selectedEmployee[0] != null  && selectedProduct != null )
+						if( (selectedEmployee[0] != null || selectedEmployee[1] != null)  && selectedProduct != null )
 						{
-							employeesAssigned.add(selectedEmployee);
-							consumablesUsed.add(selectedProduct);
-							addToTable(serviceOptions[chooseServiceComboBox.getSelectedIndex()], 
-									 "" + servicePrice[chooseServiceComboBox.getSelectedIndex()],
-									 customerNameTextField.getText());
-							servicesAvailed.add(serviceOptions[chooseServiceComboBox.getSelectedIndex()]);
-							selectedEmployee = new String[2];
-							selectedProduct = "";
-							chooseServiceComboBox.setSelectedIndex(0);
-							seniorEmployeeLabel.setText("E1 :");
-							juniorEmployeeLabel.setText("E2 :");
-							productUsedLabel.setText("P:  ");
+							if( checkProductQuantity(selectedProduct, 1, "service") == true )
+							{
+								employeesAssigned.add(selectedEmployee);
+								consumablesUsed.add(selectedProduct);
+								addToTable(serviceOptions[chooseServiceComboBox.getSelectedIndex()], 
+										"" + servicePrice[chooseServiceComboBox.getSelectedIndex()],
+										customerNameTextField.getText());
+								servicesAvailed.add(serviceOptions[chooseServiceComboBox.getSelectedIndex()]);
+								selectedEmployee = new String[2];
+								selectedProduct = "";
+								chooseServiceComboBox.setSelectedIndex(0);
+								seniorEmployeeLabel.setText("E1 :");
+								juniorEmployeeLabel.setText("E2 :");
+								productUsedLabel.setText("P:  ");
+							}
 						}
-						else if( selectedEmployee[0] == null && selectedProduct == null )
-							JOptionPane.showMessageDialog(null, "No senior employee and consumable specified. Please choose senior employee and consumable.", "No Input", JOptionPane.WARNING_MESSAGE);
-						else if( selectedEmployee[0] == null )
-							JOptionPane.showMessageDialog(null, "No senior employee specified. Please choose senior employee.", "No Senior Employee", JOptionPane.WARNING_MESSAGE);
+						else if( (selectedEmployee[0] == null && selectedEmployee[1] == null) && selectedProduct == null )
+							JOptionPane.showMessageDialog(null, "No employee and consumable specified. Please choose employee and consumable.", "No Input", JOptionPane.WARNING_MESSAGE);
+						else if( (selectedEmployee[0] == null && selectedEmployee[1] == null) )
+							JOptionPane.showMessageDialog(null, "No employee specified. Please choose employee.", "No Employee", JOptionPane.WARNING_MESSAGE);
 						else if( selectedProduct == null )
 							JOptionPane.showMessageDialog(null, "No consumable selected. Please choose a consumable.", "No Consumable", JOptionPane.WARNING_MESSAGE);
 					}
@@ -443,12 +447,14 @@ public class AddTransactionPanel extends JPanel
 	
 	public void removeElementFromList(String name)
 	{
+		System.out.println(name);
 		boolean found = false;
 		
 		for( int i = 0; i < servicesAvailed.size(); i++ )
 		{
 			if( servicesAvailed.get(i).equalsIgnoreCase(name) == true )
 			{
+				System.out.println(servicesAvailed.get(i));
 				servicesAvailed.remove(name);
 				found = true;
 				break;
@@ -459,12 +465,18 @@ public class AddTransactionPanel extends JPanel
 		{
 			for( int i = 0; i < productsBought.size(); i++ )
 			{
-				if( productsBought.get(i).equalsIgnoreCase(name) == true )
+				if( (name.contains(productsBought.get(i)) && name.contains(productsQuantity.get(i).toString())) )
 				{
-					productsBought.remove(name);
+					productsBought.remove(i);
 					productsQuantity.remove(i);
 					break;
 				}
+			}
+			
+			System.out.println("Remaining:");
+			for( int i = 0; i < productsBought.size(); i++ )
+			{
+				System.out.println(productsBought.get(i) + " - " + productsQuantity.get(i));
 			}
 		}
 		updateTable();
@@ -485,7 +497,7 @@ public class AddTransactionPanel extends JPanel
 		}
 	}
 	
-	public boolean checkProductQuantity( String name, int temp )
+	public boolean checkProductQuantity( String name, int temp, String type )
 	{
 		Product p = controller.getProduct(name);
 		int quantity = 0;
@@ -496,12 +508,26 @@ public class AddTransactionPanel extends JPanel
 				quantity += productsQuantity.get(i);
 		}
 		
+		for( int i = 0; i < consumablesUsed.size(); i++ )
+		{
+			if( consumablesUsed.get(i).equalsIgnoreCase(name) == true )
+				quantity++;
+		}
+		
 		if( p.getnQuantity() - quantity - temp >= 0 )
 			return true;
 		else
 		{
-			JOptionPane.showMessageDialog(null, "Error " + Integer.toString(p.getnQuantity() - quantity) + " " + name + " remaining. "
-					+ "Not enough supply to meet client's demand.", "Insufficient Supply", JOptionPane.WARNING_MESSAGE);
+			if( type.equalsIgnoreCase("Product") == true )
+			{
+				JOptionPane.showMessageDialog(null, "Error " + Integer.toString(p.getnQuantity() - quantity) + " " + name + " remaining. "
+						+ "Not enough supply to meet client's demand.", "Insufficient Supply", JOptionPane.WARNING_MESSAGE);
+			}
+			else if( type.equalsIgnoreCase("Service") == true )
+			{
+				JOptionPane.showMessageDialog(null, "Error " + Integer.toString(p.getnQuantity() - quantity) + " " + name + " remaining. "
+						+ "Not enough supply on consumable to use on service.", "Insufficient Supply", JOptionPane.WARNING_MESSAGE);
+			}
 			return false;
 		}
 	}
