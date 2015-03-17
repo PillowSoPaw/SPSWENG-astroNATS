@@ -2,7 +2,6 @@ package view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 import java.util.Iterator;
 
 import javax.swing.*;
@@ -10,7 +9,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
-import model.Employee;
 import model.Consumable;
 
 public class ProductListFrame extends JFrame
@@ -19,48 +17,47 @@ public class ProductListFrame extends JFrame
 	private JTable				productsTable;
 	private JScrollPane			scroll;
 	private JButton			addButton;
-	private DefaultTableModel tModel;
+	private DefaultTableModel 	tModel;
 	
 	public ProductListFrame(AddTransactionPanel mainFrame)
 	{
+		ActListener actListener = new ActListener();
 		this.mainFrame = mainFrame;
+		this.getContentPane().setLayout(null);
+		this.setSize(300, 400);
+		
 		tModel = new DefaultTableModel();
 		tModel.addColumn("Product");
 		tModel.addColumn("Quantity");
-		
-		ActListener actListener = new ActListener();
 	
 		productsTable = new JTable(tModel);
 		productsTable.setBounds(10, 10, 275, 300);
 		scroll = new JScrollPane(productsTable);
 		scroll.setBounds(10, 10, 275, 300);
+		this.getContentPane().add(scroll);
+		
 		addButton = new JButton("Add");
 		addButton.setBounds(10, 320, 275, 30);
 		addButton.setEnabled(false);
 		addButton.addActionListener(actListener);
+		this.getContentPane().add(addButton);
+		
 		ListSelectionModel listSelectionModel = productsTable.getSelectionModel();
-		listSelectionModel.addListSelectionListener(new ListSelectionListener() {
+		listSelectionModel.addListSelectionListener(new ListSelectionListener() 
+		{
 			public void valueChanged(ListSelectionEvent e) 
 			{ 
 				ListSelectionModel lsm = (ListSelectionModel)e.getSource();
 				addButton.setEnabled(!lsm.isSelectionEmpty());
 			};
-			});
-		
-		
-		getContentPane().setLayout(null);
+		});
 
-		getContentPane().add(scroll);
-		getContentPane().add(addButton);
-
-		loadProducts(mainFrame.getConsumables());
-		
 		this.setResizable(false);
-
-		this.setSize(300, 400);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setLocationRelativeTo(null);
+		
+		loadProducts(mainFrame.getConsumables());
 	}
 	
 	public void loadProducts( Iterator products )
@@ -72,6 +69,7 @@ public class ProductListFrame extends JFrame
 				return false;// This causes all cells to be not editable
 			}
 		};
+		
 		tModel.addColumn("Product");
 		tModel.addColumn("Quantity");
 

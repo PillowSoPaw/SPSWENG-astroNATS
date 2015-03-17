@@ -1,13 +1,10 @@
 package view;
 
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 
 import javax.swing.*;
 import javax.swing.border.Border;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
@@ -15,8 +12,6 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import javax.swing.table.AbstractTableModel;
 
 import controller.Controller;
 import model.Client;
@@ -29,88 +24,82 @@ import model.OverTheCounter;
 
 public class AddTransactionPanel extends JPanel 
 {
-    private Controller controller;
-    private int nEntries; //TURN THIS BLOCK INTO A CLASS called TransactionEntry
-    private ArrayList<String> services;
-    private ArrayList<String> customerNames;
-    private ArrayList<String> prices;
-    private ArrayList<String> servicesAvailed;
-    private ArrayList<String> productsBought;
-    private ArrayList<Integer> productsQuantity;
-    private ArrayList<String[]> employeesAssigned;
-    private ArrayList<String> consumablesUsed;
-    private String[] selectedEmployee;
-    private String selectedProduct;
-    
-    private Iterator<Service> iServices;
-    private Iterator<Product> iProducts;
-    private Iterator<Consumable> iConsumables;
-    private Iterator<OverTheCounter> iOverTheCounters;
-    private Iterator<Employee> iWorkingEmployees;
-    
-    private JPanel leftPanel;
-    private JScrollPane transScrollPane;
-    private JPanel pTransactionDetail;
-    private JTextField customerNameTextField;
-    private JTable transactionDetail;
-    private JButton cancelButton;
-    private JButton saveButton;
-    
-    private JPanel rightPanel;
-    private JLabel titleServiceLabel;
-    private JLabel titleLineLabel;
-    private JLabel titleLine2Label;
-    private JLabel titleProductLabel;
+	private Controller					controller;
+	private int						nEntries;
+	private boolean					isOpen;
+	private boolean					isEmpty	= true;
 
-    private JPanel servicePanel;
-    private JLabel iChooseLabel;
-    private JLabel seniorEmployeeLabel;
-    private JLabel juniorEmployeeLabel;
-    private JComboBox chooseServiceComboBox;
-    private JButton employeeButton;
-    private JButton productsButton;
-    private JButton addServiceButton;
+	private double[]					productPrice;
+	private double[]					servicePrice;
+	private String						selectedProduct;
+	private String[]					productOptions;
+	private String[]					serviceOptions;
+	private String[]					selectedEmployee;
 
-    private JPanel productsPanel;
-    private JLabel iChooseProductLabel;
-    private JComboBox chooseProductComboBox;
-    private JLabel lQuantityLabel;
-    private JTextArea quantityTextArea;
-    private JButton addProductButton;
-           
-    private String[] productOptions;
-    private String[] serviceOptions;
-    
-    private double[] productPrice;
-    private double[] servicePrice;
-    
-    private boolean isOpen;
-    private boolean isEmpty = true;
-    
-    private DefaultComboBoxModel<String> serviceComboBoxModel;
-    private DefaultComboBoxModel<String> productComboBoxModel;
-    
-    private AddTransactionPanel reference;
-    private JLabel productUsedLabel;
+	private ArrayList<Integer>			productsQuantity;
+	private ArrayList<String>			services;
+	private ArrayList<String>			customerNames;
+	private ArrayList<String>			prices;
+	private ArrayList<String>			servicesAvailed;
+	private ArrayList<String>			productsBought;
+	private ArrayList<String>			consumablesUsed;
+	private ArrayList<String[]>			employeesAssigned;
 
+	private Iterator<Service>			iServices;
+	private Iterator<Consumable>			iConsumables;
+	private Iterator<OverTheCounter>		iOverTheCounters;
+	private Iterator<Employee>			iWorkingEmployees;
+
+	private JButton					employeeButton;
+	private JButton					addServiceButton;
+	private JButton					productsButton;
+	private JButton					addProductButton;
+	private JButton					cancelButton;
+	private JButton					saveButton;
+
+	private DefaultComboBoxModel<String>	serviceComboBoxModel;
+	private JComboBox					chooseServiceComboBox;
+	private DefaultComboBoxModel<String>	productComboBoxModel;
+	private JComboBox					chooseProductComboBox;
+
+	private JLabel						titleServiceLabel;
+	private JLabel						titleLineLabel;
+	private JLabel						iChooseLabel;
+	private JLabel						seniorEmployeeLabel;
+	private JLabel						juniorEmployeeLabel;
+	private JLabel						productUsedLabel;
+	private JLabel						titleProductLabel;
+	private JLabel						titleLine2Label;
+	private JLabel						iChooseProductLabel;
+	private JLabel						lQuantityLabel;
+
+	private JPanel						servicePanel;
+	private JPanel						productsPanel;
+
+	private JScrollPane					transScrollPane;
+
+	private JTable						transactionDetailTable;
+
+	private JTextField					customerNameTextField;
+	private JTextArea					quantityTextArea;
+
+	private AddTransactionPanel			reference;
+	
 	public AddTransactionPanel()
 	{
-		setBounds(183, 120, 600, 440);
-		setLayout(null);
-		// setBounds()
-		pTransactionDetail = new JPanel();
-
-		nEntries = 0;
-
-		isOpen = false;
-        
-		serviceComboBoxModel = new DefaultComboBoxModel<>();
-		productComboBoxModel = new DefaultComboBoxModel<>();
-	
+		this.setBounds(183, 120, 600, 440);
+		this.setLayout(null);
+		
 		Border blackline = BorderFactory.createLineBorder(Color.black);
-
 		setBorder(blackline);
-        
+		
+		//Variable Declarations
+		ButtonListener buttonListener = new ButtonListener();
+		nEntries = 0;
+		isOpen = false;
+		reference = this;
+		
+		//ArrayList Declarations
 		services = new ArrayList<>(0);
 		customerNames = new ArrayList<>(0);
 		prices = new ArrayList<>(0);
@@ -123,80 +112,49 @@ public class AddTransactionPanel extends JPanel
 		selectedEmployee[0] = null;
 		selectedEmployee[1] = null;
 		
-		leftPanel = new JPanel();
+		//UI element declarations
 		customerNameTextField = new JTextField("Customer Name");
-													
 		customerNameTextField.setBounds(10, 10, 200, 20);
-		cancelButton = new JButton("Cancel");
-		saveButton = new JButton("Save Transaction");
+		this.add(customerNameTextField);
+		
 		titleServiceLabel = new JLabel("Service Rendered");
+		titleServiceLabel.setBounds(480, 10, 120, 20);
+		this.add(titleServiceLabel);
+		
 		titleLineLabel = new JLabel("______________________________________");
-		titleProductLabel = new JLabel("Product Availed");
-		titleLine2Label = new JLabel("______________________________________");
-
+		titleLineLabel.setBounds(325, 20, 300, 20);
+		this.add(titleLineLabel);
+		
 		DefaultTableModel tModel = new DefaultTableModel();
 		tModel.addColumn("Service / Product");
 		tModel.addColumn("Customer Name");
 		tModel.addColumn("Price");
-
-		transactionDetail = new JTable(tModel);
-		transactionDetail.setBounds(10, 50, 300, 330);
-		transactionDetail.setRowHeight(20);
-		pTransactionDetail.add(transactionDetail);
-		cancelButton.setBounds(10, 400, 75, 30);
-		saveButton.setBounds(175, 400, 135, 30);
-		titleServiceLabel.setBounds(480, 10, 120, 20);
-		titleProductLabel.setBounds(490, 240, 100, 20);
-		titleLineLabel.setBounds(325, 20, 300, 20);
-		titleLine2Label.setBounds(325, 250, 300, 20);
-		transScrollPane = new JScrollPane(transactionDetail);
+		
+		transactionDetailTable = new JTable(tModel);
+		transactionDetailTable.setBounds(10, 50, 300, 330);
+		transactionDetailTable.setRowHeight(20);
+		transScrollPane = new JScrollPane(transactionDetailTable);
 		transScrollPane.setBounds(10, 50, 300, 330);
-
+		this.add(transScrollPane);
+		
 		servicePanel = new JPanel();
-		iChooseLabel = new JLabel("Choose Service:");
-		chooseServiceComboBox = new JComboBox(serviceComboBoxModel);
-
-		// initialize the add employee button
-		ButtonListener buttonListener = new ButtonListener();
-		saveButton.addActionListener(buttonListener);
-		reference = this;
-        
-		employeeButton = new JButton("Add Employee");
-		employeeButton.addActionListener(new ActionListener()
-		{
-			public void actionPerformed(ActionEvent e)
-			{
-				if( checkClient() == true )
-				{
-					EmployeeListFrame empList = new EmployeeListFrame(reference);
-					empList.addWindowListener(new WindowCloser());
-				}
-			}
-		});
-        
-		// initialize add Products button
-		productsButton = new JButton("Products Used");
-		productsButton.addActionListener(buttonListener);
-        
-		// initialize the add service button
-		addServiceButton = new JButton("Add Service");
-		addServiceButton.addActionListener(buttonListener);
-
 		servicePanel.setBorder(blackline);
 		servicePanel.setLayout(null);
 		servicePanel.setBounds(325, 50, 266, 180);
+		
+		iChooseLabel = new JLabel("Choose Service:");
 		iChooseLabel.setBounds(87, 10, 100, 25);
-		chooseServiceComboBox.setBounds(59, 40, 150, 25);
-		employeeButton.setBounds(20, 70, 150, 25);
-		productsButton.setBounds(20, 100, 150, 25);
-		addServiceButton.setBounds(59, 140, 150, 25);
-
 		servicePanel.add(iChooseLabel);
+		
+		serviceComboBoxModel = new DefaultComboBoxModel<>();
+		chooseServiceComboBox = new JComboBox<>(serviceComboBoxModel);
+		chooseServiceComboBox.setBounds(59, 40, 150, 25);
 		servicePanel.add(chooseServiceComboBox);
+		
+		employeeButton = new JButton("Add Employee");
+		employeeButton.setBounds(20, 70, 150, 25);
+		employeeButton.addActionListener(buttonListener);
 		servicePanel.add(employeeButton);
-		servicePanel.add(productsButton);
-		servicePanel.add(addServiceButton);
-		add(servicePanel);
 		
 		seniorEmployeeLabel = new JLabel("E1:");
 		seniorEmployeeLabel.setBounds(180, 70, 76, 14);
@@ -206,57 +164,270 @@ public class AddTransactionPanel extends JPanel
 		juniorEmployeeLabel.setBounds(180, 83, 76, 14);
 		servicePanel.add(juniorEmployeeLabel);
 		
+		productsButton = new JButton("Products Used");
+		productsButton.setBounds(20, 100, 150, 25);
+		productsButton.addActionListener(buttonListener);
+		servicePanel.add(productsButton);
+		
 		productUsedLabel = new JLabel("P:");
 		productUsedLabel.setBounds(180, 105, 76, 14);
 		servicePanel.add(productUsedLabel);
-
+		
+		addServiceButton = new JButton("Add Service");
+		addServiceButton.setBounds(59, 140, 150, 25);
+		addServiceButton.addActionListener(buttonListener);
+		servicePanel.add(addServiceButton);
+		
+		this.add(servicePanel);
+		
+		titleProductLabel = new JLabel("Product Availed");
+		titleProductLabel.setBounds(490, 240, 100, 20);
+		this.add(titleProductLabel);
+		
+		titleLine2Label = new JLabel("______________________________________");
+		titleLine2Label.setBounds(325, 250, 300, 20);
+		this.add(titleLine2Label);
+		
 		productsPanel = new JPanel();
-		iChooseProductLabel = new JLabel("Choose Product:");
-		chooseProductComboBox = new JComboBox(productComboBoxModel);
-		lQuantityLabel = new JLabel("Quantity:");
-		quantityTextArea = new JTextArea("Enter quantity here");
-		addProductButton = new JButton("Add Product");
-
-		addProductButton.addActionListener(buttonListener);
-		cancelButton.addActionListener(buttonListener);
-			
 		productsPanel.setBorder(blackline);
 		productsPanel.setLayout(null);
 		productsPanel.setBounds(325, 280, 266, 150);
+		
+		iChooseProductLabel = new JLabel("Choose Product:");
 		iChooseProductLabel.setBounds(87, 10, 100, 25);
+		productsPanel.add(iChooseProductLabel);
+		
+		productComboBoxModel = new DefaultComboBoxModel<>();
+		chooseProductComboBox = new JComboBox<>(productComboBoxModel);
 		chooseProductComboBox.setBounds(59, 40, 150, 25);
+		productsPanel.add(chooseProductComboBox);
+		
+		lQuantityLabel = new JLabel("Quantity:");
 		lQuantityLabel.setBounds(106, 65, 150, 25);
+		productsPanel.add(lQuantityLabel);
+		
+		quantityTextArea = new JTextArea("Enter quantity here");
 		quantityTextArea.setBounds(59, 85, 150, 18);
 		quantityTextArea.setBorder(blackline);
-		addProductButton.setBounds(59, 110, 150, 25);
-
-		productsPanel.add(iChooseProductLabel);
-		productsPanel.add(chooseProductComboBox);
-		productsPanel.add(lQuantityLabel);
 		productsPanel.add(quantityTextArea);
+		
+		addProductButton = new JButton("Add Product");
+		addProductButton.setBounds(59, 110, 150, 25);
+		addProductButton.addActionListener(buttonListener);
 		productsPanel.add(addProductButton);
-
-		add(productsPanel);
-
-		add(titleLine2Label);
-		add(titleProductLabel);
-		add(titleLineLabel);
-		add(titleServiceLabel);
-		add(saveButton);
-		add(cancelButton);
-		add(customerNameTextField);
-		add(transScrollPane);
+		
+		this.add(productsPanel);
+		
+		cancelButton = new JButton("Cancel");
+		cancelButton.setBounds(10, 400, 75, 30);
+		cancelButton.addActionListener(buttonListener);
 		cancelButton.setEnabled(false);
-		ListSelectionModel listSelectionModel = transactionDetail.getSelectionModel();
-		listSelectionModel.addListSelectionListener(new ListSelectionListener() {
-		        public void valueChanged(ListSelectionEvent e) 
-		        { 
-		            ListSelectionModel lsm = (ListSelectionModel)e.getSource();
-		            cancelButton.setEnabled(!lsm.isSelectionEmpty());
-		        };
+		this.add(cancelButton);
+		
+		ListSelectionModel listSelectionModel = transactionDetailTable.getSelectionModel();
+		listSelectionModel.addListSelectionListener(new ListSelectionListener() 
+		{
+			public void valueChanged(ListSelectionEvent e) 
+			{ 
+				ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+				cancelButton.setEnabled(!lsm.isSelectionEmpty());
+			};
 		});
+													
+		saveButton = new JButton("Save Transaction");
+		saveButton.setBounds(175, 400, 135, 30);
+		saveButton.addActionListener(buttonListener);
+		this.add(saveButton);
 	}
     
+	public class ButtonListener implements ActionListener
+	{
+		@Override
+		public void actionPerformed(ActionEvent e)
+		{
+			if (customerNameTextField.getText().equals(""))
+			{
+				isEmpty = true;
+			}
+			else 
+			{
+				isEmpty = false;
+			}
+			
+			if( e.getSource() == employeeButton )
+			{
+				if( checkClient() == true )
+				{
+					EmployeeListFrame empList = new EmployeeListFrame(reference);
+					empList.addWindowListener(new WindowCloser());
+				}
+			}
+			else if (e.getSource() == addServiceButton)
+			{
+				if( isEmpty == false )
+				{
+					if( checkClient() == true )
+					{
+						if( (selectedEmployee[0] != null || selectedEmployee[1] != null)  && selectedProduct != null )
+						{
+							if( checkProductQuantity(selectedProduct, 1, "service") == true )
+							{
+								employeesAssigned.add(selectedEmployee);
+								consumablesUsed.add(selectedProduct);
+								addToTable(serviceOptions[chooseServiceComboBox.getSelectedIndex()], 
+										"" + servicePrice[chooseServiceComboBox.getSelectedIndex()],
+										customerNameTextField.getText());
+								servicesAvailed.add(serviceOptions[chooseServiceComboBox.getSelectedIndex()]);
+								selectedEmployee = new String[2];
+								selectedProduct = "";
+								chooseServiceComboBox.setSelectedIndex(0);
+								seniorEmployeeLabel.setText("E1 :");
+								juniorEmployeeLabel.setText("E2 :");
+								productUsedLabel.setText("P:  ");
+								customerNameTextField.setEnabled(false);
+							}
+						}
+						else if( (selectedEmployee[0] == null && selectedEmployee[1] == null) && selectedProduct == null )
+							JOptionPane.showMessageDialog(null, "No employee and consumable specified. Please choose employee and consumable.", "No Input", JOptionPane.WARNING_MESSAGE);
+						else if( (selectedEmployee[0] == null && selectedEmployee[1] == null) )
+							JOptionPane.showMessageDialog(null, "No employee specified. Please choose employee.", "No Employee", JOptionPane.WARNING_MESSAGE);
+						else if( selectedProduct == null )
+							JOptionPane.showMessageDialog(null, "No consumable selected. Please choose a consumable.", "No Consumable", JOptionPane.WARNING_MESSAGE);
+					}
+				}
+				else
+					JOptionPane.showMessageDialog(null, "No client specified. Please input client name.", "No Client", JOptionPane.WARNING_MESSAGE);
+			}
+			else if (e.getSource() == productsButton)
+			{
+				if (isOpen == false)
+				{
+					ProductListFrame temp = new ProductListFrame(reference);
+					temp.addWindowListener(new WindowCloser());
+				//	isOpen = true;
+				}
+			}
+			else if (e.getSource() == addProductButton)
+			{
+				if( isEmpty == false)
+				{
+					if( checkClient() == true )
+					{
+						try
+						{
+							int temp = Integer.parseInt(quantityTextArea.getText());
+							
+							if( temp <= 0 )
+								throw new IllegalArgumentException();
+							
+							if( checkProductQuantity(productOptions[chooseProductComboBox.getSelectedIndex()], temp, "product") == true )
+							{
+								addToTable(productOptions[chooseProductComboBox.getSelectedIndex()] + " (" + temp + ")",
+										"" + (productPrice[chooseProductComboBox.getSelectedIndex()] * temp),
+										customerNameTextField.getText());
+								productsBought.add(productOptions[chooseProductComboBox.getSelectedIndex()]);
+								productsQuantity.add(temp);
+								chooseProductComboBox.setSelectedIndex(0);
+								quantityTextArea.setText("Input Positive Integer");
+							}
+							customerNameTextField.setEnabled(false);
+							temp = 0;
+						} 
+						catch (NumberFormatException ex)
+						{
+							JOptionPane.showMessageDialog(null, "Input must be a positive integer!", "Invalid Input", JOptionPane.WARNING_MESSAGE);
+							quantityTextArea.setText("Input positive integer.");
+						}
+						catch (IllegalArgumentException ex)
+						{
+							JOptionPane.showMessageDialog(null, "Input must be a positive integer!", "Invalid Input", JOptionPane.WARNING_MESSAGE);
+							quantityTextArea.setText("Input positive integer.");
+						}
+					}
+				}
+				else
+					JOptionPane.showMessageDialog(null, "No client specified. Please input client name.", "No Client", JOptionPane.WARNING_MESSAGE);
+			}
+			else if( e.getSource() == cancelButton )
+			{
+				int x = transactionDetailTable.getSelectedRow();
+				String selectedItem = (String) transactionDetailTable.getModel().getValueAt(x, 0);
+				removeElementFromList(selectedItem);
+				deleteFromTable(x);
+			}
+			else if( e.getSource() == saveButton )
+			{
+				if( nEntries == 0 && isEmpty == true )
+					JOptionPane.showMessageDialog(null, "No client and input found. Please enter client name and add service or product.", "No Input", JOptionPane.WARNING_MESSAGE);
+				else if( nEntries == 0 )
+					JOptionPane.showMessageDialog(null, "No input found. Please add service or product.", "No Input", JOptionPane.WARNING_MESSAGE);
+				else if( isEmpty == true )
+					JOptionPane.showMessageDialog(null, "No client specified. Please input client name.", "No Client", JOptionPane.WARNING_MESSAGE);
+				else
+				{
+					if( checkClient() == true )
+					{
+						controller.createTransaction(servicesAvailed, employeesAssigned, consumablesUsed, productsBought, productsQuantity, customerNameTextField.getText());
+						resetAll();
+					}
+				}
+			}
+		}
+		
+	}
+	
+	//other data validation functions
+	public boolean checkClient()
+	{
+		String s = customerNameTextField.getText();
+		if( s.equalsIgnoreCase("Client one") || s.equalsIgnoreCase("Client two") ||
+		    s.equalsIgnoreCase("Client three") || s.equalsIgnoreCase("Client four") )
+		{
+			return true;
+		}
+		else
+		{
+			JOptionPane.showMessageDialog(null, "Client cannot be found in the database. Please choose from client one to client four.", "Client Not Found", JOptionPane.WARNING_MESSAGE);
+			return false;
+		}
+	}
+	
+	public boolean checkProductQuantity( String name, int temp, String type )
+	{
+		Product p = controller.getProduct(name);
+		int quantity = 0;
+
+		for( int i = 0; i < productsBought.size(); i++ )
+		{
+			if( productsBought.get(i).equalsIgnoreCase(name) == true )
+				quantity += productsQuantity.get(i);
+		}
+		
+		for( int i = 0; i < consumablesUsed.size(); i++ )
+		{
+			if( consumablesUsed.get(i).equalsIgnoreCase(name) == true )
+				quantity++;
+		}
+		
+		if( p.getnQuantity() - quantity - temp >= 0 )
+			return true;
+		else
+		{
+			if( type.equalsIgnoreCase("Product") == true )
+			{
+				JOptionPane.showMessageDialog(null, "Error " + Integer.toString(p.getnQuantity() - quantity) + " " + name + " remaining. "
+						+ "Not enough supply to meet client's demand.", "Insufficient Supply", JOptionPane.WARNING_MESSAGE);
+			}
+			else if( type.equalsIgnoreCase("Service") == true )
+			{
+				JOptionPane.showMessageDialog(null, "Error " + Integer.toString(p.getnQuantity() - quantity) + " " + name + " remaining. "
+						+ "Not enough supply on consumable to use on service.", "Insufficient Supply", JOptionPane.WARNING_MESSAGE);
+			}
+			return false;
+		}
+	}
+	
+	// table related functions
 	private void updateTable()
 	{
 		DefaultTableModel tModel = new DefaultTableModel()
@@ -281,148 +452,9 @@ public class AddTransactionPanel extends JPanel
 			i++;
 		}
 
-		transactionDetail.setModel(tModel);
+		transactionDetailTable.setModel(tModel);
 	}
     
-	public void toggleOpen()
-	{
-		isOpen = false;
-	}
-
-	public class ButtonListener implements ActionListener
-	{
-		@Override
-		public void actionPerformed(ActionEvent e)
-		{
-			if (customerNameTextField.getText().equals(""))
-			{
-				isEmpty = true;
-			}
-			else 
-			{
-				isEmpty = false;
-			}
-			
-			if (e.getSource() == addProductButton)
-			{
-				if( isEmpty == false)
-				{
-					if( checkClient() == true )
-					{
-						try
-						{
-							int temp = Integer.parseInt(quantityTextArea.getText());
-							
-							if( temp <= 0 )
-								throw new IllegalArgumentException();
-							
-							if( checkProductQuantity(productOptions[chooseProductComboBox.getSelectedIndex()], temp, "product") == true )
-							{
-								addToTable(productOptions[chooseProductComboBox.getSelectedIndex()] + " (" + temp + ")",
-										"" + (productPrice[chooseProductComboBox.getSelectedIndex()] * temp),
-										customerNameTextField.getText());
-								productsBought.add(productOptions[chooseProductComboBox.getSelectedIndex()]);
-								productsQuantity.add(temp);
-								chooseProductComboBox.setSelectedIndex(0);
-								quantityTextArea.setText("Input Positive Integer");
-							}
-							temp = 0;
-						} 
-						catch (NumberFormatException ex)
-						{
-							JOptionPane.showMessageDialog(null, "Input must be a positive integer!", "Invalid Input", JOptionPane.WARNING_MESSAGE);
-							quantityTextArea.setText("Input positive integer.");
-						}
-						catch (IllegalArgumentException ex)
-						{
-							JOptionPane.showMessageDialog(null, "Input must be a positive integer!", "Invalid Input", JOptionPane.WARNING_MESSAGE);
-							quantityTextArea.setText("Input positive integer.");
-						}
-					}
-				}
-				else
-					JOptionPane.showMessageDialog(null, "No client specified. Please input client name.", "No Client", JOptionPane.WARNING_MESSAGE);
-			} 
-			else if (e.getSource() == addServiceButton)
-			{
-				if( isEmpty == false )
-				{
-					if( checkClient() == true )
-					{
-						if( (selectedEmployee[0] != null || selectedEmployee[1] != null)  && selectedProduct != null )
-						{
-							if( checkProductQuantity(selectedProduct, 1, "service") == true )
-							{
-								employeesAssigned.add(selectedEmployee);
-								consumablesUsed.add(selectedProduct);
-								addToTable(serviceOptions[chooseServiceComboBox.getSelectedIndex()], 
-										"" + servicePrice[chooseServiceComboBox.getSelectedIndex()],
-										customerNameTextField.getText());
-								servicesAvailed.add(serviceOptions[chooseServiceComboBox.getSelectedIndex()]);
-								selectedEmployee = new String[2];
-								selectedProduct = "";
-								chooseServiceComboBox.setSelectedIndex(0);
-								seniorEmployeeLabel.setText("E1 :");
-								juniorEmployeeLabel.setText("E2 :");
-								productUsedLabel.setText("P:  ");
-							}
-						}
-						else if( (selectedEmployee[0] == null && selectedEmployee[1] == null) && selectedProduct == null )
-							JOptionPane.showMessageDialog(null, "No employee and consumable specified. Please choose employee and consumable.", "No Input", JOptionPane.WARNING_MESSAGE);
-						else if( (selectedEmployee[0] == null && selectedEmployee[1] == null) )
-							JOptionPane.showMessageDialog(null, "No employee specified. Please choose employee.", "No Employee", JOptionPane.WARNING_MESSAGE);
-						else if( selectedProduct == null )
-							JOptionPane.showMessageDialog(null, "No consumable selected. Please choose a consumable.", "No Consumable", JOptionPane.WARNING_MESSAGE);
-					}
-				}
-				else
-					JOptionPane.showMessageDialog(null, "No client specified. Please input client name.", "No Client", JOptionPane.WARNING_MESSAGE);
-			} 
-			else if (e.getSource() == productsButton)
-			{
-				if (isOpen == false)
-				{
-					ProductListFrame temp = new ProductListFrame(reference);
-					temp.addWindowListener(new WindowCloser());
-				//	isOpen = true;
-				}
-			}
-			else if( e.getSource() == cancelButton )
-			{
-				int x = transactionDetail.getSelectedRow();
-				String selectedItem = (String) transactionDetail.getModel().getValueAt(x, 0);
-				removeElementFromList(selectedItem);
-				deleteFromTable(x);
-			}
-			else if( e.getSource() == saveButton )
-			{
-				if( nEntries == 0 && isEmpty == true )
-					JOptionPane.showMessageDialog(null, "No client and input found. Please enter client name and add service or product.", "No Input", JOptionPane.WARNING_MESSAGE);
-				else if( nEntries == 0 )
-					JOptionPane.showMessageDialog(null, "No input found. Please add service or product.", "No Input", JOptionPane.WARNING_MESSAGE);
-				else if( isEmpty == true )
-					JOptionPane.showMessageDialog(null, "No client specified. Please input client name.", "No Client", JOptionPane.WARNING_MESSAGE);
-				else
-				{
-					if( checkClient() == true )
-					{
-						controller.createTransaction(servicesAvailed, employeesAssigned, consumablesUsed, productsBought, productsQuantity, customerNameTextField.getText());
-						resetAll();
-					}
-				}
-			}
-		}
-		
-	}
-    
-	public class WindowCloser extends WindowAdapter
-	{
-		public void windowClosing(WindowEvent e)
-		{
-			toggleOpen();
-		}
-	}
-	
 	public void addToTable(String service, String price, String customerName)
 	{
 		services.add(service);
@@ -482,60 +514,11 @@ public class AddTransactionPanel extends JPanel
 		updateTable();
 	}
 	
-	public boolean checkClient()
-	{
-		String s = customerNameTextField.getText();
-		if( s.equalsIgnoreCase("Client one") || s.equalsIgnoreCase("Client two") ||
-		    s.equalsIgnoreCase("Client three") || s.equalsIgnoreCase("Client four") )
-		{
-			return true;
-		}
-		else
-		{
-			JOptionPane.showMessageDialog(null, "Client cannot be found in the database. Please choose from client one to client four.", "Client Not Found", JOptionPane.WARNING_MESSAGE);
-			return false;
-		}
-	}
-	
-	public boolean checkProductQuantity( String name, int temp, String type )
-	{
-		Product p = controller.getProduct(name);
-		int quantity = 0;
-
-		for( int i = 0; i < productsBought.size(); i++ )
-		{
-			if( productsBought.get(i).equalsIgnoreCase(name) == true )
-				quantity += productsQuantity.get(i);
-		}
-		
-		for( int i = 0; i < consumablesUsed.size(); i++ )
-		{
-			if( consumablesUsed.get(i).equalsIgnoreCase(name) == true )
-				quantity++;
-		}
-		
-		if( p.getnQuantity() - quantity - temp >= 0 )
-			return true;
-		else
-		{
-			if( type.equalsIgnoreCase("Product") == true )
-			{
-				JOptionPane.showMessageDialog(null, "Error " + Integer.toString(p.getnQuantity() - quantity) + " " + name + " remaining. "
-						+ "Not enough supply to meet client's demand.", "Insufficient Supply", JOptionPane.WARNING_MESSAGE);
-			}
-			else if( type.equalsIgnoreCase("Service") == true )
-			{
-				JOptionPane.showMessageDialog(null, "Error " + Integer.toString(p.getnQuantity() - quantity) + " " + name + " remaining. "
-						+ "Not enough supply on consumable to use on service.", "Insufficient Supply", JOptionPane.WARNING_MESSAGE);
-			}
-			return false;
-		}
-	}
-	
 	public void resetAll()
 	{	
 		nEntries = 0;
 		customerNameTextField.setText("Customer Name");
+		customerNameTextField.setEnabled(true);
 		quantityTextArea.setText("Input Positive Integer");
 		services.clear();
 		customerNames.clear();
@@ -550,6 +533,22 @@ public class AddTransactionPanel extends JPanel
 		chooseServiceComboBox.setSelectedIndex(0);
 		updateTable();
 	}
+
+	//others
+	public void toggleOpen()
+	{
+		isOpen = false;
+	}
+    
+	public class WindowCloser extends WindowAdapter
+	{
+		public void windowClosing(WindowEvent e)
+		{
+			toggleOpen();
+		}
+	}
+	
+	
 	
 	//GETTERS
 	public void getData()
@@ -560,6 +559,11 @@ public class AddTransactionPanel extends JPanel
 		controller.getOverTheCounters();
 		this.repaint();
 		this.revalidate();
+	}
+	
+	public void addTransaction( Transaction t )
+	{
+		controller.addTransaction(t);
 	}
 	
 	public Client getInputClient( String name )
@@ -575,6 +579,24 @@ public class AddTransactionPanel extends JPanel
 	public Product getAvailedProduct( String name )
 	{
 		return controller.getProduct(name);
+	}
+	
+	public Iterator<Consumable> getConsumables()
+	{
+		controller.getConsumables();
+		return iConsumables;
+	}
+	
+	public Iterator<Employee> getWorkingEmployees()
+	{
+		controller.getWorkingEmployees();
+		return iWorkingEmployees;
+	}
+	
+	public Iterator<OverTheCounter> getOverTheCounters()
+	{
+		controller.getOverTheCounters();
+		return iOverTheCounters;
 	}
 	
 	public void getOverTheCounterList(Iterator i)
@@ -600,11 +622,6 @@ public class AddTransactionPanel extends JPanel
 		chooseProductComboBox.setModel(productComboBoxModel);
 	}
 	
-	public void getConsumableList(Iterator i)
-	{
-		this.iConsumables = i;
-	}
-	
 	public void getServiceList(Iterator i)
 	{
 		this.iServices = i;
@@ -628,16 +645,6 @@ public class AddTransactionPanel extends JPanel
 		chooseServiceComboBox.setModel(serviceComboBoxModel);
 	}
 	
-	public void getWorkingEmployeeList(Iterator i)
-	{
-		this.iWorkingEmployees = i;
-	}
-	
-	public void addTransaction( Transaction t )
-	{
-		controller.addTransaction(t);
-	}
-	
 	public Controller getController()
 	{
 		return controller;
@@ -648,28 +655,20 @@ public class AddTransactionPanel extends JPanel
 		return iServices;
 	}
 
-	public Iterator<Consumable> getConsumables()
-	{
-		controller.getConsumables();
-		return iConsumables;
-	}
-	
-	public Iterator<Employee> getWorkingEmployees()
-	{
-		controller.getWorkingEmployees();
-		return iWorkingEmployees;
-	}
-	
-	public Iterator<OverTheCounter> getOverTheCounters()
-	{
-		controller.getOverTheCounters();
-		return iOverTheCounters;
-	}
-	
 	//SETTERS
 	public void setController(Controller c)
 	{
 		this.controller = c;
+	}
+	
+	public void getWorkingEmployeeList(Iterator i)
+	{
+		this.iWorkingEmployees = i;
+	}
+	
+	public void getConsumableList(Iterator i)
+	{
+		this.iConsumables = i;
 	}
 	
 	public void setSelectedEmployee1( String selectedEmployee1 )

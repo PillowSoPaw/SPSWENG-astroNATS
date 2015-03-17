@@ -1,6 +1,5 @@
 package view;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Iterator;
@@ -11,22 +10,22 @@ import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 import model.Employee;
-import controller.Controller;
 
 public class EmployeeListFrame extends JFrame
 {
-	AddTransactionPanel mainFrame;
+	AddTransactionPanel	mainFrame;
 	private JTable		employeesTable;
 	private JScrollPane	scroll;
-	private JButton	add;
+	private JButton	addButton;
 
 	public EmployeeListFrame(AddTransactionPanel mainFrame)
 	{
-		
 		ActListener actListener = new ActListener();
 		this.mainFrame = mainFrame;
-		DefaultTableModel tModel = new DefaultTableModel();
+		this.getContentPane().setLayout(null);
+		this.setSize(300, 400);
 		
+		DefaultTableModel tModel = new DefaultTableModel();
 		tModel.addColumn("Name");
 		tModel.addColumn("Type");
 
@@ -34,35 +33,30 @@ public class EmployeeListFrame extends JFrame
 		employeesTable.setBounds(10, 10, 275, 300);
 		scroll = new JScrollPane(employeesTable);
 		scroll.setBounds(10, 10, 275, 300);
-		add = new JButton("Add");
-		add.setBounds(10, 320, 275, 30);
-		add.addActionListener(actListener);
+		this.getContentPane().add(scroll);
 		
-		getContentPane().setLayout(null);
+		addButton = new JButton("Add");
+		addButton.setBounds(10, 320, 275, 30);
+		addButton.setEnabled(false);
+		addButton.addActionListener(actListener);
+		this.getContentPane().add(addButton);
 
-		getContentPane().add(scroll);
-		getContentPane().add(add);
-
+		ListSelectionModel listSelectionModel = employeesTable.getSelectionModel();
+		listSelectionModel.addListSelectionListener(new ListSelectionListener() 
+		{
+			public void valueChanged(ListSelectionEvent e) 
+			{ 
+				ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+				addButton.setEnabled(!lsm.isSelectionEmpty());
+			};
+		});
+		
 		this.setResizable(false);
-
-		this.setSize(300, 400);
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		this.setLocationRelativeTo(null);
 
-		add.setEnabled(false);
-		
-		ListSelectionModel listSelectionModel = employeesTable.getSelectionModel();
-		listSelectionModel.addListSelectionListener(new ListSelectionListener() {
-			public void valueChanged(ListSelectionEvent e) 
-			{ 
-				ListSelectionModel lsm = (ListSelectionModel)e.getSource();
-				add.setEnabled(!lsm.isSelectionEmpty());
-			};
-			});
-		
-		loadEmployees(mainFrame.getWorkingEmployees()); // Should be called by controller by getting
-							// Results from database
+		loadEmployees(mainFrame.getWorkingEmployees());
 	}
 
 	public void loadEmployees(Iterator entries)
@@ -74,6 +68,7 @@ public class EmployeeListFrame extends JFrame
 				return false;// This causes all cells to be not editable
 			}
 		};
+		
 		tModel.addColumn("Name");
 		tModel.addColumn("Type");
 
@@ -96,7 +91,7 @@ public class EmployeeListFrame extends JFrame
 		@Override
 		public void actionPerformed(ActionEvent e)
 		{
-			if( e.getSource() == add )
+			if( e.getSource() == addButton )
 			{
 				int x = employeesTable.getSelectedRow();
 				String selectedType = (String) employeesTable.getModel().getValueAt(x, 1);
