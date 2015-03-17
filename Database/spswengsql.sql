@@ -278,17 +278,34 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `servicelineitem`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `servicelineitem` (
-  `servicelineitem_id` int(11) NOT NULL AUTO_INCREMENT,
-  `service_id` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL,
-  `employee_id1` int(11) DEFAULT NULL,
-  `employee_id2` int(11) DEFAULT NULL,
+CREATE TABLE `taylortyler`.`servicelineitem` (
+  `servicelineitem_id` INT(11) NOT NULL AUTO_INCREMENT,
+  `service_id` INT(11) NOT NULL,
+  `quantity` INT(11) NOT NULL,
+  `employee_id1` INT(11) NOT NULL,
+  `employee_id2` INT(11) NULL DEFAULT NULL,
   PRIMARY KEY (`servicelineitem_id`),
-  UNIQUE KEY `servicelineitem_id_UNIQUE` (`servicelineitem_id`),
-  KEY `service_id_idx` (`service_id`),
-  CONSTRAINT `service_id` FOREIGN KEY (`service_id`) REFERENCES `service` (`service_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  UNIQUE INDEX `servicelineitem_id_UNIQUE` (`servicelineitem_id` ASC),
+  INDEX `service_id_idx` (`service_id` ASC),
+  INDEX `employee_id1_idx` (`employee_id1` ASC),
+  INDEX `employee_id2_idx` (`employee_id2` ASC),
+  CONSTRAINT `service_id3`
+    FOREIGN KEY (`service_id`)
+    REFERENCES `taylortyler`.`service` (`service_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `employee_id13`
+    FOREIGN KEY (`employee_id1`)
+    REFERENCES `taylortyler`.`employee` (`employee_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `employee_id23`
+    FOREIGN KEY (`employee_id2`)
+    REFERENCES `taylortyler`.`employee` (`employee_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
