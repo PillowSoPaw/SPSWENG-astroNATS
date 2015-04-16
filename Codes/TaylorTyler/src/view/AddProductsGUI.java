@@ -36,8 +36,6 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Iterator;
-import javax.swing.JCheckBox;
-import javax.swing.SwingConstants;
 
 public class AddProductsGUI extends JFrame implements ActionListener, FocusListener, KeyListener
 {
@@ -74,16 +72,12 @@ public class AddProductsGUI extends JFrame implements ActionListener, FocusListe
 	private DefaultTableModel productTableModel;
 	private DefaultComboBoxModel<String> productComboBoxModel;
 	
-	private String[] productListColumn = {"Quantity", "Product", "Price(per unit)", "Subtotal"};
+	private String[] productListColumn = {"Product", "Quantity", "Price(per unit)", "Subtotal"};
 	private ArrayList<Object[]> productsBought;
 	private String[] productOptions;
 	private double[] productPrices;
 	private boolean bValidQuantityInput = false;
 	private boolean bCustomerNameInDB = false;
-	private JCheckBox addDiscountCheckBox;
-	private JTextField discountTextField;
-	private JLabel discountLabel;
-	private JLabel percentLabel;
 	
 	public AddProductsGUI( AddProductsController addProductsController, AddTransactionGUI addTransactionGUI ) 
 	{
@@ -105,20 +99,20 @@ public class AddProductsGUI extends JFrame implements ActionListener, FocusListe
 		getContentPane().add(addProductPanel);
 		
 		productComboBox = new JComboBox();
-		productComboBox.setBounds(122, 71, 197, 26);
+		productComboBox.setBounds(122, 84, 197, 26);
 		productComboBox.addActionListener(this);
 		addProductPanel.add(productComboBox);
 		
 		productLabel = new JLabel("Product:");
-		productLabel.setBounds(56, 71, 59, 26);
+		productLabel.setBounds(56, 84, 59, 26);
 		addProductPanel.add(productLabel);
 		
 		quantityLabel = new JLabel("Quantity:");
-		quantityLabel.setBounds(56, 108, 100, 26);
+		quantityLabel.setBounds(56, 121, 100, 26);
 		addProductPanel.add(quantityLabel);
 		
 		quantityTextField = new JTextField();
-		quantityTextField.setBounds(122, 108, 136, 26);
+		quantityTextField.setBounds(122, 121, 136, 26);
 		quantityTextField.setText("Positive Integer");
 		quantityTextField.setColumns(10);
 		quantityTextField.addFocusListener(this);
@@ -126,20 +120,20 @@ public class AddProductsGUI extends JFrame implements ActionListener, FocusListe
 		addProductPanel.add(quantityTextField);
 		
 		piecesLabel = new JLabel("piece/s");
-		piecesLabel.setBounds(268, 108, 66, 26);
+		piecesLabel.setBounds(268, 121, 66, 26);
 		addProductPanel.add(piecesLabel);
 		
 		quantityWarningLabel = new JLabel("Please input positive integer");
-		quantityWarningLabel.setBounds(122, 134, 222, 19);
+		quantityWarningLabel.setBounds(122, 158, 222, 35);
 		quantityWarningLabel.setVisible(false);
 		addProductPanel.add(quantityWarningLabel);
 		
 		customerNameLabel = new JLabel("Customer Name:");
-		customerNameLabel.setBounds(10, 11, 100, 26);
+		customerNameLabel.setBounds(10, 24, 100, 26);
 		addProductPanel.add(customerNameLabel);
 		
 		customerNameTextField = new JTextField();
-		customerNameTextField.setBounds(122, 11, 197, 26);
+		customerNameTextField.setBounds(122, 24, 197, 26);
 		customerNameTextField.setText("Enter customer name here...");
 		customerNameTextField.setColumns(10);
 		customerNameTextField.addFocusListener(this);
@@ -147,32 +141,9 @@ public class AddProductsGUI extends JFrame implements ActionListener, FocusListe
 		addProductPanel.add(customerNameTextField);
 		
 		nameWarningLabel = new JLabel("Customer name not in the database.");
-		nameWarningLabel.setBounds(122, 43, 212, 27);
+		nameWarningLabel.setBounds(122, 56, 212, 27);
 		nameWarningLabel.setVisible(false);
 		addProductPanel.add(nameWarningLabel);
-		
-		addDiscountCheckBox = new JCheckBox("Add Discount");
-		addDiscountCheckBox.setBounds(122, 152, 136, 23);
-		addDiscountCheckBox.setBackground(new Color(189, 183, 107));
-		addProductPanel.add(addDiscountCheckBox);
-		addDiscountCheckBox.addActionListener(this);
-		
-		discountTextField = new JTextField();
-		discountTextField.setBounds(122, 180, 47, 20);
-		addProductPanel.add(discountTextField);
-		discountTextField.setColumns(10);
-		discountTextField.setVisible(false);
-		
-		discountLabel = new JLabel("Discount (in %):");
-		discountLabel.setHorizontalAlignment(SwingConstants.TRAILING);
-		discountLabel.setBounds(10, 182, 97, 14);
-		addProductPanel.add(discountLabel);
-		discountLabel.setVisible(false);
-		
-		percentLabel = new JLabel("%");
-		percentLabel.setBounds(179, 183, 46, 14);
-		addProductPanel.add(percentLabel);
-		percentLabel.setVisible(false);
 
 //		lblNewProduct = new JLabel("+ New Product ");
 //		productListScrollPane.setColumnHeaderView(lblNewProduct);
@@ -289,26 +260,7 @@ public class AddProductsGUI extends JFrame implements ActionListener, FocusListe
 	//ACTION LISTENER FUNCTION
 	@Override
 	public void actionPerformed(ActionEvent e)
-	{	
-		if( e.getSource() == addDiscountCheckBox )
-		{
-			boolean selected = addDiscountCheckBox.getModel().isSelected();
-			
-			if(selected == true)
-			{
-				discountTextField.setVisible(true);
-				discountLabel.setVisible(true);
-				percentLabel.setVisible(true);
-			}
-			else
-			{
-				discountTextField.setVisible(false);
-				discountLabel.setVisible(false);
-				percentLabel.setVisible(false);
-			}
-			
-		}
-		
+	{
 		if( e.getSource() == productComboBox )
 		{
 			updateLabels(true);
@@ -327,7 +279,7 @@ public class AddProductsGUI extends JFrame implements ActionListener, FocusListe
 				{
 					addToProductTable(productOptions[productComboBox.getSelectedIndex()], temp, productPrices[productComboBox.getSelectedIndex()]);
 					
-					productsBought.add(new Object[] {productOptions[productComboBox.getSelectedIndex()], temp, productPrices[productComboBox.getSelectedIndex()], temp * productPrices[productComboBox.getSelectedIndex()]});
+					productsBought.add(new Object[] {customerNameTextField.getText(), productOptions[productComboBox.getSelectedIndex()], temp, productPrices[productComboBox.getSelectedIndex()], temp * productPrices[productComboBox.getSelectedIndex()]});
 					
 					clearForm();
 				}
@@ -448,9 +400,9 @@ public class AddProductsGUI extends JFrame implements ActionListener, FocusListe
 		updateLabels(false);
 	}
 	
-	public void addToProductTable(String name, int quantity, double price )
+	public void addToProductTable(String productName, int quantity, double price )
 	{
-		Object[] row = {quantity, name, price, quantity * price};
+		Object[] row = {productName, quantity, price, quantity * price};
 		productTableModel.addRow(row);
 	}
 
@@ -469,13 +421,13 @@ public class AddProductsGUI extends JFrame implements ActionListener, FocusListe
 			
 			for( int i = 0; i < productsBought.size(); i++ )
 			{
-				productCount += ((int) productsBought.get(i)[1]);
+				productCount += ((int) productsBought.get(i)[2]);
 			}
 			productCountLabel.setText("Product Count: " + productCount);
 			
 			for( int i = 0; i < productsBought.size(); i++ )
 			{
-				subtotal += getProductSubtotal((String) productsBought.get(i)[0], (int) productsBought.get(i)[1]);
+				subtotal += getProductSubtotal((String) productsBought.get(i)[1], (int) productsBought.get(i)[2]);
 			}
 			totalPriceLabel.setText("Total Price: P " + subtotal);
 		}
