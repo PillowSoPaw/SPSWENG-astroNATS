@@ -31,7 +31,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -42,9 +41,6 @@ import java.util.Iterator;
 
 import controller.AddServicesController;
 
-import javax.swing.SwingConstants;
-import javax.swing.JCheckBox;
-
 public class AddServicesGUI extends JFrame implements ActionListener, FocusListener, MouseListener, KeyListener
 {
 	private AddServicesController addServicesController;
@@ -53,7 +49,6 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 	private JPanel employeePanel;
 	private JPanel productPanel;
 	private JPanel servicePanel;
-	private JPanel addDiscountPanel;
 	private Border blackline;
 	private JButton cancelButton;
 	private JButton addServiceButton;
@@ -61,7 +56,6 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 	private JScrollPane servicesScrollPane;
 	private JTextField customerNameTextField;
 	private JTextField quantityTextField;
-	private JTextField discountTextField;
 	private JComboBox<String> serviceComboBox;
 	private JComboBox<String> productComboBox;
 	private JComboBox<String> seniorComboBox;
@@ -87,11 +81,6 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 	private JLabel nameWarningLabel;
 	private JLabel quantityWarningLabel;
 	private JLabel instructionsLabel;
-	private JLabel discountLabel;
-	private JLabel percentLabel;
-	private JLabel editInstructionsLabel;
-	private JLabel addDiscountLabel;
-	private JCheckBox addDiscountCheckBox;
 	private DefaultTableModel productTableModel;
 	private DefaultTableModel serviceTableModel;
 	private DefaultComboBoxModel<String> productComboBoxModel;
@@ -119,9 +108,9 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 	private boolean bIsEditing = false;
 	private boolean bSeniorSelected = false;
 	private boolean bJuniorSelected = false;
+	private JLabel editInstructionsLabel;
 	
-	
-	public AddServicesGUI( AddServicesController addServicesController, AddTransactionGUI addTransactionGUI )
+	public AddServicesGUI( AddServicesController addServicesController, AddTransactionGUI addTransactionGUI ) 
 	{
 		this.addServicesController = addServicesController;
 		this.addTransactionGUI = addTransactionGUI;
@@ -140,7 +129,7 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 		this.setVisible(true);
 		this.setResizable(false);
 		//this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		this.setSize(741, 600);
+		this.setSize(741, 504);
 				
 		servicePanel = new JPanel();
 		servicePanel.setBackground(new Color(189, 183, 107));
@@ -291,16 +280,14 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 		employeePanel.add(addJuniorButton);
 		
 		newServiceLabel = new JLabel("+ New Service");
-		newServiceLabel.setBounds(10, 450, 100, 14);
-		//newServiceLabel.setBounds(10, 505, 100, 14);
+		newServiceLabel.setBounds(197, 432, 100, 14);
 		newServiceLabel.addMouseListener(this);
 		getContentPane().add(newServiceLabel);
 		
 		addServiceButton = new JButton("Add Service");
 		addServiceButton.setForeground(Color.WHITE);
 		addServiceButton.setBackground(new Color(34, 139, 34));
-		addServiceButton.setBounds(307, 454, 127, 23);
-		//addServiceButton.setBounds(307, 501, 127, 23);
+		addServiceButton.setBounds(307, 428, 127, 23);
 		addServiceButton.setEnabled(false);
 		addServiceButton.addActionListener(this);
 		getContentPane().add(addServiceButton);
@@ -308,8 +295,7 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 		updateServiceButton = new JButton("Update Service");
 		updateServiceButton.setForeground(Color.WHITE);
 		updateServiceButton.setBackground(new Color(34, 139, 34));
-		updateServiceButton.setBounds(259, 454, 175, 23);
-		//updateServiceButton.setBounds(259, 501, 175, 23);
+		updateServiceButton.setBounds(259, 428, 175, 23);
 		updateServiceButton.setVisible(false);
 		updateServiceButton.addActionListener(this);
 		getContentPane().add(updateServiceButton);
@@ -333,7 +319,7 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 		servicesScrollPane = new JScrollPane(servicesTable);
 		servicesScrollPane.setBackground(new Color(189, 183, 107));
 		servicesScrollPane.setBorder(blackline);
-		servicesScrollPane.setBounds(444, 36, 271, 454);
+		servicesScrollPane.setBounds(444, 36, 271, 368);
 		getContentPane().add(servicesScrollPane);
 		
 		ListSelectionModel listSelectionModel = servicesTable.getSelectionModel();
@@ -352,117 +338,31 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 		cancelButton = new JButton("Cancel");
 		cancelButton.setForeground(Color.WHITE);
 		cancelButton.setBackground(Color.RED);
-		cancelButton.setBounds(514, 519, 97, 23);
+		cancelButton.setBounds(514, 428, 97, 23);
 		cancelButton.addActionListener(this);
 		getContentPane().add(cancelButton);
 		
 		finishButton = new JButton("Finish");
 		finishButton.setForeground(Color.WHITE);
 		finishButton.setBackground(new Color(34, 139, 34));
-		finishButton.setBounds(615, 519, 100, 23);
+		finishButton.setBounds(615, 428, 100, 23);
 		finishButton.setEnabled(false);
 		finishButton.addActionListener(this);
 		getContentPane().add(finishButton);
 		
 		instructionsLabel = new JLabel("Input client name, add at least 1 product and assign at least 1 employee to add service. Click new service to clear form.");
-		instructionsLabel.setBounds(10, 546, 705, 14);
+		instructionsLabel.setBounds(10, 455, 705, 14);
 		getContentPane().add(instructionsLabel);
 		
 		editInstructionsLabel = new JLabel("Click on items on the table to edit.");
-		editInstructionsLabel.setHorizontalAlignment(SwingConstants.TRAILING);
-		editInstructionsLabel.setBounds(444, 501, 271, 14);
+		editInstructionsLabel.setBounds(444, 410, 271, 14);
 		getContentPane().add(editInstructionsLabel);
-		
-		addDiscountPanel = new JPanel();
-		addDiscountPanel.setBackground(new Color(189, 183, 107));
-		addDiscountPanel.setBounds(10, 447, 424, 43);
-		addDiscountPanel.setLayout(null);
-		addDiscountPanel.setBorder(blackline);
-		getContentPane().add(addDiscountPanel);
-		addDiscountPanel.setVisible(false);
-		
-		discountTextField = new JTextField();
-		discountTextField.setBounds(208, 11, 44, 20);
-		addDiscountPanel.add(discountTextField);
-		discountTextField.setColumns(10);
-		
-		discountLabel = new JLabel("Discount (in %) :");
-		discountLabel.setHorizontalAlignment(SwingConstants.TRAILING);
-		discountLabel.setBounds(84, 14, 114, 14);
-		addDiscountPanel.add(discountLabel);
-		
-		percentLabel = new JLabel("%");
-		percentLabel.setBounds(258, 14, 25, 14);
-		addDiscountPanel.add(percentLabel);
-		
-		addDiscountLabel = new JLabel("Add Discount");
-		addDiscountLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
-		addDiscountLabel.setBounds(10, 429, 138, 14);
-		getContentPane().add(addDiscountLabel);
-		addDiscountLabel.setVisible(false);
-		
-		addDiscountCheckBox = new JCheckBox("Add discount");
-		addDiscountCheckBox.setBounds(324, 431, 110, 14);
-		getContentPane().add(addDiscountCheckBox);
-		addDiscountCheckBox.setBackground(new Color(189, 183, 107));
-		addDiscountCheckBox.addActionListener(this);
 	}
-	
-//	void itemStateChanged(ItemEvent e)
-//	{
-//		if( e.getSource() == addDiscountCheckBox )
-//		{
-//			boolean selected = addDiscountCheckBox.getModel().isSelected();
-//			System.out.println(selected);
-//			if(selected == true)
-//			{
-//				addDiscountPanel.setVisible(true);
-//				addDiscountLabel.setVisible(true);
-//				newServiceLabel.setBounds(10, 505, 100, 14);
-//				addServiceButton.setBounds(307, 501, 127, 23);
-//				updateServiceButton.setBounds(259, 501, 175, 23);
-//			}
-//			else if(selected == true)
-//			{
-//				addDiscountPanel.setVisible(false);
-//				addDiscountLabel.setVisible(false);
-//				newServiceLabel.setBounds(10, 450, 100, 14);
-//				addServiceButton.setBounds(307, 454, 127, 23);
-//				updateServiceButton.setBounds(259, 454, 175, 23);
-//			}
-//			
-//		}
-//		
-//	}
 	
 	//ACTION LISTENER FUNCTION
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{	
-		if( e.getSource() == addDiscountCheckBox )
-		{
-			boolean selected = addDiscountCheckBox.getModel().isSelected();
-			
-			if(selected == true)
-			{
-				addDiscountPanel.setVisible(true);
-				addDiscountLabel.setVisible(true);
-				newServiceLabel.setBounds(10, 505, 100, 14);
-				addServiceButton.setBounds(307, 501, 127, 23);
-				updateServiceButton.setBounds(259, 501, 175, 23);
-			}
-			else
-			{
-				addDiscountPanel.setVisible(false);
-				addDiscountLabel.setVisible(false);
-				newServiceLabel.setBounds(10, 450, 100, 14);
-				addServiceButton.setBounds(307, 454, 127, 23);
-				updateServiceButton.setBounds(259, 454, 175, 23);
-			}
-			
-		}
-		
-		
 		if( e.getSource() == addProductButton )
 		{
 			int temp = 0;
@@ -613,7 +513,7 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 	{
 		addServiceButton.setVisible(true);
 		updateServiceButton.setVisible(false);
-		//newServiceLabel.setBounds(197, 432, 100, 14);
+		newServiceLabel.setBounds(197, 432, 100, 14);
 		instructionsLabel.setText("Input client name, add at least 1 product and assign at least 1 employee to add service. Click new service to clear form.");
 		resetForm();
 		servicesTable.getSelectionModel().clearSelection();

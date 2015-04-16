@@ -25,8 +25,8 @@ public class ViewClientsController
 		manageClientsGUI.getClients(DBManager.getAllClients());
 	}
 	
-//	public void getClient(int client_id)
-//	{
-//		manageClientsGUI.getClient(DBManager.getClient(client_id));
-//	}
+	public void getClient(int client_id)
+	{
+		manageClientsGUI.getClient(DBManager.getClient(client_id));
+	}
 }
