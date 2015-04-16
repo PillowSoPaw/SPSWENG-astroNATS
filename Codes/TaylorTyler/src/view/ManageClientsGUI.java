@@ -37,12 +37,6 @@ public class ManageClientsGUI extends JPanel implements ActionListener, MouseLis
 	private JButton addNewClientButton;
 	private JTable clientsTable;
 	private JButton editDetailsButton;
-	private JPanel imagePanel;
-	private JLabel nameLabel;
-	private JLabel contactDetailsLabel;
-	private JLabel addressLabel;
-	private JLabel dateLastVisitedLabel;
-	private JLabel numOfVisitsLabel;
 	
 	private String[] clientTableColumn = {"Client ID", "Last Name", "First Name", "Contact Details", "Date Last Visited"};
 	private ArrayList<Object[]> clientTableRows;
@@ -73,7 +67,7 @@ public class ManageClientsGUI extends JPanel implements ActionListener, MouseLis
 		clientsTable = new JTable(clientTableModel);
 		
 		clientsScrollPane = new JScrollPane(clientsTable);
-		clientsScrollPane.setBounds(10, 48, 645, 424);
+		clientsScrollPane.setBounds(10, 48, 801, 385);
 		clientsScrollPane.setBorder(blackline);
 		add(clientsScrollPane);
 		
@@ -89,49 +83,19 @@ public class ManageClientsGUI extends JPanel implements ActionListener, MouseLis
 		
 		sortByLabel = new JLabel("Sort by:");
 		sortByLabel.setForeground(Color.WHITE);
-		sortByLabel.setBounds(480, 11, 46, 26);
+		sortByLabel.setBounds(636, 11, 46, 26);
 		add(sortByLabel);
 		
 		categoryComboBox = new JComboBox();
-		categoryComboBox.setBounds(526, 14, 129, 20);
+		categoryComboBox.setBounds(682, 14, 129, 20);
 		add(categoryComboBox);
 		
 		addNewClientButton = new JButton("Add New Client");
 		addNewClientButton.setBounds(312, 11, 129, 26);
 		add(addNewClientButton);
 		
-		imagePanel = new JPanel();
-		imagePanel.setBounds(665, 48, 146, 136);
-		imagePanel.setBorder(blackline);
-		add(imagePanel);
-		
-		nameLabel = new JLabel("Full Name");
-		nameLabel.setForeground(Color.WHITE);
-		nameLabel.setBounds(665, 185, 146, 33);
-		add(nameLabel);
-		
-		contactDetailsLabel = new JLabel("Contact Details");
-		contactDetailsLabel.setForeground(Color.WHITE);
-		contactDetailsLabel.setBounds(665, 220, 146, 33);
-		add(contactDetailsLabel);
-		
-		addressLabel = new JLabel("Address");
-		addressLabel.setForeground(Color.WHITE);
-		addressLabel.setBounds(665, 255, 146, 33);
-		add(addressLabel);
-		
-		dateLastVisitedLabel = new JLabel("Date Last Visited");
-		dateLastVisitedLabel.setForeground(Color.WHITE);
-		dateLastVisitedLabel.setBounds(665, 290, 146, 33);
-		add(dateLastVisitedLabel);
-		
-		numOfVisitsLabel = new JLabel("# of Visits");
-		numOfVisitsLabel.setForeground(Color.WHITE);
-		numOfVisitsLabel.setBounds(665, 325, 146, 33);
-		add(numOfVisitsLabel);
-		
 		editDetailsButton = new JButton("Edit Details");
-		editDetailsButton.setBounds(682, 382, 113, 33);
+		editDetailsButton.setBounds(698, 439, 113, 33);
 		editDetailsButton.addActionListener(this);
 		add(editDetailsButton);
 
@@ -196,15 +160,15 @@ public class ManageClientsGUI extends JPanel implements ActionListener, MouseLis
 		clientsTable.setModel(clientTableModel);
 	}
 	
-	public void getClient(Client client)
-	{
-		imagePanel.setBackground(getBackground());//this just gets the background i dunno how the picture works
-		nameLabel.setText("Name: "+client.getsName());
-		contactDetailsLabel.setText("Contact: "+client.getsContactNumber());
-		addressLabel.setText("Address: "+client.getsAddress());
-		dateLastVisitedLabel.setText("Last Visited: "+client.getDateLastVisited());
-		numOfVisitsLabel.setText("#Visits: ewan");
-	}
+//	public void getClient(Client client)
+//	{
+//		imagePanel.setBackground(getBackground());//this just gets the background i dunno how the picture works
+//		nameLabel.setText("Name: "+client.getsName());
+//		contactDetailsLabel.setText("Contact: "+client.getsContactNumber());
+//		addressLabel.setText("Address: "+client.getsAddress());
+//		dateLastVisitedLabel.setText("Last Visited: "+client.getDateLastVisited());
+//		numOfVisitsLabel.setText("#Visits: ewan");
+//	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -245,9 +209,9 @@ public class ManageClientsGUI extends JPanel implements ActionListener, MouseLis
 		if(e.getSource() == clientsTable)
 		{
 			//System.out.println(clientsTable.getSelectedRow());
-			String value = (String) clientsTable.getValueAt(clientsTable.getSelectedRow(), 0);
-			int client_id = Integer.parseInt(value);
-			viewClientsController.getClient(client_id);
+//			String value = (String) clientsTable.getValueAt(clientsTable.getSelectedRow(), 0);
+//			int client_id = Integer.parseInt(value);
+//			viewClientsController.getClient(client_id);
 		}
 		
 	}
