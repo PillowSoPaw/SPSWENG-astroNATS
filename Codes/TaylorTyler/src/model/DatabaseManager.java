@@ -70,6 +70,60 @@ public class DatabaseManager
 		return null;
 	}
 	
+	public Client getClient( int client_id )
+	{
+		try
+		{
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM client WHERE client_id = ?");
+			ps.setInt(1, client_id);
+			ResultSet rs = ps.executeQuery();
+			
+			rs.first();
+			
+			model.Client c = new Client(Integer.toString(rs.getInt("client_id")),
+								   rs.getString("name"), 
+								   rs.getString("address"), 
+								   rs.getString("contactNumber"), 
+								   rs.getString("picture"), 
+								   rs.getDate("dateJoined"), 
+								   rs.getDate("dateLastVisited"));
+			return c;
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Iterator getAllClients()
+	{
+		try
+		{
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM client");
+			ResultSet rs = ps.executeQuery();
+			
+			ArrayList<model.Client> clients = new ArrayList<>(0);
+			
+			while( rs.next() )
+			{
+				model.Client c = new Client(Integer.toString(rs.getInt("client_id")),
+									   rs.getString("name"), 
+									   rs.getString("address"), 
+									   rs.getString("contactNumber"), 
+									   rs.getString("picture"), 
+									   rs.getDate("dateJoined"), 
+									   rs.getDate("dateLastVisited"));
+				clients.add(c);
+			}
+			
+			return clients.iterator();
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public Service getService( String name )
 	{
 		try
@@ -105,7 +159,8 @@ public class DatabaseManager
 			model.Product p = new Product(Integer.toString(rs.getInt("product_id")), 
 									rs.getString("name"), 
 									rs.getString("description"), 
-									rs.getInt("quantity"));
+									rs.getInt("quantity"),
+									rs.getInt("threshold"));
 			return p;
 		}catch(SQLException e)
 		{
@@ -190,6 +245,58 @@ public class DatabaseManager
 		return null;
 	}
 	
+	public Iterator getSeniorEmployees()
+	{
+		try
+		{
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE type LIKE 'senior'");
+			ResultSet rs = ps.executeQuery();
+			ArrayList<model.Employee> wEmployees = new ArrayList<>(0);
+			
+			while( rs.next() )
+			{
+				model.Employee e = new Employee(Integer.toString(rs.getInt("employee_id")), 
+										  getBranch(rs.getInt("branch_id")), 
+										  rs.getString("name"), 
+										  rs.getDate("dateStartedWorking"), 
+										  rs.getDouble("hoursRendered"),
+										  rs.getString("type"));
+				wEmployees.add(e);
+			}
+			return wEmployees.iterator();
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Iterator getJuniorEmployees()
+	{
+		try
+		{
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE type LIKE 'junior'");
+			ResultSet rs = ps.executeQuery();
+			ArrayList<model.Employee> wEmployees = new ArrayList<>(0);
+			
+			while( rs.next() )
+			{
+				model.Employee e = new Employee(Integer.toString(rs.getInt("employee_id")), 
+										  getBranch(rs.getInt("branch_id")), 
+										  rs.getString("name"), 
+										  rs.getDate("dateStartedWorking"), 
+										  rs.getDouble("hoursRendered"),
+										  rs.getString("type"));
+				wEmployees.add(e);
+			}
+			return wEmployees.iterator();
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public Iterator getAllProducts()
 	{
 		try
@@ -203,7 +310,8 @@ public class DatabaseManager
 				model.Product p = new Product(Integer.toString(rs.getInt("product_id")), 
 										rs.getString("name"), 
 										rs.getString("description"), 
-										rs.getInt("quantity"));
+										rs.getInt("quantity"),
+										rs.getInt("threshold"));
 				products.add(p);
 			}
 			return products.iterator();
@@ -228,6 +336,7 @@ public class DatabaseManager
 										rs.getString("name"), 
 										rs.getString("description"), 
 										rs.getInt("quantity"),
+										rs.getInt("threshold"),
 										rs.getString("measurement"));
 				products.add(p);
 			}
@@ -253,6 +362,7 @@ public class DatabaseManager
 										rs.getString("name"), 
 										rs.getString("description"), 
 										rs.getInt("quantity"),
+										rs.getInt("threshold"),
 										rs.getDouble("price"));
 				products.add(p);
 			}

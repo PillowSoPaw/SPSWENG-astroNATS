@@ -2,17 +2,16 @@ package driver;
 
 import javax.swing.JFrame;
 
-import view.AddTransactionPanel;
-import view.TransactionGUI;
+import view.LogInGUI;
+import view.MainGUI;
 import controller.Controller;
 
 public class Driver
 {
 	public static void main(String[] args)
 	{
-		//AddTransactionPanel panel = new AddTransactionPanel();
-		TransactionGUI panel = new TransactionGUI();
-		Controller controller = new Controller(panel);
-		
+		//TransactionGUI panel = new TransactionGUI();
+		//Controller controller = new Controller(panel);
+		LogInGUI panel = new LogInGUI();
 	}
 }

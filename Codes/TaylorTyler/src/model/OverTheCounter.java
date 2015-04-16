@@ -5,9 +5,9 @@ public class OverTheCounter extends Product
 	
 	private double dPrice;
 	
-	public OverTheCounter( String sProductId, String sName, String sDescription, int nQuantity, double dPrice )
+	public OverTheCounter( String sProductId, String sName, String sDescription, int nQuantity, int nThreshold, double dPrice )
 	{
-		super( sProductId, sName, sDescription, nQuantity );
+		super( sProductId, sName, sDescription, nQuantity, nThreshold );
 		this.dPrice = dPrice;
 	}
 	

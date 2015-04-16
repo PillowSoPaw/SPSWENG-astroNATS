@@ -7,13 +7,15 @@ public class Product
 	private String sName;
 	private String sDescription;
 	private int nQuantity;
+	private int nThreshold;
 	
-	public Product( String sProductId, String sName, String sDescription, int nQuantity )
+	public Product( String sProductId, String sName, String sDescription, int nQuantity, int nThreshold )
 	{
 		this.sProductId = sProductId;
 		this.sName = sName;
 		this.sDescription = sDescription;
 		this.nQuantity = nQuantity;
+		this.nThreshold = nThreshold;
 	}
 	
 	//getters
@@ -37,6 +39,11 @@ public class Product
 		return nQuantity;
 	}
 
+	public int getnThreshold()
+	{
+		return nThreshold;
+	}
+	
 	//setters
 	public void setsProductId(String sProductId)
 	{
@@ -56,6 +63,11 @@ public class Product
 	public void setnQuantity(int nQuantity)
 	{
 		this.nQuantity = nQuantity;
+	}
+	
+	public void setnThreshold(int nThreshold)
+	{
+		this.nThreshold = nThreshold;
 	}
 	
 }

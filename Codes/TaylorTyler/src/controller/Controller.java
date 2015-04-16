@@ -1,12 +1,8 @@
 package controller;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
-import view.AddTransactionPanel;
-import view.EmployeeListFrame;
-import view.ProductListFrame;
-import view.TransactionGUI;
+import oldview.TransactionGUI;
 import model.Client;
 import model.DatabaseManager;
 import model.Employee;
@@ -18,7 +14,7 @@ import model.ServiceLineItem;
 
 public class Controller
 {
-	private static DatabaseManager	DBManager;
+	private static DatabaseManager DBManager;
 	private TransactionGUI transactionGUI;
 	//private AddTransactionPanel transactionPanel;
 
@@ -94,7 +90,6 @@ public class Controller
 			else if( employeesAssigned.get(i)[1] == null )
 				t.addServiceLineItem(new ServiceLineItem("", s.get(i), 1, getEmployee(employeesAssigned.get(i)[0]), null));
 		}
-		
 		
 		success = DBManager.addTransaction(t);
 		if( success == true )

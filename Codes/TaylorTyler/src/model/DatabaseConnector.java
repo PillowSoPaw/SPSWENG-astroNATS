@@ -53,9 +53,4 @@ public class DatabaseConnector
 		}
 		return dbConn;
 	}
-	
-	public static void main(String[] args)
-	{
-		DatabaseConnector connection = new DatabaseConnector();
-	}
 }
