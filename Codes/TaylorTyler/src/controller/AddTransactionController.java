@@ -66,49 +66,65 @@ public class AddTransactionController
 	}
 	
 	// create transaction with information from view
-	public void createTransaction(ArrayList<String> servicesAvailed, ArrayList<String[]> employeesAssigned, ArrayList<String> consumable,
-							ArrayList<String> productsBought, ArrayList<Integer> productsQuantity, String clientName)
+	public void createTransaction(ArrayList<Object[]> servicesAvailed, ArrayList<Object[]> productsBought,
+							ArrayList<ArrayList<Object[]>> consumable, String clientName)
 	{
 		boolean success;
 		ArrayList<Service> s = new ArrayList<>(0);
 		ArrayList<Product> p = new ArrayList<>(0);
-		
+		ArrayList<Product> cs = new ArrayList<>(0);
+                ArrayList<Integer> csAmount = new ArrayList<>(0);
 		Client c = getClient(clientName);
 		Transaction t = new Transaction("", c, "");
 		
 		for( int i = 0; i < servicesAvailed.size(); i++ )
 		{
-			s.add(getService(servicesAvailed.get(i)));
+			s.add(getService((String) servicesAvailed.get(i)[1]));
 		}
 		
 		for( int i = 0; i < productsBought.size(); i++ )
 		{
-			p.add(getProduct(productsBought.get(i)));
+			p.add(getProduct((String) productsBought.get(i)[0]));
 		}
 		
+                for(int i = 0; i < consumable.size(); i++)
+                {
+                    for(int k = 0; k < consumable.get(i).size(); k++)
+                    {
+                        cs.add(getProduct( (String) consumable.get(i).get(k)[0]));
+                        csAmount.add((int) consumable.get(i).get(k)[1]);
+                    }
+                }
+                
 		ArrayList<ServiceLineItem> sli = new ArrayList<>(0);
 		ArrayList<ProductLineItem> pli = new ArrayList<>(0);
 		
 		for( int i = 0; i < p.size(); i++ )
 		{
-			t.addProductLineItem(new ProductLineItem("", p.get(i), productsQuantity.get(i)));
+			t.addProductLineItem(new ProductLineItem("", p.get(i), (int) productsBought.get(i)[1]));
 		}
+                
+                for(int i = 0; i < cs.size(); i++)
+                {
+                    t.addProductLineItem(new ProductLineItem("", cs.get(i), (int) csAmount.get(i)));
+                }
 		
 		for( int i = 0; i < s.size(); i++ )
 		{	
-			if( employeesAssigned.get(i)[0] != null && employeesAssigned.get(i)[1] != null )
-				t.addServiceLineItem(new ServiceLineItem("", s.get(i), 1, getEmployee(employeesAssigned.get(i)[0]), getEmployee(employeesAssigned.get(i)[1])));
-			else if( employeesAssigned.get(i)[0] == null )
-				t.addServiceLineItem(new ServiceLineItem("", s.get(i), 1, null, getEmployee(employeesAssigned.get(i)[1])));
-			else if( employeesAssigned.get(i)[1] == null )
-				t.addServiceLineItem(new ServiceLineItem("", s.get(i), 1, getEmployee(employeesAssigned.get(i)[0]), null));
+			if( "None".equalsIgnoreCase((String) servicesAvailed.get(i)[2]) && "None".equalsIgnoreCase((String) servicesAvailed.get(i)[3])){
+				t.addServiceLineItem(new ServiceLineItem("", s.get(i), 1, getEmployee((String) servicesAvailed.get(i)[2]), getEmployee((String) servicesAvailed.get(i)[3])));
+                        }
+                        else if( "None".equalsIgnoreCase((String) servicesAvailed.get(i)[3]) )
+				t.addServiceLineItem(new ServiceLineItem("", s.get(i), 1, null, getEmployee((String) servicesAvailed.get(i)[2])));
+			else if( "None".equalsIgnoreCase((String) servicesAvailed.get(i)[2]) )
+				t.addServiceLineItem(new ServiceLineItem("", s.get(i), 1, getEmployee((String) servicesAvailed.get(i)[3]), null));
 		}
 		
 		success = DBManager.addTransaction(t);
 		if( success == true )
 		{
 			DBManager.updateProductQuantity( t.getProducts() );
-			DBManager.updateConsumableQuantity(consumable);
+			DBManager.updateConsumableQuantity(cs);
 		}
 	}
 }

@@ -435,7 +435,7 @@ public class AddTransactionGUI extends JPanel implements ActionListener
 		}
 		else if( e.getSource() == saveTransactionButton )
 		{
-			
+                    addTransactionController.createTransaction(serviceTableRows, productTableRows, consumables, nameTextField.getText());
 		}
 		else if( e.getSource() == removeServiceButton )
 		{

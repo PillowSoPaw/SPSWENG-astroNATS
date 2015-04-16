@@ -95,7 +95,7 @@ public class Controller
 		if( success == true )
 		{
 			DBManager.updateProductQuantity( t.getProducts() );
-			DBManager.updateConsumableQuantity(consumable);
+			//DBManager.updateConsumableQuantity(consumable);
 		}
 	}
 
