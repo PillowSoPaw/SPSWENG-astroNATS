@@ -4,7 +4,7 @@ USE `taylortyler`;
 --
 -- Host: localhost    Database: taylortyler
 -- ------------------------------------------------------
--- Server version	5.6.19
+-- Server version	5.6.23-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -146,6 +146,7 @@ CREATE TABLE `product` (
   `name` varchar(45) NOT NULL,
   `description` varchar(45) NOT NULL,
   `quantity` float NOT NULL,
+  `threshold` int(11) NOT NULL,
   `price` float DEFAULT NULL,
   `measurement` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`product_id`),
@@ -159,7 +160,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES (1,'Shampoo','For the hair',50,100,'Cups'),(2,'Conditioner','For the hair',40,90,'Cups'),(3,'Herbal','for the hair',30,200,NULL),(4,'Wax','for styling the hair',20,150,NULL),(5,'Nail Polish','for the nails',10,50,'mL'),(6,'Hair Color','for coloring the hair',10,NULL,'mL');
+INSERT INTO `product` VALUES (1,'Shampoo','For the hair',50,0,100,'Cups'),(2,'Conditioner','For the hair',40,0,90,'Cups'),(3,'Herbal','for the hair',30,0,200,NULL),(4,'Wax','for styling the hair',20,0,150,NULL),(5,'Nail Polish','for the nails',10,0,50,'mL'),(6,'Hair Color','for coloring the hair',10,0,NULL,'mL');
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -278,34 +279,21 @@ UNLOCK TABLES;
 DROP TABLE IF EXISTS `servicelineitem`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `taylortyler`.`servicelineitem` (
-  `servicelineitem_id` INT(11) NOT NULL AUTO_INCREMENT,
-  `service_id` INT(11) NOT NULL,
-  `quantity` INT(11) NOT NULL,
-  `employee_id1` INT(11) NOT NULL,
-  `employee_id2` INT(11) NULL DEFAULT NULL,
+CREATE TABLE `servicelineitem` (
+  `servicelineitem_id` int(11) NOT NULL AUTO_INCREMENT,
+  `service_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `employee_id1` int(11) NOT NULL,
+  `employee_id2` int(11) DEFAULT NULL,
   PRIMARY KEY (`servicelineitem_id`),
-  UNIQUE INDEX `servicelineitem_id_UNIQUE` (`servicelineitem_id` ASC),
-  INDEX `service_id_idx` (`service_id` ASC),
-  INDEX `employee_id1_idx` (`employee_id1` ASC),
-  INDEX `employee_id2_idx` (`employee_id2` ASC),
-  CONSTRAINT `service_id3`
-    FOREIGN KEY (`service_id`)
-    REFERENCES `taylortyler`.`service` (`service_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `employee_id13`
-    FOREIGN KEY (`employee_id1`)
-    REFERENCES `taylortyler`.`employee` (`employee_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-  CONSTRAINT `employee_id23`
-    FOREIGN KEY (`employee_id2`)
-    REFERENCES `taylortyler`.`employee` (`employee_id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
+  UNIQUE KEY `servicelineitem_id_UNIQUE` (`servicelineitem_id`),
+  KEY `service_id_idx` (`service_id`),
+  KEY `employee_id1_idx` (`employee_id1`),
+  KEY `employee_id2_idx` (`employee_id2`),
+  CONSTRAINT `employee_id13` FOREIGN KEY (`employee_id1`) REFERENCES `employee` (`employee_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `employee_id23` FOREIGN KEY (`employee_id2`) REFERENCES `employee` (`employee_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `service_id3` FOREIGN KEY (`service_id`) REFERENCES `service` (`service_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -411,8 +399,8 @@ CREATE TABLE `transactionlist` (
   `receipt_id` int(11) NOT NULL,
   PRIMARY KEY (`transaction_id`,`receipt_id`),
   KEY `receipt_id_idx` (`receipt_id`),
-  CONSTRAINT `transaction_id3` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`transaction_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `receipt_id3` FOREIGN KEY (`receipt_id`) REFERENCES `receipt` (`receipt_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `receipt_id3` FOREIGN KEY (`receipt_id`) REFERENCES `receipt` (`receipt_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `transaction_id3` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`transaction_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -434,4 +422,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-03-16 10:43:08
+-- Dump completed on 2015-04-10 10:22:36
