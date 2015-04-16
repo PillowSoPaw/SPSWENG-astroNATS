@@ -72,7 +72,7 @@ public class AddProductsGUI extends JFrame implements ActionListener, FocusListe
 	private DefaultTableModel productTableModel;
 	private DefaultComboBoxModel<String> productComboBoxModel;
 	
-	private String[] productListColumn = {"Quantity", "Product", "Price(per unit)", "Subtotal"};
+	private String[] productListColumn = {"Product", "Quantity", "Price(per unit)", "Subtotal"};
 	private ArrayList<Object[]> productsBought;
 	private String[] productOptions;
 	private double[] productPrices;
@@ -279,7 +279,7 @@ public class AddProductsGUI extends JFrame implements ActionListener, FocusListe
 				{
 					addToProductTable(productOptions[productComboBox.getSelectedIndex()], temp, productPrices[productComboBox.getSelectedIndex()]);
 					
-					productsBought.add(new Object[] {productOptions[productComboBox.getSelectedIndex()], temp, productPrices[productComboBox.getSelectedIndex()], temp * productPrices[productComboBox.getSelectedIndex()]});
+					productsBought.add(new Object[] {customerNameTextField.getText(), productOptions[productComboBox.getSelectedIndex()], temp, productPrices[productComboBox.getSelectedIndex()], temp * productPrices[productComboBox.getSelectedIndex()]});
 					
 					clearForm();
 				}
@@ -400,9 +400,9 @@ public class AddProductsGUI extends JFrame implements ActionListener, FocusListe
 		updateLabels(false);
 	}
 	
-	public void addToProductTable(String name, int quantity, double price )
+	public void addToProductTable(String productName, int quantity, double price )
 	{
-		Object[] row = {quantity, name, price, quantity * price};
+		Object[] row = {productName, quantity, price, quantity * price};
 		productTableModel.addRow(row);
 	}
 
@@ -421,13 +421,13 @@ public class AddProductsGUI extends JFrame implements ActionListener, FocusListe
 			
 			for( int i = 0; i < productsBought.size(); i++ )
 			{
-				productCount += ((int) productsBought.get(i)[1]);
+				productCount += ((int) productsBought.get(i)[2]);
 			}
 			productCountLabel.setText("Product Count: " + productCount);
 			
 			for( int i = 0; i < productsBought.size(); i++ )
 			{
-				subtotal += getProductSubtotal((String) productsBought.get(i)[0], (int) productsBought.get(i)[1]);
+				subtotal += getProductSubtotal((String) productsBought.get(i)[1], (int) productsBought.get(i)[2]);
 			}
 			totalPriceLabel.setText("Total Price: P " + subtotal);
 		}

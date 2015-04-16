@@ -327,7 +327,7 @@ public class AddTransactionGUI extends JPanel implements ActionListener
 		
 		for( int i = 0; i < productTableRows.size(); i++ )
 		{
-			productModel.addRow(productTableRows.get(i));
+			productModel.addRow(new Object[]{productTableRows.get(i)[1], productTableRows.get(i)[2], productTableRows.get(i)[3], productTableRows.get(i)[4]} );
 		}
 		productsTransactionTable.setModel(productModel);
 	}
