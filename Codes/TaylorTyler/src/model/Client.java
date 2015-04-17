@@ -9,21 +9,33 @@ public class Client
 	private String sName;
 	private String sAddress;
 	private String sContactNumber;
-	private String sPictureDirectory;
+	private String sEmail;
 	private Date dateJoined;
 	private Date dateLastVisited;
+	private Date birthday;
 	
-	public Client( String sClientId, String sName, String sAddress, String sContactNumber, String sPictureDirectory, Date dateJoined, Date dateLastVisited )
+	public Client( String sClientId, String sName, String sAddress, String sContactNumber, String sEmail, Date dateJoined, Date dateLastVisited , Date birthday)
 	{
 		this.sClientId = sClientId;
 		this.sName = sName;
 		this.sAddress = sAddress;
 		this.sContactNumber = sContactNumber;
-		this.sPictureDirectory = sPictureDirectory;
+		this.sEmail = sEmail;
 		this.dateJoined = dateJoined;
 		this.dateLastVisited = dateLastVisited;
+		this.birthday = birthday;
 	}
-
+	public Client(String sName, String sAddress, String sContactNumber, String sEmail, Date dateJoined, Date dateLastVisited, Date birthday )
+	{
+		this.sName = sName;
+		this.sAddress = sAddress;
+		this.sContactNumber = sContactNumber;
+		this.sEmail = sEmail;
+		this.dateJoined = dateJoined;
+		this.dateLastVisited = dateLastVisited;
+		this.birthday = birthday;
+	}
+	
 	//getters
 	public String getsClientId()
 	{
@@ -45,9 +57,9 @@ public class Client
 		return sContactNumber;
 	}
 
-	public String getsPictureDirectory()
+	public String getsEmail()
 	{
-		return sPictureDirectory;
+		return sEmail;
 	}
 
 	public Date getDateJoined()
@@ -58,6 +70,11 @@ public class Client
 	public Date getDateLastVisited()
 	{
 		return dateLastVisited;
+	}
+	
+	public Date getBirthday() 
+	{
+		return birthday;
 	}
 
 	//setters
@@ -81,9 +98,9 @@ public class Client
 		this.sContactNumber = sContactNumber;
 	}
 
-	public void setsPictureDirectory(String sPictureDirectory)
+	public void setsEmail(String sEmail)
 	{
-		this.sPictureDirectory = sPictureDirectory;
+		this.sEmail = sEmail;
 	}
 
 	public void setDateJoined(Date dateJoined)
@@ -94,6 +111,11 @@ public class Client
 	public void setDateLastVisited(Date dateLastVisited)
 	{
 		this.dateLastVisited = dateLastVisited;
+	}
+	
+	public void setBirthday(Date birthday)
+	{
+		this.birthday = birthday;
 	}
 	
 }

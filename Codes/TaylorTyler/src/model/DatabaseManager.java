@@ -45,31 +45,6 @@ public class DatabaseManager
 		return null;
 	}
 	
-	public Client getClient( String name )
-	{
-		try
-		{
-			PreparedStatement ps = connection.prepareStatement("SELECT * FROM client WHERE name = ?");
-			ps.setString(1, name);
-			ResultSet rs = ps.executeQuery();
-			
-			rs.first();
-			
-			model.Client c = new Client(Integer.toString(rs.getInt("client_id")),
-								   rs.getString("name"), 
-								   rs.getString("address"), 
-								   rs.getString("contactNumber"), 
-								   rs.getString("picture"), 
-								   rs.getDate("dateJoined"), 
-								   rs.getDate("dateLastVisited"));
-			return c;
-		}catch(SQLException e)
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
 	public Client getClient( int client_id )
 	{
 		try
@@ -84,9 +59,36 @@ public class DatabaseManager
 								   rs.getString("name"), 
 								   rs.getString("address"), 
 								   rs.getString("contactNumber"), 
-								   rs.getString("picture"), 
+								   rs.getString("email"), 
 								   rs.getDate("dateJoined"), 
-								   rs.getDate("dateLastVisited"));
+								   rs.getDate("dateLastVisited"),
+								   rs.getDate("birthday"));
+			return c;
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Client getClient( String name )
+	{
+		try
+		{
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM client WHERE name = ?");
+			ps.setString(1, name);
+			ResultSet rs = ps.executeQuery();
+			
+			rs.first();
+			
+			model.Client c = new Client(Integer.toString(rs.getInt("client_id")),
+								   rs.getString("name"), 
+								   rs.getString("address"), 
+								   rs.getString("contactNumber"), 
+								   rs.getString("email"), 
+								   rs.getDate("dateJoined"), 
+								   rs.getDate("dateLastVisited"),
+								   rs.getDate("birthday"));
 			return c;
 		}catch(SQLException e)
 		{
@@ -110,9 +112,10 @@ public class DatabaseManager
 									   rs.getString("name"), 
 									   rs.getString("address"), 
 									   rs.getString("contactNumber"), 
-									   rs.getString("picture"), 
+									   rs.getString("email"), 
 									   rs.getDate("dateJoined"), 
-									   rs.getDate("dateLastVisited"));
+									   rs.getDate("dateLastVisited"),
+									   rs.getDate("birthday"));
 				clients.add(c);
 			}
 			
@@ -193,6 +196,68 @@ public class DatabaseManager
 		return null;
 	}
 	
+        public Iterator getAllReceipts()
+        {
+            try
+            {
+                PreparedStatement ps = connection.prepareStatement("SELECT * FROM receipt");
+                ResultSet rs = ps.executeQuery();
+                ArrayList<model.Receipt> rList = new ArrayList();
+                while( rs.next() )
+                {
+                    model.Receipt r = new Receipt( Integer.toString(rs.getInt("receipt_id")),
+                                                    getClient(rs.getInt("client_id")),
+                                                    rs.getString("modeOfPayment"),
+                                                    rs.getDouble("totalBill") );
+                    
+                    rList.add(r);
+                }
+                return rList.iterator();
+            }catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        
+        public Iterator getAllProductTransactionsOfReceipt( int receipt_id )
+        {
+            try
+            {
+                PreparedStatement ps = connection.prepareStatement("SELECT C.name as clientName, P.name as productName, PLI.quantity, p.price, (PLI.quantity*P.price)   " +
+                                                                    "FROM taylortyler.transaction T, taylortyler.receipt R, " +
+                                                                    "taylortyler.transactionlist TL, taylortyler.client C, " +
+                                                                    "taylortyler.productlist PL, taylortyler.productlineitem PLI, " +
+                                                                    "taylortyler.product P " +
+                                                                    "where T.transaction_id = TL.transaction_id " +
+                                                                    "AND r.receipt_id = TL.receipt_id " +
+                                                                    "AND c.client_id = t.client_id " +
+                                                                    "AND PL.transaction_id = T.transaction_id " +
+                                                                    "AND P.product_id = PLI.product_id " +
+                                                                    "AND PL.productlineitem_id = PLI.productlineitem_id " +
+                                                                    "AND r.receipt_id = ?;");
+                ps.setInt(1, receipt_id);
+                ResultSet rs = ps.executeQuery();
+                ArrayList<Object[]> ptList = new ArrayList();
+                
+                while(rs.next())
+                {
+                    Object[] oArray = new Object[5];
+                    oArray[0] = rs.getString("clientName");
+                    oArray[1] = rs.getString("productName");
+                    oArray[2] = rs.getInt("quantity");
+                    oArray[3] = rs.getDouble("price");
+                    oArray[4] = rs.getDouble("total");
+                    ptList.add(oArray);
+                }
+                
+                return ptList.iterator();
+            }catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+            return null;
+        }
 	public Iterator getAllEmployees()
 	{
 		try
@@ -412,15 +477,15 @@ public class DatabaseManager
 	{
 		try
 		{
-			PreparedStatement ps = connection.prepareStatement("INSERT INTO client(name, address, contactNumber, picture, dateJoined, dateLastVisited) "
-											  + "VALUES (?, ?, ?, ?, ?, ?)",Statement.RETURN_GENERATED_KEYS);
+			PreparedStatement ps = connection.prepareStatement("INSERT INTO client(name, address, contactNumber, email, dateJoined, dateLastVisited, birthday) "
+											  + "VALUES (?, ?, ?, ?, ?, ?, ?)",Statement.RETURN_GENERATED_KEYS);
 			ps.setString(1, c.getsName());
 			ps.setString(2, c.getsAddress());
 			ps.setString(3, c.getsContactNumber());
-			ps.setString(4, c.getsPictureDirectory());
+			ps.setString(4, c.getsEmail());
 			ps.setDate(5, c.getDateJoined());
 			ps.setDate(6, c.getDateLastVisited());
-			
+			ps.setDate(7, c.getBirthday());
 			int affectedRows = ps.executeUpdate();
 			int genId;
 			
