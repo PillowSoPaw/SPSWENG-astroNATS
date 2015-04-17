@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -35,6 +36,7 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 	private String title;
 	private Border blackline;
 	private JTextField nameTextField;
+        private JComboBox nameComboBox;
 	private JScrollPane servicesTransactionScrollPane;
 	private JScrollPane productsTransactionScrollPane;
 	private JPanel imagePanel;
@@ -154,10 +156,14 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 			clientNames.add(c.getsName());
 		}	
 	
-		nameTextField = new Java2sAutoTextField(clientNames.subList(0, clientNames.size()));
-		nameTextField.setBounds(10, 183, 141, 20);
-		add(nameTextField);
-		nameTextField.setColumns(10);
+                nameComboBox = new Java2sAutoComboBox(clientNames.subList(0, clientNames.size()));
+                nameComboBox.setBounds(10, 183, 141, 20);
+                add(nameComboBox);
+                
+//		nameTextField = new Java2sAutoTextField(clientNames.subList(0, clientNames.size()));
+//		nameTextField.setBounds(10, 183, 141, 20);
+//		add(nameTextField);
+//		nameTextField.setColumns(10);
 		
 //		nameTextField = new JTextField();
 //		nameTextField.setText("Last name, First name");
