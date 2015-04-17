@@ -37,16 +37,19 @@ public class EditClientDetailsGUI extends JFrame
 	public EditClientDetailsGUI(/*String firstname, String middlename, String lastname, String email, Date birthday, String address, String contactNo, String gender*/)
 	{
 		getContentPane().setForeground(Color.WHITE);
+		setResizable(false);
 		//this.mainFrame = mainFrame; //Pass the view clients GUI
 		
 		//Calendar stuff
 		currYear = Calendar.getInstance().get(Calendar.YEAR);
+		int currDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+		int currMonth = Calendar.getInstance().get(Calendar.MONTH);
 
 		String[] cmbDayItems = new String[31];
 		String[] cmbMonthItems = { "January", "February", "March", "April", "May",
                 "June", "July", "August", "September",
                 "October", "November", "December" };
-		String[] cmbYearItems = new String[200];
+		String[] cmbYearItems = new String[151];
 		
 		String[] genderItems = {"Male", "Female"};
 		
@@ -54,9 +57,11 @@ public class EditClientDetailsGUI extends JFrame
 			cmbDayItems[i] = new String("" + (i + 1));
 		}
 		
-		for (int i = 0; i < 200; i++) {
-			cmbYearItems[i] = new String("" + (i + 1914));
+		for (int i = 0; i < 151; i++) {
+			cmbYearItems[i] = new String("" + ((currYear - 151) + i + 1));
 		}
+		
+		
 		
 		//Calendar stuff
 		blackline = BorderFactory.createLineBorder(Color.black);
@@ -92,7 +97,7 @@ public class EditClientDetailsGUI extends JFrame
 		lastNameLabel.setBounds(18, 94, 93, 14);
 		getContentPane().add(lastNameLabel);
 		
-		JLabel separatorLabel = new JLabel("___________________________________________________________");
+		JLabel separatorLabel = new JLabel("__________________________________________________");
 		separatorLabel.setBounds(18, 111, 359, 14);
 		getContentPane().add(separatorLabel);
 		
@@ -177,6 +182,10 @@ public class EditClientDetailsGUI extends JFrame
 		yearComboBox.addActionListener(new ListenerAddEvent());
 		
 		refreshChoices();
+		
+		yearComboBox.setSelectedIndex(150);
+		monthComboBox.setSelectedIndex(currMonth);
+		dayComboBox.setSelectedIndex(currDay - 1);
 	}
 	
 	class ListenerAddEvent implements ActionListener {
@@ -188,7 +197,7 @@ public class EditClientDetailsGUI extends JFrame
 					int month, year, day;
 					
 					month = monthComboBox.getSelectedIndex() + 1;
-					year = yearComboBox.getSelectedIndex() + (currYear - 100);
+					year = yearComboBox.getSelectedIndex() + (currYear - 150);
 					day = dayComboBox.getSelectedIndex() + 1;
 					
 					/*
@@ -207,7 +216,7 @@ public class EditClientDetailsGUI extends JFrame
 		int year, month, nod;
 
 		month = monthComboBox.getSelectedIndex();
-		year = yearComboBox.getSelectedIndex() + (currYear - 100);
+		year = yearComboBox.getSelectedIndex() + (currYear - 150);
 
 		GregorianCalendar cal = new GregorianCalendar(year, month, 1);
 		nod = cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH);
