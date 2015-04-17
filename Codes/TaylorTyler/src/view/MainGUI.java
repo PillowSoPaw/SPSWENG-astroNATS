@@ -1,5 +1,6 @@
 package view;
 
+import java.awt.Cursor;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
@@ -34,9 +35,11 @@ import controller.ViewClientsController;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 @SuppressWarnings("serial")
-public class MainGUI extends JFrame implements ActionListener
+public class MainGUI extends JFrame implements ActionListener, MouseListener
 {
 	private AddTransactionController addTransactionController;
 	private AddServicesController addServicesController;
@@ -171,6 +174,8 @@ public class MainGUI extends JFrame implements ActionListener
 		
 		logOutLabel = new JLabel("Log out");
 		logOutLabel.setBounds(760, 32, 46, 14);
+		logOutLabel.addMouseListener(this);
+		logOutLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		topPanel.add(logOutLabel);
 		
 		divLabel = new JLabel("|");
@@ -179,6 +184,8 @@ public class MainGUI extends JFrame implements ActionListener
 		
 		manageAccountLabel = new JLabel("Manage Account");
 		manageAccountLabel.setBounds(633, 32, 107, 14);
+		manageAccountLabel.addMouseListener(this);
+		manageAccountLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		topPanel.add(manageAccountLabel);
 		
 		updatePanelTitle();
@@ -464,5 +471,39 @@ public class MainGUI extends JFrame implements ActionListener
             }
         });
         timer.start();
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if(e.getSource().equals(manageAccountLabel)){
+			new ManageAccountGUI();
+		}else if(e.getSource().equals(logOutLabel)){
+			new LogInGUI();
+			dispose();
+		}
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
