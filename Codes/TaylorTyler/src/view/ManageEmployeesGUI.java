@@ -47,6 +47,7 @@ public class ManageEmployeesGUI extends JPanel{
 	private ArrayList<Object[]> employeeListRows;
 	private ArrayList<ArrayList<String>> employees;
 	private ArrayList<ArrayList<Integer>> employeesQuantity;
+	private JCheckBox ShowSalonManagerCheckBox;
 	
 	public ManageEmployeesGUI() {
 		
@@ -76,7 +77,7 @@ public class ManageEmployeesGUI extends JPanel{
 		
 		employeeListTable = new JTable(employeeListModel);
 		employeeListScrollPane = new JScrollPane(employeeListTable);
-		employeeListScrollPane.setBounds(10, 48, 801, 383);
+		employeeListScrollPane.setBounds(10, 58, 801, 373);
 		employeeListScrollPane.setBorder(blackline);
 		add(employeeListScrollPane);
 		
@@ -132,15 +133,22 @@ public class ManageEmployeesGUI extends JPanel{
 		ShowSeniorStaffCheckBox.setSelected(true);
 		ShowSeniorStaffCheckBox.setForeground(Color.WHITE);
 		ShowSeniorStaffCheckBox.setBackground(new Color(128, 128, 0));
-		ShowSeniorStaffCheckBox.setBounds(524, 18, 137, 23);
+		ShowSeniorStaffCheckBox.setBounds(660, 7, 151, 23);
 		add(ShowSeniorStaffCheckBox);
 		
 		ShowJuniorStaffCheckBox = new JCheckBox("Show Junior Staff");
 		ShowJuniorStaffCheckBox.setSelected(true);
 		ShowJuniorStaffCheckBox.setForeground(Color.WHITE);
 		ShowJuniorStaffCheckBox.setBackground(new Color(128, 128, 0));
-		ShowJuniorStaffCheckBox.setBounds(678, 18, 137, 23);
+		ShowJuniorStaffCheckBox.setBounds(660, 28, 151, 23);
 		add(ShowJuniorStaffCheckBox);	
+		
+		ShowSalonManagerCheckBox = new JCheckBox("Show Salon Manager");
+		ShowSalonManagerCheckBox.setSelected(true);
+		ShowSalonManagerCheckBox.setForeground(Color.WHITE);
+		ShowSalonManagerCheckBox.setBackground(new Color(128, 128, 0));
+		ShowSalonManagerCheckBox.setBounds(475, 15, 154, 26);
+		add(ShowSalonManagerCheckBox);
 	
 	}
 	
