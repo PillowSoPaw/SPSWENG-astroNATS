@@ -36,6 +36,12 @@ public class ViewReceiptsGUI extends JPanel implements ActionListener
 		this.setBounds(0, 0, 821, 483);
 		this.setBorder(blackline);
 		
+		receiptsScrollPane = new JScrollPane();
+		receiptsScrollPane.setBounds(10, 48, 784, 380);
+		receiptsScrollPane.setLayout(null);
+		receiptsScrollPane.setBorder(blackline);
+		add(receiptsScrollPane);
+		
 		searchClientTextField = new JTextField();
 		searchClientTextField.setText("Enter Client Name here...");
 		searchClientTextField.setBounds(10, 11, 193, 26);
@@ -83,11 +89,7 @@ public class ViewReceiptsGUI extends JPanel implements ActionListener
 		receiptsTable = new JTable(rowDatareceiptsTable, columnNamesreceiptsTable);
 		receiptsTable.setSize(784, 380);
 		receiptsTable.setBorder(blackline);
-		
-		receiptsScrollPane = new JScrollPane(receiptsTable);
-		receiptsScrollPane.setBounds(10, 48, 784, 380);
-		receiptsScrollPane.setBorder(blackline);
-		add(receiptsScrollPane);
+		receiptsScrollPane.add(receiptsTable);
 	}
 
 	@Override
