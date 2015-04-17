@@ -283,7 +283,7 @@ CREATE TABLE `servicelineitem` (
   `servicelineitem_id` int(11) NOT NULL AUTO_INCREMENT,
   `service_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
-  `employee_id1` int(11) NOT NULL,
+  `employee_id1` int(11) DEFAULT NULL,
   `employee_id2` int(11) DEFAULT NULL,
   PRIMARY KEY (`servicelineitem_id`),
   UNIQUE KEY `servicelineitem_id_UNIQUE` (`servicelineitem_id`),
