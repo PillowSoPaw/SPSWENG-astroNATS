@@ -91,12 +91,12 @@ public class Controller
 				t.addServiceLineItem(new ServiceLineItem("", s.get(i), 1, getEmployee(employeesAssigned.get(i)[0]), null));
 		}
 		
-		success = DBManager.addTransaction(t);
-		if( success == true )
-		{
+		//success = DBManager.addTransaction(t);
+		//if( success == true )
+		//{
 			DBManager.updateProductQuantity( t.getProducts() );
 			//DBManager.updateConsumableQuantity(consumable);
-		}
+		//}
 	}
 
 	//get all consumable products from model

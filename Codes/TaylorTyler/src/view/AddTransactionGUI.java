@@ -1,34 +1,32 @@
 package view;
 
-import java.awt.Color;
-
-import javax.swing.BorderFactory;
-import javax.swing.JPanel;
-import javax.swing.border.Border;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.JOptionPane;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.JLabel;
-
-import java.awt.Font;
-
-import javax.swing.JButton;
-
-import model.Client;
 import controller.AddProductsController;
-import controller.AddTransactionController;
 import controller.AddServicesController;
-
-import java.awt.event.ActionListener;
+import controller.AddTransactionController;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.Iterator;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.border.Border;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
+import model.Client;
+import model.Transaction;
 
-public class AddTransactionGUI extends JPanel implements ActionListener
+public class AddTransactionGUI extends JPanel implements ActionListener, TableModelListener
 {	
 	private AddTransactionController addTransactionController;
 	private AddServicesController addServicesController;
@@ -61,10 +59,13 @@ public class AddTransactionGUI extends JPanel implements ActionListener
 	private boolean addServicesHandler;
 	private boolean addProductsHandler;
 	private String[] serviceTableColumn = {"Customer Name", "Service", "Senior E.", "Junior E.", "Price"};
-	private String[] productTableColumn = {"Product", "Quantity", "Price(per unit)", "Subtotal"};
+	private String[] productTableColumn = {"Customer Name", "Quantity", "Product", "Unit Price", "Subtotal"};
 	private ArrayList<Object[]> serviceTableRows;
 	private ArrayList<Object[]> productTableRows;
 	private ArrayList<ArrayList<Object[]>> consumables;
+	private double servicesSubtotal;
+	private double productsSubtotal;
+	private double totalPrice;
 	
 	public AddTransactionGUI( AddTransactionController addTransactionController, AddServicesController addServicesController, AddProductsController addProductsController )
 	{
@@ -89,7 +90,7 @@ public class AddTransactionGUI extends JPanel implements ActionListener
 		servicesLabel = new JLabel("Services");
 		servicesLabel.setForeground(Color.WHITE);
 		servicesLabel.setFont(new Font("Tahoma", Font.BOLD, 15));
-		servicesLabel.setBounds(521, 11, 89, 20);
+		servicesLabel.setBounds(444, 11, 89, 20);
 		add(servicesLabel);
 		
 		productsLabel = new JLabel("Products");
@@ -113,9 +114,11 @@ public class AddTransactionGUI extends JPanel implements ActionListener
 		
 		servicesTransactionTable = new JTable(serviceModel);
 		servicesTransactionScrollPane = new JScrollPane(servicesTransactionTable);
-		servicesTransactionScrollPane.setBounds(161, 42, 429, 398);
+		servicesTransactionScrollPane.setBounds(161, 42, 355, 398);
 		servicesTransactionScrollPane.setBorder(blackline);
 		add(servicesTransactionScrollPane);
+		servicesTransactionTable.getModel().addTableModelListener(this);
+		
 		
 		productModel = new DefaultTableModel()
 		{
@@ -132,9 +135,10 @@ public class AddTransactionGUI extends JPanel implements ActionListener
 		
 		productsTransactionTable = new JTable(productModel);
 		productsTransactionScrollPane = new JScrollPane(productsTransactionTable);
-		productsTransactionScrollPane.setBounds(600, 42, 211, 398);
+		productsTransactionScrollPane.setBounds(521, 42, 290, 398);
 		productsTransactionScrollPane.setBorder(blackline);
 		add(productsTransactionScrollPane);
+		productsTransactionTable.getModel().addTableModelListener(this);
 		
 		imagePanel = new JPanel();
 		imagePanel.setBounds(10, 42, 142, 130);
@@ -199,17 +203,20 @@ public class AddTransactionGUI extends JPanel implements ActionListener
 		saveTransactionButton.addActionListener(this);
 		add(saveTransactionButton);
 		
-		servicesSubtotalLabel = new JLabel("Services Subtotal:");
+		servicesSubtotal = 0.00;
+		servicesSubtotalLabel = new JLabel("Services Subtotal: " + servicesSubtotal + " PHP");
 		servicesSubtotalLabel.setForeground(Color.WHITE);
 		servicesSubtotalLabel.setBounds(161, 462, 211, 14);
 		add(servicesSubtotalLabel);
 		
-		productsSubtotalLabel = new JLabel("Products Subtotal: ");
+		productsSubtotal = 0.00;
+		productsSubtotalLabel = new JLabel("Products Subtotal: " + productsSubtotal + " PHP");
 		productsSubtotalLabel.setForeground(Color.WHITE);
-		productsSubtotalLabel.setBounds(600, 462, 211, 14);
+		productsSubtotalLabel.setBounds(521, 462, 211, 14);
 		add(productsSubtotalLabel);
 		
-		totalLabel = new JLabel("Total:");
+		totalPrice = 0.00;
+		totalLabel = new JLabel("Total: " + totalPrice + " PHP");
 		totalLabel.setForeground(Color.WHITE);
 		totalLabel.setBounds(10, 462, 142, 14);
 		add(totalLabel);
@@ -221,7 +228,7 @@ public class AddTransactionGUI extends JPanel implements ActionListener
 		add(removeServiceButton);
 		
 		removeProductButton = new JButton("Remove Product");
-		removeProductButton.setBounds(600, 443, 130, 19);
+		removeProductButton.setBounds(521, 443, 130, 19);
 		removeProductButton.addActionListener(this);
 		removeProductButton.setEnabled(false);
 		add(removeProductButton);
@@ -327,7 +334,7 @@ public class AddTransactionGUI extends JPanel implements ActionListener
 		
 		for( int i = 0; i < productTableRows.size(); i++ )
 		{
-			productModel.addRow(new Object[]{productTableRows.get(i)[1], productTableRows.get(i)[2], productTableRows.get(i)[3], productTableRows.get(i)[4]} );
+			productModel.addRow(productTableRows.get(i));
 		}
 		productsTransactionTable.setModel(productModel);
 	}
@@ -369,6 +376,18 @@ public class AddTransactionGUI extends JPanel implements ActionListener
 						if( e.getSource() == addServicesGUI )
 						{
 							addServicesHandler = false;
+							//System.out.println("HELLO!");
+							int rowCnt = servicesTransactionTable.getRowCount();
+							servicesSubtotal = 0;
+							for(int i = 0; i < rowCnt; i++)
+							{
+								servicesSubtotal += (double) servicesTransactionTable.getValueAt(i, 4);
+								totalPrice = servicesSubtotal + productsSubtotal;
+							}
+							
+							servicesSubtotalLabel.setText("Services Subtotal: " + servicesSubtotal + " PHP");
+							totalLabel.setText("Total : " + totalPrice + " PHP");
+							
 						}
 					}
 					
@@ -414,6 +433,16 @@ public class AddTransactionGUI extends JPanel implements ActionListener
 						if( e.getSource() == addProductsGUI )
 						{
 							addProductsHandler = false;
+							//System.out.println("HI!");
+							int rowCnt = productsTransactionTable.getRowCount();
+							productsSubtotal = 0;
+							for(int i = 0; i < rowCnt; i++)
+							{
+								productsSubtotal += (double) productsTransactionTable.getValueAt(i, 3);
+								totalPrice = servicesSubtotal + productsSubtotal;
+							}
+							productsSubtotalLabel.setText("Products Subtotal: " + productsSubtotal + " PHP");
+							totalLabel.setText("Total : " + totalPrice + " PHP");
 						}
 					}
 					
@@ -435,8 +464,30 @@ public class AddTransactionGUI extends JPanel implements ActionListener
 		}
 		else if( e.getSource() == saveTransactionButton )
 		{
-                    addTransactionController.createTransaction(serviceTableRows, productTableRows, consumables, nameTextField.getText());
+                    ArrayList<String> clientNames = new ArrayList<>();
+                    for(int i = 0; i < serviceTableRows.size(); i ++)
+                    {
+                        if(!clientNames.contains((String) serviceTableRows.get(i)[0]))
+                            clientNames.add((String) serviceTableRows.get(i)[0]);
+                    }
+                    
+                    for(int i = 0; i < productTableRows.size(); i ++)
+                    {
+                        if(!clientNames.contains((String) productTableRows.get(i)[0]))
+                            clientNames.add((String) productTableRows.get(i)[0]);
+                    }
+                    
+                    ArrayList<Transaction> tList = new ArrayList<>();
+                    
+                    for(int i = 0; i < clientNames.size(); i ++)
+                    {
+			 tList.add(addTransactionController.createTransaction(serviceTableRows, productTableRows, consumables, clientNames.get(i)));
+                    }
+                    
+                    addTransactionController.createReceipt(tList, nameTextField.getText(), totalPrice);
 		}
+                
+                
 		else if( e.getSource() == removeServiceButton )
 		{
 			
@@ -482,5 +533,12 @@ public class AddTransactionGUI extends JPanel implements ActionListener
 	public ArrayList<ArrayList<Object[]>> getConsumables()
 	{
 		return consumables;
+	}
+
+	@Override
+	public void tableChanged(TableModelEvent e) {
+		// TODO Auto-generated method stub
+		
+		
 	}
 }

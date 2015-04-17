@@ -1,6 +1,7 @@
 package model;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 public class Receipt
 {
@@ -12,13 +13,14 @@ public class Receipt
 	private ArrayList<Transaction> transactions;
 	private double dTotalBill;
 	
-	public Receipt( String sReceiptId, Client client, Date dateOfReceipt, String sModeOfPayment, double dTotalBill )
+	public Receipt( String sReceiptId, Client client, String sModeOfPayment, double dTotalBill )
 	{
 		this.sReceiptId = sReceiptId;
 		this.client = client;
-		this.dateOfReceipt = dateOfReceipt;
+		this.dateOfReceipt = Date.valueOf(LocalDate.now());
 		this.sModeOfPayment = sModeOfPayment;
 		this.dTotalBill = dTotalBill;
+                this.transactions = new ArrayList<>();
 	}
 
 	//getters
@@ -46,7 +48,11 @@ public class Receipt
 	{
 		return dTotalBill;
 	}
-
+        
+        public ArrayList<Transaction> getTransactions()
+        {
+            return this.transactions;
+        }
 	//setters
 	public void setsReceiptId(String sReceiptId)
 	{
@@ -77,6 +83,11 @@ public class Receipt
 	public void addTransaction(Transaction t)
 	{
 		this.transactions.add(t);
-	}
+        }
+        
+        public void addTransactions(ArrayList<Transaction> tList)
+        {
+                this.transactions.addAll(tList);
+        }
 	
 }

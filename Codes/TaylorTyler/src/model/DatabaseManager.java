@@ -447,7 +447,7 @@ public class DatabaseManager
 		return -999;
 	}
 	
-	public boolean addTransaction(Transaction t)
+	public int addTransaction(Transaction t)
 	{
 		try
 		{
@@ -463,12 +463,12 @@ public class DatabaseManager
 			addServiceList(t.getServices(), generatedKeys.getInt(1));
 			
 			JOptionPane.showMessageDialog(null, "Transaction has been successfully saved!", "Save Transaction", JOptionPane.INFORMATION_MESSAGE);
-			return true;
+			return generatedKeys.getInt(1);
 		}catch(SQLException e)
 		{
 			e.printStackTrace();
 		}
-		return false;
+		return 999;
 	}
 	
 	private int addProductList(ArrayList<ProductLineItem> products, int nTransactionID)
@@ -595,6 +595,48 @@ public class DatabaseManager
 		return null;
 	}
 	
+        public void addReceipt(Receipt r)
+        {
+            try
+            {
+            PreparedStatement ps = connection.prepareStatement("INSERT INTO receipt(client_id, date, modeOfPayment, totalBill) "
+					  + "VALUES (?, ?, ?, ?)",Statement.RETURN_GENERATED_KEYS);
+            
+            ps.setInt(1, Integer.parseInt(r.getClient().getsClientId()));
+            ps.setString(2, r.getDateOfReceipt().toString());
+            ps.setString(3, r.getsModeOfPayment());
+            ps.setDouble(4, r.getdTotalBill());
+            ps.executeUpdate();
+            ResultSet generatedKeys = ps.getGeneratedKeys();
+            generatedKeys.next();
+            
+            addTransactionList(r.getTransactions(), generatedKeys.getInt(1));
+            JOptionPane.showMessageDialog(null, "Receipt has been successfully saved!", "Add Receipt", JOptionPane.INFORMATION_MESSAGE);
+            }catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+        
+        public void addTransactionList(ArrayList<Transaction> tList, int nReceiptID)
+        {
+            try
+            {
+                for(int i = 0; i < tList.size(); i++)
+                {
+                    PreparedStatement ps = connection.prepareStatement("INSERT INTO transactionlist(receipt_id, transaction_id) "
+					  + "VALUES (?, ?)",Statement.RETURN_GENERATED_KEYS);
+                    
+                    ps.setInt(1, nReceiptID);
+                    ps.setInt(2, Integer.parseInt(tList.get(i).getsTransactionId()));
+                    ps.executeUpdate();
+                }
+            
+            }catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
 	//UPDATE STATEMENTS
 	public void updateProductQuantity( ArrayList<ProductLineItem> pLineItem )
 	{

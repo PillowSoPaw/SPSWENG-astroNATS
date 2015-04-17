@@ -2,16 +2,16 @@ package controller;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import view.AddTransactionGUI;
 import model.Client;
 import model.DatabaseManager;
 import model.Employee;
 import model.Product;
 import model.ProductLineItem;
+import model.Receipt;
 import model.Service;
 import model.ServiceLineItem;
 import model.Transaction;
+import view.AddTransactionGUI;
 
 public class AddTransactionController
 {
@@ -66,7 +66,7 @@ public class AddTransactionController
 	}
 	
 	// create transaction with information from view
-	public void createTransaction(ArrayList<Object[]> servicesAvailed, ArrayList<Object[]> productsBought,
+	public Transaction createTransaction(ArrayList<Object[]> servicesAvailed, ArrayList<Object[]> productsBought,
 							ArrayList<ArrayList<Object[]>> consumable, String clientName)
 	{
 		boolean success;
@@ -77,54 +77,76 @@ public class AddTransactionController
 		Client c = getClient(clientName);
 		Transaction t = new Transaction("", c, "");
 		
-		for( int i = 0; i < servicesAvailed.size(); i++ )
-		{
-			s.add(getService((String) servicesAvailed.get(i)[1]));
-		}
-		
-		for( int i = 0; i < productsBought.size(); i++ )
-		{
-			p.add(getProduct((String) productsBought.get(i)[0]));
-		}
-		
                 for(int i = 0; i < consumable.size(); i++)
                 {
-                    for(int k = 0; k < consumable.get(i).size(); k++)
-                    {
-                        cs.add(getProduct( (String) consumable.get(i).get(k)[0]));
-                        csAmount.add((int) consumable.get(i).get(k)[1]);
-                    }
+                    if(clientName.equals((String) servicesAvailed.get(i)[0]))
+                        {
+                            for(int k = 0; k < consumable.get(i).size(); k++)
+                            {
+                                cs.add(getProduct( (String) consumable.get(i).get(k)[0]));
+                                csAmount.add((int) consumable.get(i).get(k)[1]);
+                            }
+                        }
                 }
                 
-		ArrayList<ServiceLineItem> sli = new ArrayList<>(0);
-		ArrayList<ProductLineItem> pli = new ArrayList<>(0);
-		
 		for( int i = 0; i < p.size(); i++ )
 		{
-			t.addProductLineItem(new ProductLineItem("", p.get(i), (int) productsBought.get(i)[1]));
+                    if(clientName.equals((String) productsBought.get(i)[0]))
+			t.addProductLineItem(new ProductLineItem("", getProduct((String) productsBought.get(i)[1]),
+                                (int) productsBought.get(i)[2]));
 		}
                 
                 for(int i = 0; i < cs.size(); i++)
                 {
-                    t.addProductLineItem(new ProductLineItem("", cs.get(i), (int) csAmount.get(i)));
+                    t.addProductLineItem(new ProductLineItem("", cs.get(i), csAmount.get(i)));
                 }
 		
 		for( int i = 0; i < s.size(); i++ )
 		{	
-			if( "None".equalsIgnoreCase((String) servicesAvailed.get(i)[2]) && "None".equalsIgnoreCase((String) servicesAvailed.get(i)[3])){
-				t.addServiceLineItem(new ServiceLineItem("", s.get(i), 1, getEmployee((String) servicesAvailed.get(i)[2]), getEmployee((String) servicesAvailed.get(i)[3])));
+                    if(clientName.equals((String) servicesAvailed.get(i)[0]))
+                    {
+			if( "None".equalsIgnoreCase((String) servicesAvailed.get(i)[2]) && "None".equalsIgnoreCase((String) servicesAvailed.get(i)[3]))
+                        {
+				t.addServiceLineItem(new ServiceLineItem("", getService((String) servicesAvailed.get(i)[1]),
+                                        1, getEmployee((String) servicesAvailed.get(i)[2]), getEmployee((String) servicesAvailed.get(i)[3])));
                         }
                         else if( "None".equalsIgnoreCase((String) servicesAvailed.get(i)[3]) )
-				t.addServiceLineItem(new ServiceLineItem("", s.get(i), 1, null, getEmployee((String) servicesAvailed.get(i)[2])));
+                        {
+				t.addServiceLineItem(new ServiceLineItem("", getService((String) servicesAvailed.get(i)[1]),
+                                        1, null, getEmployee((String) servicesAvailed.get(i)[2])));
+                        }
 			else if( "None".equalsIgnoreCase((String) servicesAvailed.get(i)[2]) )
-				t.addServiceLineItem(new ServiceLineItem("", s.get(i), 1, getEmployee((String) servicesAvailed.get(i)[3]), null));
+                        {
+				t.addServiceLineItem(new ServiceLineItem("", getService((String) servicesAvailed.get(i)[1]),
+                                        1, getEmployee((String) servicesAvailed.get(i)[3]), null));
+                        }
+                    }
 		}
 		
-		success = DBManager.addTransaction(t);
-		if( success == true )
+		int nTransactionID = DBManager.addTransaction(t);
+		if( nTransactionID != 999 )
 		{
 			DBManager.updateProductQuantity( t.getProducts() );
 			DBManager.updateConsumableQuantity(cs);
-		}
+                        t.setsTransactionId(Integer.toString(nTransactionID));
+                        return t;
+		}else{
+                    return null;
+                }
 	}
+        
+        public void createReceipt(ArrayList<Transaction> tList, String clientName, double price)
+        {
+            
+            Receipt r = new Receipt("", getClient(clientName), "Cash", price);
+            
+            for(int i = 0; i < tList.size(); i++)
+            {
+                r.addTransaction(tList.get(i));
+                tList.get(i).getClient().getsName();
+            }
+                
+            
+            DBManager.addReceipt(r);
+        }
 }
