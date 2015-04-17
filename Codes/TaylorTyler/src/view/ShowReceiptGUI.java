@@ -26,7 +26,7 @@ public class ShowReceiptGUI extends JFrame
 	private DefaultTableModel serviceModel;
 	private DefaultTableModel productModel;
 	private String[] serviceTableColumn = {"Customer Name", "Service", "Senior E.", "Junior E.", "Price"};
-	private String[] productTableColumn = {"Product", "Quantity", "Price(per unit)", "Subtotal"};
+	private String[] productTableColumn = {"Customer Name", "Product", "Quantity", "Price(per unit)", "Subtotal"};
 	private ArrayList<Object[]> serviceTableRows;
 	private ArrayList<Object[]> productTableRows;
 	private ArrayList<ArrayList<String>> consumables;
@@ -75,7 +75,7 @@ public class ShowReceiptGUI extends JFrame
 		
 		servicesTransactionTable = new JTable(serviceModel);
 		servicesTransactionScrollPane = new JScrollPane(servicesTransactionTable);
-		servicesTransactionScrollPane.setBounds(10, 74, 371, 395);
+		servicesTransactionScrollPane.setBounds(10, 74, 338, 395);
 		servicesTransactionScrollPane.setBorder(blackline);
 		servicesTransactionScrollPane.setVisible(true);
 		receiptPanel.add(servicesTransactionScrollPane);
@@ -95,7 +95,7 @@ public class ShowReceiptGUI extends JFrame
 		
 		productsTransactionTable = new JTable(productModel);
 		productsTransactionScrollPane = new JScrollPane(productsTransactionTable);
-		productsTransactionScrollPane.setBounds(391, 74, 294, 395);
+		productsTransactionScrollPane.setBounds(363, 74, 322, 395);
 		productsTransactionScrollPane.setBorder(blackline);
 		productsTransactionScrollPane.setVisible(true);
 		receiptPanel.add(productsTransactionScrollPane);
@@ -110,7 +110,7 @@ public class ShowReceiptGUI extends JFrame
 		productsLabel = new JLabel("Products");
 		productsLabel.setForeground(Color.WHITE);
 		productsLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
-		productsLabel.setBounds(391, 46, 200, 27);
+		productsLabel.setBounds(363, 46, 200, 27);
 		productsLabel.setVisible(true);
 		receiptPanel.add(productsLabel);
 		
