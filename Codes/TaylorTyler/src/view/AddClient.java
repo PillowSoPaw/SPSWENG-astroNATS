@@ -34,7 +34,9 @@ public class AddClient extends JFrame{
 		
 		//Calendar stuff
 		currYear = Calendar.getInstance().get(Calendar.YEAR);
-
+		int currDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+		int currMonth = Calendar.getInstance().get(Calendar.MONTH);
+		
 		String[] cmbDayItems = new String[31];
 		String[] cmbMonthItems = { "January", "February", "March", "April", "May",
                 "June", "July", "August", "September",
@@ -162,9 +164,12 @@ public class AddClient extends JFrame{
 		cmbMonth.addActionListener(new ListenerAddEvent());
 		cmbYear.addActionListener(new ListenerAddEvent());
 		
-		cmbYear.setSelectedIndex(150);
-		
 		refreshChoices();
+		
+		cmbYear.setSelectedIndex(150);
+		cmbMonth.setSelectedIndex(currMonth);
+		cmbDay.setSelectedIndex(currDay - 1);
+		
 	}
 	
 	class ListenerAddEvent implements ActionListener {

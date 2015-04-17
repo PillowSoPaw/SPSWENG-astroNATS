@@ -41,6 +41,7 @@ public class ManageClientsGUI extends JPanel implements ActionListener, MouseLis
 	private String[] clientTableColumn = {"Client ID", "Last Name", "First Name", "Contact Details", "Date Last Visited"};
 	private ArrayList<Object[]> clientTableRows;
 	private DefaultTableModel clientTableModel;
+	private JButton viewDetailsButton;
 	
 	public ManageClientsGUI( ViewClientsController viewClientsController )
 	{	
@@ -92,12 +93,18 @@ public class ManageClientsGUI extends JPanel implements ActionListener, MouseLis
 		
 		addNewClientButton = new JButton("Add New Client");
 		addNewClientButton.setBounds(312, 11, 129, 26);
+		addNewClientButton.addActionListener(this);
 		add(addNewClientButton);
 		
 		editDetailsButton = new JButton("Edit Details");
 		editDetailsButton.setBounds(698, 439, 113, 33);
 		editDetailsButton.addActionListener(this);
 		add(editDetailsButton);
+		
+		viewDetailsButton = new JButton("View Details");
+		viewDetailsButton.addActionListener(this);
+		viewDetailsButton.setBounds(568, 439, 113, 33);
+		add(viewDetailsButton);
 
 	}
 	
@@ -177,9 +184,15 @@ public class ManageClientsGUI extends JPanel implements ActionListener, MouseLis
 		{
 			System.out.println(clientsTable.getSelectedRow());
 		}
-		else if(e.getSource() == editDetailsButton )
+		else if(e.getSource().equals(editDetailsButton))
+		{
+			new EditClientDetailsGUI();
+		}
+		else if(e.getSource().equals(viewDetailsButton))
 		{
 			new ViewClientDetailsGUI();
+		}else if(e.getSource().equals(addNewClientButton)){
+			new AddClient();
 		}
 		
 		
