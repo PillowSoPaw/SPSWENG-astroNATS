@@ -617,7 +617,7 @@ public class DatabaseManager
 		}
 	}
 	
-	public void updateConsumableQuantity( ArrayList<String> consumable )
+	public void updateConsumableQuantity( ArrayList<Product> consumable )
 	{
 		try
 		{
@@ -625,8 +625,8 @@ public class DatabaseManager
 			
 			for( int i = 0; i < consumable.size(); i++ )
 			{
-				ps.setInt(1, getProduct(consumable.get(i)).getnQuantity() - 1);
-				ps.setString(2, getProduct(consumable.get(i)).getsName());
+				ps.setInt(1, getProduct(consumable.get(i).getsName()).getnQuantity() - 1);
+				ps.setString(2, getProduct(consumable.get(i).getsName()).getsName());
 
 				ps.execute();
 			}
