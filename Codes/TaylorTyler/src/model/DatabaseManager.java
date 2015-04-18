@@ -127,81 +127,6 @@ public class DatabaseManager
 		return null;
 	}
 	
-        public Iterator getProductTransactionsByClient( int client_id )
-        {
-            try
-            {
-                PreparedStatement ps = connection.prepareStatement("SELECT P.name as productName, PLI.quantity as quantity, R.date " +
-                                                                    "FROM taylortyler.client C, taylortyler.transaction T, " +
-                                                                    "taylortyler.productlist PL, taylortyler.productlineitem PLI, " +
-                                                                    "taylortyler.receipt R, taylortyler.transactionlist TL, " +
-                                                                    "taylortyler.product P " +
-                                                                    "WHERE C.client_id = T.client_id " +
-                                                                    "AND T.transaction_id = PL.transaction_id " +
-                                                                    "AND PL.productlineitem_id = PLI.productlineitem_id " +
-                                                                    "AND R.receipt_id = TL.receipt_id " +
-                                                                    "AND P.product_id = PLI.product_id " +
-                                                                    "AND TL.transaction_id = T.transaction_id " +
-                                                                    "AND C.client_id = ?;");
-                ps.setInt(1, client_id);
-                ResultSet rs = ps.executeQuery();
-                ArrayList<Object[]> ptList = new ArrayList();
-                
-                while(rs.next())
-                {
-                    Object[] oArray = new Object[3];
-                    oArray[1] = rs.getString("productName");
-                    oArray[2] = rs.getInt("quantity");
-                    oArray[3] = rs.getDate("date");
-                    ptList.add(oArray);
-                }
-                return ptList.iterator();
-            }catch(Exception e)
-            {
-                e.printStackTrace();
-            }
-            return null;
-        }
-        
-        public Iterator getServiceTransactionByClient( int client_id )
-        {
-            try{
-            PreparedStatement ps = connection.prepareStatement("SELECT S.name as serviceName, E1.name as Senior, E2.name as Junior, R.date " +
-                                                                "FROM taylortyler.client C, taylortyler.transaction T, " +
-                                                                "taylortyler.servicelist SL, taylortyler.servicelineitem SLI, " +
-                                                                "taylortyler.receipt R, taylortyler.transactionlist TL, " +
-                                                                "taylortyler.service S, taylortyler.employee E1, taylortyler.employee E2 " +
-                                                                "WHERE C.client_id = T.client_id " +
-                                                                "AND T.transaction_id = SL.transaction_id " +
-                                                                "AND SL.servicelineitem_id = SLI.servicelineitem_id " +
-                                                                "AND R.receipt_id = TL.receipt_id " +
-                                                                "AND S.service_id = SLI.service_id " +
-                                                                "AND TL.transaction_id = T.transaction_id " +
-                                                                "AND E1.employee_id = SLI.employee_id1 " +
-                                                                "AND E2.employee_id = SLI.employee_id2 " +
-                                                                "AND C.client_id = ?;");
-            
-            ps.setInt(1, client_id);
-                ResultSet rs = ps.executeQuery();
-                ArrayList<Object[]> stList = new ArrayList();
-                
-                while(rs.next())
-                {
-                    Object[] oArray = new Object[3];
-                    oArray[1] = rs.getString("serviceName");
-                    oArray[2] = rs.getString("Senior");
-                    oArray[3] = rs.getString("Junior");
-                    oArray[4] = rs.getDate("date");
-                    stList.add(oArray);
-                }
-                return stList.iterator();
-            }catch(Exception e)
-            {
-                e.printStackTrace();
-            }
-            return null;
-        }
-        
 	public Service getService( String name )
 	{
 		try
@@ -356,7 +281,7 @@ public class DatabaseManager
                                                                     "AND r.receipt_id = ?;");
                 ps.setInt(1, receipt_id);
                 ResultSet rs = ps.executeQuery();
-                ArrayList<Object[]> stList = new ArrayList();
+                ArrayList<Object[]> ptList = new ArrayList();
                 
                 while(rs.next())
                 {
@@ -366,10 +291,10 @@ public class DatabaseManager
                     oArray[2] = rs.getString("Senior");
                     oArray[3] = rs.getString("Junior");
                     oArray[4] = rs.getDouble("price");
-                    stList.add(oArray);
+                    ptList.add(oArray);
                 }
                 
-                return stList.iterator();
+                return ptList.iterator();
             }catch(Exception e)
             {
                 e.printStackTrace();
