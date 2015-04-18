@@ -213,11 +213,7 @@ public class DatabaseManager
                     r.setTimeOfReceipt(rs.getTime("date"));
                     rList.add(r);
                 }
-                for(int i = 0; i < rList.size(); i++)
-                {
-                    System.out.println(rList.get(i).getTimeOfReceipt());
-                    System.out.println(rList.get(i).getDateOfReceipt());
-                }
+                
                 return rList.iterator();
             }catch(Exception e)
             {
