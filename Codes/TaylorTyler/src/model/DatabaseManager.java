@@ -258,6 +258,47 @@ public class DatabaseManager
             }
             return null;
         }
+        
+        public Iterator getAllServiceTransactionsOfReceipt( int receipt_id )
+        {
+            try
+            {
+                PreparedStatement ps = connection.prepareStatement("SELECT C.name as clientName, S.name as serviceName, E1.name as Senior, E2.name as Junior, S.price\n" +
+                                                                    "FROM taylortyler.transaction T, taylortyler.receipt R, " +
+                                                                    "taylortyler.transactionlist TL, taylortyler.client C, " +
+                                                                    "taylortyler.servicelist SL, taylortyler.servicelineitem SLI, " +
+                                                                    "taylortyler.service S, taylortyler.employee E1, taylortyler.employee E2 " +
+                                                                    "where T.transaction_id = TL.transaction_id " +
+                                                                    "AND r.receipt_id = TL.receipt_id " +
+                                                                    "AND c.client_id = t.client_id " +
+                                                                    "AND SL.transaction_id = T.transaction_id " +
+                                                                    "AND S.service_id = SLI.service_id " +
+                                                                    "AND SL.servicelineitem_id = SLI.servicelineitem_id " +
+                                                                    "AND SLI.employee_id1 = E1.employee_id " +
+                                                                    "AND SLI.employee_id2 = E2.employee_id;" + 
+                                                                    "AND r.receipt_id = ?;");
+                ps.setInt(1, receipt_id);
+                ResultSet rs = ps.executeQuery();
+                ArrayList<Object[]> ptList = new ArrayList();
+                
+                while(rs.next())
+                {
+                    Object[] oArray = new Object[5];
+                    oArray[0] = rs.getString("clientName");
+                    oArray[1] = rs.getString("serviceName");
+                    oArray[2] = rs.getString("Senior");
+                    oArray[3] = rs.getString("Junior");
+                    oArray[4] = rs.getDouble("price");
+                    ptList.add(oArray);
+                }
+                
+                return ptList.iterator();
+            }catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+            return null;
+        }
 	public Iterator getAllEmployees()
 	{
 		try

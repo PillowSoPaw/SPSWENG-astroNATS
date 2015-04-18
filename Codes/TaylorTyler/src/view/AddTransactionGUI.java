@@ -490,7 +490,7 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 			 tList.add(addTransactionController.createTransaction(serviceTableRows, productTableRows, consumables, clientNames.get(i)));
                     }
                     
-                    addTransactionController.createReceipt(tList, nameTextField.getText(), totalPrice);
+                    addTransactionController.createReceipt(tList, (String) nameComboBox.getSelectedItem(), totalPrice);
 		}
                 
                 

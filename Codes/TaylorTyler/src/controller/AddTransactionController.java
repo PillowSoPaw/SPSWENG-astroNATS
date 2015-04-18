@@ -70,8 +70,7 @@ public class AddTransactionController
 							ArrayList<ArrayList<Object[]>> consumable, String clientName)
 	{
 		boolean success;
-		ArrayList<Service> s = new ArrayList<>(0);
-		ArrayList<Product> p = new ArrayList<>(0);
+                
 		ArrayList<Product> cs = new ArrayList<>(0);
                 ArrayList<Integer> csAmount = new ArrayList<>(0);
 		Client c = getClient(clientName);
@@ -89,7 +88,7 @@ public class AddTransactionController
                         }
                 }
                 
-		for( int i = 0; i < p.size(); i++ )
+		for( int i = 0; i < productsBought.size(); i++ )
 		{
                     if(clientName.equals((String) productsBought.get(i)[0]))
 			t.addProductLineItem(new ProductLineItem("", getProduct((String) productsBought.get(i)[1]),
@@ -101,24 +100,24 @@ public class AddTransactionController
                     t.addProductLineItem(new ProductLineItem("", cs.get(i), csAmount.get(i)));
                 }
 		
-		for( int i = 0; i < s.size(); i++ )
+		for( int i = 0; i < servicesAvailed.size(); i++ )
 		{	
                     if(clientName.equals((String) servicesAvailed.get(i)[0]))
                     {
-			if( "None".equalsIgnoreCase((String) servicesAvailed.get(i)[2]) && "None".equalsIgnoreCase((String) servicesAvailed.get(i)[3]))
+			if( !"None".equalsIgnoreCase((String) servicesAvailed.get(i)[2]) && !"None".equalsIgnoreCase((String) servicesAvailed.get(i)[3]))
                         {
 				t.addServiceLineItem(new ServiceLineItem("", getService((String) servicesAvailed.get(i)[1]),
                                         1, getEmployee((String) servicesAvailed.get(i)[2]), getEmployee((String) servicesAvailed.get(i)[3])));
                         }
-                        else if( "None".equalsIgnoreCase((String) servicesAvailed.get(i)[3]) )
+                        else if( "None".equalsIgnoreCase((String) servicesAvailed.get(i)[2]) )
                         {
 				t.addServiceLineItem(new ServiceLineItem("", getService((String) servicesAvailed.get(i)[1]),
-                                        1, null, getEmployee((String) servicesAvailed.get(i)[2])));
+                                        1, null, getEmployee((String) servicesAvailed.get(i)[3])));
                         }
-			else if( "None".equalsIgnoreCase((String) servicesAvailed.get(i)[2]) )
+			else if( "None".equalsIgnoreCase((String) servicesAvailed.get(i)[3]) )
                         {
 				t.addServiceLineItem(new ServiceLineItem("", getService((String) servicesAvailed.get(i)[1]),
-                                        1, getEmployee((String) servicesAvailed.get(i)[3]), null));
+                                        1, getEmployee((String) servicesAvailed.get(i)[2]), null));
                         }
                     }
 		}
