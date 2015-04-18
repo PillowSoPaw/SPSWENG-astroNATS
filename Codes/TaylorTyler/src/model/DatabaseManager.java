@@ -209,8 +209,14 @@ public class DatabaseManager
                                                     getClient(rs.getInt("client_id")),
                                                     rs.getString("modeOfPayment"),
                                                     rs.getDouble("totalBill") );
-                    
+                    r.setDateOfReceipt(rs.getDate("date"));
+                    r.setTimeOfReceipt(rs.getTime("date"));
                     rList.add(r);
+                }
+                for(int i = 0; i < rList.size(); i++)
+                {
+                    System.out.println(rList.get(i).getTimeOfReceipt());
+                    System.out.println(rList.get(i).getDateOfReceipt());
                 }
                 return rList.iterator();
             }catch(Exception e)
@@ -709,7 +715,7 @@ public class DatabaseManager
 					  + "VALUES (?, ?, ?, ?)",Statement.RETURN_GENERATED_KEYS);
             
             ps.setInt(1, Integer.parseInt(r.getClient().getsClientId()));
-            ps.setString(2, r.getDateOfReceipt().toString());
+            ps.setString(2, r.getDateOfReceipt().toString() + " " +r.getTimeOfReceipt().toString());
             ps.setString(3, r.getsModeOfPayment());
             ps.setDouble(4, r.getdTotalBill());
             ps.executeUpdate();

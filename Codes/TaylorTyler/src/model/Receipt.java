@@ -1,7 +1,9 @@
 package model;
 
 import java.sql.Date;
+import java.sql.Time;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 public class Receipt
 {
@@ -9,15 +11,17 @@ public class Receipt
 	private String sReceiptId;
 	private Client client;
 	private Date dateOfReceipt;
+        private Time timeOfReceipt;
 	private String sModeOfPayment;
 	private ArrayList<Transaction> transactions;
 	private double dTotalBill;
-	
+        
 	public Receipt( String sReceiptId, Client client, String sModeOfPayment, double dTotalBill )
-	{
+	{    
 		this.sReceiptId = sReceiptId;
 		this.client = client;
-		this.dateOfReceipt = Date.valueOf(LocalDate.now());
+                this.dateOfReceipt = Date.valueOf(LocalDate.now());
+                this.timeOfReceipt = Time.valueOf(LocalTime.now());
 		this.sModeOfPayment = sModeOfPayment;
 		this.dTotalBill = dTotalBill;
                 this.transactions = new ArrayList<>();
@@ -38,7 +42,12 @@ public class Receipt
 	{
 		return dateOfReceipt;
 	}
-
+        
+        public Time getTimeOfReceipt()
+        {
+                return timeOfReceipt;
+        }
+        
 	public String getsModeOfPayment()
 	{
 		return sModeOfPayment;
@@ -69,6 +78,10 @@ public class Receipt
 		this.dateOfReceipt = dateOfReceipt;
 	}
 
+        public void setTimeOfReceipt(Time timeOfReceipt)
+        {
+                this.timeOfReceipt = timeOfReceipt;
+        }
 	public void setsModeOfPayment(String sModeOfPayment)
 	{
 		this.sModeOfPayment = sModeOfPayment;
