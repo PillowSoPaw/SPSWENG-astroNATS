@@ -1,47 +1,55 @@
 package view;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
+
+import controller.AddClientController;
+import controller.AddTransactionController;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class AddClientGUI extends JFrame{
+public class AddClientGUI extends JFrame implements ActionListener
+{
+	private AddClientController addClientController = new AddClientController();
+	private ViewClientsGUI mainFrame;
 	
-	private ManageClientsGUI mainFrame;
-	public Border blackline;
-	private JTextArea firstNameTextField;
-	private JTextArea middleNameTextField;
-	private JTextArea lastNameTextField;
-	private JTextArea emailTextField;
-	private JTextArea addressTextField;
-	private JTextArea contactNumberTextField;
+	private JTextArea firstNameText;
+	private JTextArea middleNameText;
+	private JTextArea lastNameText;
+	private JTextArea emailText;
+	private JTextArea addressText;
+	private JTextArea contactNumberText;
 	
-	private JComboBox dayComboBox;
-	private JComboBox monthComboBox;
-	private JComboBox yearComboBox;
-	private JComboBox genderComboBox;
+	private JComboBox cmbDay;
+	private JComboBox cmbMonth;
+	private JComboBox cmbYear;
+	private JComboBox cmbGender;
+	private String dateToday;
 	
-	private JButton confirmButton;
+	private JButton confirm;
 	
 	private int currYear;
-	
-	public AddClientGUI(){
-		getContentPane().setForeground(Color.WHITE);
+	private ManageClientsGUI manageClientsGUI;
+	public AddClientGUI(ManageClientsGUI manageClientsGUI){
 		//this.mainFrame = mainFrame; //Pass the view clients GUI
-		
+		this.setLocationRelativeTo(null);
+		this.manageClientsGUI = manageClientsGUI;
 		//Calendar stuff
 		currYear = Calendar.getInstance().get(Calendar.YEAR);
-
+		int currDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+		int currMonth = Calendar.getInstance().get(Calendar.MONTH);
+		dateToday = currYear+"-" + (currMonth +1) + "-" + currDay;
 		String[] cmbDayItems = new String[31];
 		String[] cmbMonthItems = { "January", "February", "March", "April", "May",
                 "June", "July", "August", "September",
                 "October", "November", "December" };
-		String[] cmbYearItems = new String[200];
+		String[] cmbYearItems = new String[151];
 		
 		String[] genderItems = {"Male", "Female"};
 		
@@ -49,142 +57,146 @@ public class AddClientGUI extends JFrame{
 			cmbDayItems[i] = new String("" + (i + 1));
 		}
 		
-		for (int i = 0; i < 200; i++) {
-			cmbYearItems[i] = new String("" + (i + 1914));
+		for (int i = 0; i < 151; i++) {
+			cmbYearItems[i] = new String("" + (i + (currYear - 150)));
 		}
 		
 		//Calendar stuff
-		blackline = BorderFactory.createLineBorder(Color.black);
-		//this.title = "View Clients";
-		getContentPane().setBackground(new Color(128, 128, 0));
-		getContentPane().setLayout(null);
-		this.setSize(411, 400);
-		this.setLocationRelativeTo(null);
-		this.setTitle("Add Client");
-		//this.setBorder(blackline);
 		
-		//JPanel mainPanel = new JPanel();
-		//this.setBackground(new Color(240, 240, 240));
-		//this.setBorder(new LineBorder(new Color(0, 0, 0)));
-		//mainPanel.setBounds(10, 11, 374, 350);
-		//mainPanel.setLayout(null);
+		getContentPane().setBackground(new Color(128, 128, 0));
+		setSize(400, 400);
+		setTitle("Add Client");
+		setResizable(false);
+		
+		getContentPane().setLayout(null);
+		
+		JPanel mainPanel = new JPanel();
+		mainPanel.setBackground(new Color(128, 128, 0));
+		mainPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
+		mainPanel.setBounds(10, 11, 374, 350);
+		mainPanel.setLayout(null);
 		setVisible(true);
+		
+		getContentPane().add(mainPanel);
 		
 		// JLabels
 		
-		JLabel firstNameLabel = new JLabel("First Name*:");
-		firstNameLabel.setForeground(Color.WHITE);
-		firstNameLabel.setBounds(18, 34, 93, 14);
-		getContentPane().add(firstNameLabel);
+		JLabel fnameLabel = new JLabel("First Name*:");
+		fnameLabel.setBounds(10, 39, 93, 14);
+		mainPanel.add(fnameLabel);
 		
-		JLabel middleNameLabel = new JLabel("Middle Name*:");
-		middleNameLabel.setForeground(Color.WHITE);
-		middleNameLabel.setBounds(18, 64, 93, 14);
-		getContentPane().add(middleNameLabel);
+		JLabel mnameLabel = new JLabel("Middle Name:");
+		mnameLabel.setBounds(10, 69, 93, 14);
+		mainPanel.add(mnameLabel);
 		
-		JLabel lastNameLabel = new JLabel("Last Name*:");
-		lastNameLabel.setForeground(Color.WHITE);
-		lastNameLabel.setBounds(18, 94, 93, 14);
-		getContentPane().add(lastNameLabel);
+		JLabel lnameLabel = new JLabel("Last Name*:");
+		lnameLabel.setBounds(10, 99, 93, 14);
+		mainPanel.add(lnameLabel);
 		
-		JLabel separatorLabel = new JLabel("___________________________________________________________");
-		separatorLabel.setBounds(18, 111, 359, 14);
-		getContentPane().add(separatorLabel);
+		JLabel separator0 = new JLabel("__________________________________________________");
+		separator0.setBounds(10, 116, 359, 14);
+		mainPanel.add(separator0);
 		
 		JLabel emailLabel = new JLabel("E-mail*:");
-		emailLabel.setForeground(Color.WHITE);
-		emailLabel.setBounds(18, 136, 46, 14);
-		getContentPane().add(emailLabel);
+		emailLabel.setBounds(10, 141, 46, 14);
+		mainPanel.add(emailLabel);
 		
 		JLabel birthdayLabel = new JLabel("Birthday (MM/DD/YY):");
-		birthdayLabel.setForeground(Color.WHITE);
-		birthdayLabel.setBounds(18, 167, 117, 14);
-		getContentPane().add(birthdayLabel);
+		birthdayLabel.setBounds(10, 172, 117, 14);
+		mainPanel.add(birthdayLabel);
 		
-		JLabel addressLabel = new JLabel("Address:");
-		addressLabel.setForeground(Color.WHITE);
-		addressLabel.setBounds(18, 197, 117, 14);
-		getContentPane().add(addressLabel);
+		JLabel addressLabel = new JLabel("Address*:");
+		addressLabel.setBounds(10, 202, 117, 14);
+		mainPanel.add(addressLabel);
 		
-		JLabel contactNumberLabel = new JLabel("Contact Number:");
-		contactNumberLabel.setForeground(Color.WHITE);
-		contactNumberLabel.setBounds(18, 227, 117, 14);
-		getContentPane().add(contactNumberLabel);
+		JLabel contactNumberLabel = new JLabel("Contact Number*:");
+		contactNumberLabel.setBounds(10, 232, 117, 14);
+		mainPanel.add(contactNumberLabel);
 		
 		JLabel genderLabel = new JLabel("Gender*:");
-		genderLabel.setForeground(Color.WHITE);
-		genderLabel.setBounds(18, 257, 117, 14);
-		getContentPane().add(genderLabel);
+		genderLabel.setBounds(10, 262, 117, 14);
+		mainPanel.add(genderLabel);
 		
 		//Text Areas
 		
-		firstNameTextField = new JTextArea();
-		firstNameTextField.setBounds(141, 29, 231, 19);
-		getContentPane().add(firstNameTextField);
+		firstNameText = new JTextArea();
+		firstNameText.setBounds(133, 34, 231, 19);
+		mainPanel.add(firstNameText);
 		
-		middleNameTextField = new JTextArea();
-		middleNameTextField.setBounds(141, 59, 231, 19);
-		getContentPane().add(middleNameTextField);
+		middleNameText = new JTextArea();
+		middleNameText.setBounds(133, 64, 231, 19);
+		mainPanel.add(middleNameText);
 		
-		lastNameTextField = new JTextArea();
-		lastNameTextField.setBounds(141, 89, 231, 19);
-		getContentPane().add(lastNameTextField);
+		lastNameText = new JTextArea();
+		lastNameText.setBounds(133, 94, 231, 19);
+		mainPanel.add(lastNameText);
 		
-		emailTextField = new JTextArea();
-		emailTextField.setBounds(141, 131, 231, 19);
-		getContentPane().add(emailTextField);
+		emailText = new JTextArea();
+		emailText.setBounds(133, 136, 231, 19);
+		mainPanel.add(emailText);
 		
-		addressTextField = new JTextArea();
-		addressTextField.setBounds(141, 192, 231, 19);
-		getContentPane().add(addressTextField);
+		addressText = new JTextArea();
+		addressText.setBounds(133, 197, 231, 19);
+		mainPanel.add(addressText);
 		
-		contactNumberTextField = new JTextArea();
-		contactNumberTextField.setBounds(141, 222, 231, 19);
-		getContentPane().add(contactNumberTextField );
+		contactNumberText = new JTextArea();
+		contactNumberText.setBounds(133, 227, 231, 19);
+		mainPanel.add(contactNumberText );
 		
-		genderComboBox = new JComboBox(genderItems);
-		genderComboBox.setBounds(141, 252, 231, 22);
-		getContentPane().add(genderComboBox);
+		cmbGender = new JComboBox(genderItems);
+		cmbGender.setBounds(133, 257, 231, 22);
+		mainPanel.add(cmbGender);
 		
-				dayComboBox = new JComboBox(cmbDayItems);
-				dayComboBox.setBounds(250, 156, 46, 25);
-				getContentPane().add(dayComboBox);
-				monthComboBox = new JComboBox(cmbMonthItems);
-				monthComboBox.setBounds(141, 156, 99, 25);
-				getContentPane().add(monthComboBox);
-				yearComboBox = new JComboBox(cmbYearItems);
-				yearComboBox.setBounds(306, 156, 66, 25);
-				getContentPane().add(yearComboBox);
+		JLabel lblAddClient = new JLabel("Add Client");
+		lblAddClient.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		lblAddClient.setHorizontalAlignment(SwingConstants.CENTER);
+		lblAddClient.setBounds(0, 0, 374, 30);
+		mainPanel.add(lblAddClient);
+		
+				cmbDay = new JComboBox(cmbDayItems);
+				cmbDay.setBounds(242, 161, 46, 25);
+				mainPanel.add(cmbDay);
+				cmbMonth = new JComboBox(cmbMonthItems);
+				cmbMonth.setBounds(133, 161, 99, 25);
+				mainPanel.add(cmbMonth);
+				cmbYear = new JComboBox(cmbYearItems);
+				cmbYear.setBounds(298, 161, 66, 25);
+				mainPanel.add(cmbYear);
 				
-		confirmButton = new JButton("Confirm");
-		confirmButton.setBounds(56, 303, 294, 30);
-		getContentPane().add(confirmButton);
+		confirm = new JButton("Confirm");
+		confirm.setBounds(37, 309, 294, 30);
+		confirm.addActionListener(this);
+		mainPanel.add(confirm);
 				
 		//Adding listeners for confirm and date Combo Boxes
-		confirmButton.addActionListener(new ListenerAddEvent());
-		monthComboBox.addActionListener(new ListenerAddEvent());
-		yearComboBox.addActionListener(new ListenerAddEvent());
+		cmbMonth.addActionListener(new ListenerAddEvent());
+		cmbYear.addActionListener(new ListenerAddEvent());
 		
 		refreshChoices();
+		
+		cmbYear.setSelectedIndex(150);
+		cmbMonth.setSelectedIndex(currMonth);
+		cmbDay.setSelectedIndex(currDay - 1);
+		
 	}
 	
 	class ListenerAddEvent implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent a) {
-			if (a.getSource().equals(confirmButton)) {
-				if(!firstNameTextField.getText().equals("") && !middleNameTextField.getText().equals("")
-				   && !lastNameTextField.getText().equals("") && !emailTextField.getText().equals("")){
+			if (a.getSource().equals(confirm)) {
+				if(!firstNameText.getText().equals("") && !middleNameText.getText().equals("")
+				   && !lastNameText.getText().equals("") && !emailText.getText().equals("")){
 					int month, year, day;
 					
-					month = monthComboBox.getSelectedIndex() + 1;
-					year = yearComboBox.getSelectedIndex() + (currYear - 100);
-					day = dayComboBox.getSelectedIndex() + 1;
+					month = cmbMonth.getSelectedIndex() + 1;
+					year = cmbYear.getSelectedIndex() + (currYear - 150);
+					day = cmbDay.getSelectedIndex() + 1;
 					
 					/*
 						DEVS do the adding to the database here :)
 					*/
 					
-					//dispose();
+					dispose();
 				}
 			} else if (a.getActionCommand() == "comboBoxChanged") {
 				refreshChoices();
@@ -195,8 +207,8 @@ public class AddClientGUI extends JFrame{
 	public void refreshChoices() {
 		int year, month, nod;
 
-		month = monthComboBox.getSelectedIndex();
-		year = yearComboBox.getSelectedIndex() + (currYear - 100);
+		month = cmbMonth.getSelectedIndex();
+		year = cmbYear.getSelectedIndex() + (currYear - 150);
 
 		GregorianCalendar cal = new GregorianCalendar(year, month, 1);
 		nod = cal.getActualMaximum(GregorianCalendar.DAY_OF_MONTH);
@@ -208,9 +220,63 @@ public class AddClientGUI extends JFrame{
 		}
 
 		DefaultComboBoxModel days = new DefaultComboBoxModel(cmbDayItems);
-		dayComboBox.setModel(days);
+		cmbDay.setModel(days);
 		repaint();
 	}// Please use this and combo boxes for anything that requires dates 
 	 // so that the user will not make any errors in placing dates.
 	 // This accounts for dates that doesn't exist (ex.: February 29 xxxx)
+
+	@Override
+	public void actionPerformed(ActionEvent e) 
+	{
+		// TODO Auto-generated method stub
+		if(e.getSource() == confirm )
+		{
+			if(firstNameText.getText().equals(""))
+				JOptionPane.showMessageDialog(null, "Please enter a first name.");
+			else if(lastNameText.getText().equals(""))
+				JOptionPane.showMessageDialog(null, "Please enter a last name.");
+			else if(emailText.getText().equals(""))
+				JOptionPane.showMessageDialog(null, "Please enter an email.");
+			else if(addressText.getText().equals(""))
+				JOptionPane.showMessageDialog(null, "Please enter an address.");
+			else if(contactNumberText.getText().equals(""))
+				JOptionPane.showMessageDialog(null, "Please enter a contact number.");
+			else
+			{
+				String sMiddleName = middleNameText.getText();
+				if(!middleNameText.getText().equals(""))
+					sMiddleName = sMiddleName + " ";
+				String sName = firstNameText.getText() +" "+ sMiddleName + lastNameText.getText();
+				String sAddress = addressText.getText();
+				String sEmail = emailText.getText();
+				String sBirthday = (cmbYear.getSelectedIndex()+ (currYear - 150))+"-"+(cmbMonth.getSelectedIndex()+1)+"-"+ (cmbDay.getSelectedIndex()+1) ;
+				String sContactNumber = contactNumberText.getText();
+				String sDateJoined = dateToday;
+				String sDateLastVisited = dateToday;
+				System.out.println(sName);
+				System.out.println(sAddress);
+				System.out.println(sEmail);
+				System.out.println(sBirthday);
+				System.out.println(sContactNumber);
+				System.out.println(sDateJoined);
+				System.out.println(sDateLastVisited);
+				//addClient(String sName, String sAddress, String sContactNumber, String sEmail, String sDateJoined, String sDateLastVisited, String sBirthday) 
+				try 
+				{
+					String sGender =cmbGender.getSelectedItem().toString();
+					addClientController.addClient(sName, sAddress, sContactNumber, sEmail, sDateJoined, sDateLastVisited, sBirthday, sGender);
+					JOptionPane.showMessageDialog(null, "Successfully added client!");
+					this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+				} catch (ParseException e1) 
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				manageClientsGUI.addClient();
+				manageClientsGUI.getData();
+			}
+		}
+		
+	}
 }

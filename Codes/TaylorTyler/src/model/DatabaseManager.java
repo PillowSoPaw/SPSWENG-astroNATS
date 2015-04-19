@@ -62,7 +62,8 @@ public class DatabaseManager
 								   rs.getString("email"), 
 								   rs.getDate("dateJoined"), 
 								   rs.getDate("dateLastVisited"),
-								   rs.getDate("birthday"));
+								   rs.getDate("birthday"),
+								   rs.getString("gender"));
 			return c;
 		}catch(SQLException e)
 		{
@@ -88,7 +89,8 @@ public class DatabaseManager
 								   rs.getString("email"), 
 								   rs.getDate("dateJoined"), 
 								   rs.getDate("dateLastVisited"),
-								   rs.getDate("birthday"));
+								   rs.getDate("birthday"),
+								   rs.getString("gender"));
 			return c;
 		}catch(SQLException e)
 		{
@@ -115,7 +117,8 @@ public class DatabaseManager
 									   rs.getString("email"), 
 									   rs.getDate("dateJoined"), 
 									   rs.getDate("dateLastVisited"),
-									   rs.getDate("birthday"));
+									   rs.getDate("birthday"),
+									   rs.getString("gender"));
 				clients.add(c);
 			}
 			
@@ -150,9 +153,9 @@ public class DatabaseManager
                 while(rs.next())
                 {
                     Object[] oArray = new Object[3];
-                    oArray[1] = rs.getString("productName");
-                    oArray[2] = rs.getInt("quantity");
-                    oArray[3] = rs.getDate("date");
+                    oArray[0] = rs.getString("productName");
+                    oArray[1] = rs.getInt("quantity");
+                    oArray[2] = rs.getDate("date");
                     ptList.add(oArray);
                 }
                 return ptList.iterator();
@@ -187,11 +190,11 @@ public class DatabaseManager
                 
                 while(rs.next())
                 {
-                    Object[] oArray = new Object[3];
-                    oArray[1] = rs.getString("serviceName");
-                    oArray[2] = rs.getString("Senior");
-                    oArray[3] = rs.getString("Junior");
-                    oArray[4] = rs.getDate("date");
+                    Object[] oArray = new Object[4];
+                    oArray[0] = rs.getString("serviceName");
+                    oArray[1] = rs.getString("Senior");
+                    oArray[2] = rs.getString("Junior");
+                    oArray[3] = rs.getDate("date");
                     stList.add(oArray);
                 }
                 return stList.iterator();
@@ -591,44 +594,45 @@ public class DatabaseManager
 	*/
 	
 	//INSERT STATEMENTS
-	public int addClient( Client c )
-	{
-		try
+		public int addClient( Client c )
 		{
-			PreparedStatement ps = connection.prepareStatement("INSERT INTO client(name, address, contactNumber, email, dateJoined, dateLastVisited, birthday) "
-											  + "VALUES (?, ?, ?, ?, ?, ?, ?)",Statement.RETURN_GENERATED_KEYS);
-			ps.setString(1, c.getsName());
-			ps.setString(2, c.getsAddress());
-			ps.setString(3, c.getsContactNumber());
-			ps.setString(4, c.getsEmail());
-			ps.setDate(5, c.getDateJoined());
-			ps.setDate(6, c.getDateLastVisited());
-			ps.setDate(7, c.getBirthday());
-			int affectedRows = ps.executeUpdate();
-			int genId;
-			
-			if (affectedRows == 0) 
-				throw new SQLException("Creating user failed, no rows affected.");
-	
-			try (ResultSet generatedKeys = ps.getGeneratedKeys()) 
+			try
 			{
-				if (generatedKeys.next()) 
+				PreparedStatement ps = connection.prepareStatement("INSERT INTO client(name, address, contactNumber, email, dateJoined, dateLastVisited, birthday, gender) "
+												  + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",Statement.RETURN_GENERATED_KEYS);
+				ps.setString(1, c.getsName());
+				ps.setString(2, c.getsAddress());
+				ps.setString(3, c.getsContactNumber());
+				ps.setString(4, c.getsEmail());
+				ps.setDate(5, c.getDateJoined());
+				ps.setDate(6, c.getDateLastVisited());
+				ps.setDate(7, c.getBirthday());
+				ps.setString(8, c.getsGender());
+				int affectedRows = ps.executeUpdate();
+				int genId;
+				
+				if (affectedRows == 0) 
+					throw new SQLException("Creating user failed, no rows affected.");
+		
+				try (ResultSet generatedKeys = ps.getGeneratedKeys()) 
 				{
-					genId = generatedKeys.getInt("client_id");
-					return genId;
+					if (generatedKeys.next()) 
+					{
+						genId = generatedKeys.getInt(1);
+						return genId;
+					}
+					else 
+						throw new SQLException("Creating user failed, no ID obtained.");
+				}catch(SQLException e)
+				{
+					e.printStackTrace();
 				}
-				else 
-					throw new SQLException("Creating user failed, no ID obtained.");
 			}catch(SQLException e)
 			{
 				e.printStackTrace();
 			}
-		}catch(SQLException e)
-		{
-			e.printStackTrace();
+			return -999;
 		}
-		return -999;
-	}
 	
 	public int addTransaction(Transaction t)
 	{

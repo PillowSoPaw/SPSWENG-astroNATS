@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `taylortyler` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `taylortyler`;
--- MySQL dump 10.13  Distrib 5.6.17, for Win32 (x86)
+-- MySQL dump 10.13  Distrib 5.6.17, for Win64 (x86_64)
 --
 -- Host: localhost    Database: taylortyler
 -- ------------------------------------------------------
--- Server version	5.6.23-log
+-- Server version	5.6.21
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -74,6 +74,31 @@ INSERT INTO `branch` VALUES (1,'branch1',4000),(2,'branch2',4000),(3,'branch3',4
 UNLOCK TABLES;
 
 --
+-- Table structure for table `card`
+--
+
+DROP TABLE IF EXISTS `card`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `card` (
+  `card_id` int(11) NOT NULL,
+  `client_id` int(11) NOT NULL,
+  `stamps` int(11) NOT NULL,
+  `status` varchar(45) NOT NULL,
+  PRIMARY KEY (`card_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `card`
+--
+
+LOCK TABLES `card` WRITE;
+/*!40000 ALTER TABLE `card` DISABLE KEYS */;
+/*!40000 ALTER TABLE `card` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `client`
 --
 
@@ -85,12 +110,14 @@ CREATE TABLE `client` (
   `name` varchar(45) NOT NULL,
   `address` varchar(45) NOT NULL,
   `contactNumber` varchar(45) NOT NULL,
-  `picture` varchar(45) DEFAULT NULL,
+  `email` varchar(45) DEFAULT NULL,
   `dateJoined` date NOT NULL,
   `dateLastVisited` date NOT NULL,
+  `birthday` date NOT NULL,
+  `gender` varchar(45) NOT NULL,
   PRIMARY KEY (`client_id`),
   UNIQUE KEY `idclient_UNIQUE` (`client_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -99,7 +126,7 @@ CREATE TABLE `client` (
 
 LOCK TABLES `client` WRITE;
 /*!40000 ALTER TABLE `client` DISABLE KEYS */;
-INSERT INTO `client` VALUES (1,'Client One','Manila','09000000001',NULL,'2015-01-01','2015-03-01'),(2,'Client Two','Manila','09000000002',NULL,'2015-01-02','2015-03-02'),(3,'Client Three','Manila','09000000003',NULL,'2015-01-03','2015-03-03'),(4,'Client Four','Manila','09000000004',NULL,'2015-01-04','2015-03-04');
+INSERT INTO `client` VALUES (1,'Client One','Manila','09000000001','one@mail.com','2015-01-01','2015-03-01','1996-01-01','Male'),(2,'Client Two','Manila','09000000002','two@mail.com','2015-01-02','2015-03-02','1996-01-01','Male'),(3,'Client Three','Manila','09000000003','three@mail.com','2015-01-03','2015-03-03','1996-01-01','Male'),(4,'Client Four','Manila','09000000004','four@mail.com','2015-01-04','2015-03-04','1996-01-01','Male'),(5,'Client Five','Manila','09000000005','five@mail.com','2015-01-05','2015-03-05','1996-01-01','Male'),(6,'Client Six','Manila','09000000006','six@mail.com','2015-01-06','2015-03-06','1996-01-01','Female'),(7,'Client Seven','Manila','09000000007','seven@mail.com','2015-01-07','2015-03-06','1996-01-01','Female'),(8,'Client Eigth','Manila','09000000008','eight@mail.com','2015-01-08','2015-03-06','1996-01-01','Female'),(9,'Client Nine','Manila','09000000009','nine@mail.com','2015-01-09','2015-03-06','1996-01-01','Female'),(10,'Client Ten','Manila','09000000010','ten@mail.com','2015-01-10','2015-03-06','1996-01-01','Female');
 /*!40000 ALTER TABLE `client` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -175,6 +202,7 @@ CREATE TABLE `productlineitem` (
   `productlineitem_id` int(11) NOT NULL AUTO_INCREMENT,
   `product_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL,
+  `employee_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`productlineitem_id`),
   KEY `product_id_idx` (`product_id`),
   CONSTRAINT `product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
@@ -422,4 +450,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-04-10 10:22:36
+-- Dump completed on 2015-04-18 17:44:52

@@ -87,7 +87,7 @@ public class EditClientDetailsGUI extends JFrame
 		firstNameLabel.setBounds(18, 34, 93, 14);
 		getContentPane().add(firstNameLabel);
 		
-		JLabel middleNameLabel = new JLabel("Middle Name*:");
+		JLabel middleNameLabel = new JLabel("Middle Name:");
 		middleNameLabel.setForeground(Color.WHITE);
 		middleNameLabel.setBounds(18, 64, 93, 14);
 		getContentPane().add(middleNameLabel);
@@ -111,12 +111,12 @@ public class EditClientDetailsGUI extends JFrame
 		birthdayLabel.setBounds(18, 167, 117, 14);
 		getContentPane().add(birthdayLabel);
 		
-		JLabel addressLabel = new JLabel("Address:");
+		JLabel addressLabel = new JLabel("Address*:");
 		addressLabel.setForeground(Color.WHITE);
 		addressLabel.setBounds(18, 197, 117, 14);
 		getContentPane().add(addressLabel);
 		
-		JLabel contactNumberLabel = new JLabel("Contact Number:");
+		JLabel contactNumberLabel = new JLabel("Contact Number*:");
 		contactNumberLabel.setForeground(Color.WHITE);
 		contactNumberLabel.setBounds(18, 227, 117, 14);
 		getContentPane().add(contactNumberLabel);

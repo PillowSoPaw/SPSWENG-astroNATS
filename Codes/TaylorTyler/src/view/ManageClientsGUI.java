@@ -5,6 +5,8 @@ import java.awt.Color;
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.border.Border;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -12,6 +14,7 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
+import javax.swing.ListSelectionModel;
 
 import model.Client;
 import controller.ViewClientsController;
@@ -23,10 +26,10 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class ManageClientsGUI extends JPanel implements ActionListener, MouseListener
+public class ManageClientsGUI extends JPanel implements ActionListener
 {	
 	private ViewClientsController viewClientsController;
-	
+	private ArrayList<Client> clients;
 	public Border blackline;
 	public String title;
 	private JTextField searchClientTextField;
@@ -37,11 +40,10 @@ public class ManageClientsGUI extends JPanel implements ActionListener, MouseLis
 	private JButton addNewClientButton;
 	private JTable clientsTable;
 	private JButton editDetailsButton;
-	
-	private String[] clientTableColumn = {"Client ID", "Last Name", "First Name", "Contact Details", "Date Last Visited"};
+	private JButton viewDetailsButton;
+	private String[] clientTableColumn = {"Client ID", "Name", "Contact Details", "Date Last Visited"};
 	private ArrayList<Object[]> clientTableRows;
 	private DefaultTableModel clientTableModel;
-	private JButton viewDetailsButton;
 	
 	public ManageClientsGUI( ViewClientsController viewClientsController )
 	{	
@@ -99,12 +101,25 @@ public class ManageClientsGUI extends JPanel implements ActionListener, MouseLis
 		editDetailsButton = new JButton("Edit Details");
 		editDetailsButton.setBounds(698, 439, 113, 33);
 		editDetailsButton.addActionListener(this);
+		editDetailsButton.setEnabled(false);
 		add(editDetailsButton);
 		
 		viewDetailsButton = new JButton("View Details");
 		viewDetailsButton.addActionListener(this);
 		viewDetailsButton.setBounds(568, 439, 113, 33);
+		viewDetailsButton.setEnabled(false);
 		add(viewDetailsButton);
+		
+		ListSelectionModel listSelectionModel = clientsTable.getSelectionModel();
+		listSelectionModel.addListSelectionListener(new ListSelectionListener() 
+		{
+	        public void valueChanged(ListSelectionEvent e)
+	        { 
+	            ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+	            viewDetailsButton.setEnabled(!lsm.isSelectionEmpty());
+	            editDetailsButton.setEnabled(!lsm.isSelectionEmpty());
+	        }
+		});
 
 	}
 	
@@ -114,12 +129,12 @@ public class ManageClientsGUI extends JPanel implements ActionListener, MouseLis
 		viewClientsController.getClients();
 		this.repaint();
 		this.revalidate();
+		
 	}
 	
 	public void getClients(Iterator c)
 	{
-
-		ArrayList<Client> clients = new ArrayList<>(0);
+	    clients = new ArrayList<>(0);
 		while (c.hasNext() == true)
 		{
 			clients.add((Client) c.next());
@@ -128,8 +143,8 @@ public class ManageClientsGUI extends JPanel implements ActionListener, MouseLis
 			
 		for( int i = 0; i < clients.size(); i++ )
 		{
-			//"Client ID", "Last Name", "First Name", "Contact Details", "Date Last Visited"
-			Object[] row = {clients.get(i).getsClientId(),clients.get(i).getsName(),clients.get(i).getsName(),clients.get(i).getsContactNumber(),clients.get(i).getDateLastVisited()};
+			//"Client ID", "Name", "Contact Details", "Date Last Visited"
+			Object[] row = {clients.get(i).getsClientId(),clients.get(i).getsName(),clients.get(i).getsContactNumber(),clients.get(i).getDateLastVisited()};
 			clientTableModel.addRow(row);
 			System.out.println(clients.get(i).getsName());
 		}
@@ -167,71 +182,58 @@ public class ManageClientsGUI extends JPanel implements ActionListener, MouseLis
 		clientsTable.setModel(clientTableModel);
 	}
 	
-//	public void getClient(Client client)
-//	{
+	
+	
+	public void getClient(Client client, Iterator iServices, Iterator iProducts)
+	{
+		 ArrayList<Object[]> services = new ArrayList<>(0);
+		 ArrayList<Object[]> products = new ArrayList<>(0);
+			while (iServices.hasNext() == true)
+			{
+				services.add((Object[]) iServices.next());
+			}
+			while (iProducts.hasNext() == true)
+			{
+				products.add((Object[]) iProducts.next());
+			}
+				
+		new ViewClientDetailsGUI(client, services, products);
+		
 //		imagePanel.setBackground(getBackground());//this just gets the background i dunno how the picture works
 //		nameLabel.setText("Name: "+client.getsName());
 //		contactDetailsLabel.setText("Contact: "+client.getsContactNumber());
 //		addressLabel.setText("Address: "+client.getsAddress());
 //		dateLastVisitedLabel.setText("Last Visited: "+client.getDateLastVisited());
 //		numOfVisitsLabel.setText("#Visits: ewan");
-//	}
+	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		if (clientsTable.getSelectedRow()> -1)
-		{
-			System.out.println(clientsTable.getSelectedRow());
-		}
-		else if(e.getSource().equals(editDetailsButton))
+		if(e.getSource().equals(editDetailsButton))
 		{
 			new EditClientDetailsGUI();
 		}
 		else if(e.getSource().equals(viewDetailsButton))
 		{
-			new ViewClientDetailsGUI();
-		}else if(e.getSource().equals(addNewClientButton)){
-			new AddClient();
+			//System.out.print(clientTableModel.getValueAt(clientsTable.getSelectedRow(), 0));
+			viewClientsController.getClient(Integer.parseInt((String) clientTableModel.getValueAt(clientsTable.getSelectedRow(), 0)));
+		}
+		else if(e.getSource().equals(addNewClientButton)){
+			new AddClientGUI(this);
 		}
 		
 		
 	}
-
-	@Override
-	public void mouseClicked(MouseEvent arg0) {
+	
+	public void addClient() 
+	{
 		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		if(e.getSource() == clientsTable)
+		for( int i = 0; i < clients.size(); i++ )
 		{
-			//System.out.println(clientsTable.getSelectedRow());
-//			String value = (String) clientsTable.getValueAt(clientsTable.getSelectedRow(), 0);
-//			int client_id = Integer.parseInt(value);
-//			viewClientsController.getClient(client_id);
+			clientTableModel.removeRow(0);
 		}
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent arg0) {
-		// TODO Auto-generated method stub
-		
+		this.repaint();
+		this.revalidate();
 	}
 }

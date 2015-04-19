@@ -3,11 +3,15 @@ package view;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
+import javax.swing.table.DefaultTableModel;
+
+import model.Client;
 
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class ViewClientDetailsGUI extends JFrame{
 	
@@ -29,7 +33,54 @@ public class ViewClientDetailsGUI extends JFrame{
 	
 	private JButton doneButton;
 	
-	public ViewClientDetailsGUI(){
+	private DefaultTableModel serviceTableModel;
+	private DefaultTableModel productTableModel;
+	private String[] serviceTableColumn = {"Service", "Employees", "Date (y-m-d)"};
+	private String[] productTableColumn = {"Product", "Quantity", "Date (y-m-d)"};
+	public ViewClientDetailsGUI(Client client, ArrayList<Object[]> services, ArrayList<Object[]> products)
+	{
+		serviceTableModel = new DefaultTableModel(){
+			public boolean isCellEditable(int row, int column)
+			{
+				return false;// This causes all cells to be not editable
+			}
+		};
+		for( int i = 0; i < serviceTableColumn.length; i++ )
+		{
+			serviceTableModel.addColumn(serviceTableColumn[i]);
+		}
+		servicesTable = new JTable(serviceTableModel);
+		
+		productTableModel = new DefaultTableModel(){
+			public boolean isCellEditable(int row, int column)
+			{
+				return false;// This causes all cells to be not editable
+			}
+		};
+		for( int i = 0; i < productTableColumn.length; i++ )
+		{
+			productTableModel.addColumn(productTableColumn[i]);
+		}
+		productsTable = new JTable(productTableModel);
+		for(int i = 0 ; i< services.size(); i ++)
+		{
+			System.out.println("view client details services");
+			System.out.println(services.get(i)[0]);
+			System.out.println(services.get(i)[1]);
+			System.out.println(services.get(i)[2]);
+			System.out.println(services.get(i)[3]);
+			Object[] row = {services.get(i)[0],services.get(i)[1] + ", "+ services.get(i)[2],services.get(i)[3]};
+			serviceTableModel.addRow(row);
+		}
+		for(int i = 0 ; i< products.size(); i ++)
+		{
+			System.out.println("view client details products");
+			System.out.println(products.get(i)[0]);
+			System.out.println(products.get(i)[1]);
+			System.out.println(products.get(i)[2]);
+			Object[] row = {products.get(i)[0],products.get(i)[1],products.get(i)[2]};
+			productTableModel.addRow(row);
+		}
 		getContentPane().setBackground(new Color(128, 128, 0)); // If DEVs have a CLIENT class and if you'll use it pass it here.
 		setSize(650, 535);
 		setVisible(true);
@@ -39,16 +90,16 @@ public class ViewClientDetailsGUI extends JFrame{
 		getContentPane().setLayout(null);
 		JPanel detailsPanel = new JPanel();
 		JLabel lblEmail = new JLabel("E-mail:");
-		nameLabel = new JLabel("NAME OF CLIENT"); //Replace this
-		JLabel lblBirthday = new JLabel("Birthday:");
+		nameLabel = new JLabel(client.getsName()); //Replace this
+		JLabel lblBirthday = new JLabel("Birthday(y-m-d):");
 		JLabel lblAddress = new JLabel("Address:");
 		JLabel lblContactNo = new JLabel("Contact No.:");
 		JLabel lblGender = new JLabel("Gender:");
-		emailLabel = new JLabel("E-MAIL");
-		birthdayLabel = new JLabel("MM/DD/YY");
-		addressLabel = new JLabel("ADDRESS");
-		contactLabel = new JLabel("CONTACT NUMBER");
-		genderLabel = new JLabel("GENDER");
+		emailLabel = new JLabel(client.getsEmail());
+		birthdayLabel = new JLabel(client.getBirthday().toString());
+		addressLabel = new JLabel(client.getsAddress());
+		contactLabel = new JLabel(client.getsContactNumber());
+		genderLabel = new JLabel(client.getsGender());
 		lblServices = new JLabel("AVAILED SERVICES");
 		lblProducts = new JLabel("PRODUCTS BOUGHT");
 		doneButton = new JButton("Done");
@@ -71,7 +122,7 @@ public class ViewClientDetailsGUI extends JFrame{
 		detailsPanel.add(lblEmail);
 		
 		lblBirthday.setFont(new Font("Tahoma", Font.BOLD, 11));
-		lblBirthday.setBounds(10, 36, 70, 14);
+		lblBirthday.setBounds(10, 36, 96, 14);
 		detailsPanel.add(lblBirthday);
 		
 		lblAddress.setFont(new Font("Tahoma", Font.BOLD, 11));
@@ -88,34 +139,34 @@ public class ViewClientDetailsGUI extends JFrame{
 		
 		//DETAILS go here
 		
-		emailLabel.setBounds(90, 11, 274, 14);
+		emailLabel.setBounds(111, 11, 274, 14);
 		detailsPanel.add(emailLabel);
 		
-		birthdayLabel.setBounds(90, 36, 274, 14);
+		birthdayLabel.setBounds(111, 36, 274, 14);
 		detailsPanel.add(birthdayLabel);
 		
 		addressLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		addressLabel.setBounds(90, 61, 274, 14);
+		addressLabel.setBounds(111, 61, 274, 14);
 		detailsPanel.add(addressLabel);
 		
-		contactLabel.setBounds(90, 86, 274, 14);
+		contactLabel.setBounds(111, 86, 274, 14);
 		detailsPanel.add(contactLabel);
 		
-		genderLabel.setBounds(90, 111, 274, 14);
+		genderLabel.setBounds(111, 111, 274, 14);
 		detailsPanel.add(genderLabel);
 		
 		//TABLES
 		
 		Border blackline = BorderFactory.createLineBorder(Color.black);
 
-		String[] servicesColumn = {"Service", "Employee", "Date"};
+		String[] servicesColumn = {"Service", "Employees", "Date(y-m-d)"};
 		String[][] servicesRow = 
 			{
 				{"sample", "sample", "sample"},
 				{"sample", "sample", "sample"},
 				{"sample", "sample", "sample"}
 			};
-		servicesTable = new JTable(servicesRow, servicesColumn);
+		//servicesTable = new JTable(servicesRow, servicesColumn);
 		servicesTable.setSize(307, 223);
 		
 		servicesScroll = new JScrollPane(servicesTable);
@@ -123,9 +174,9 @@ public class ViewClientDetailsGUI extends JFrame{
 		servicesScroll.setBorder(blackline);
 		getContentPane().add(servicesScroll);
 		
-		String[] productsColumn = {"Product", "Quantity", "Date"};
+		String[] productsColumn = {"Product", "Quantity", "Date(y-m-d)"};
 		
-		productsTable = new JTable(servicesRow, productsColumn);
+		//productsTable = new JTable(servicesRow, productsColumn);
 		productsTable.setSize(307, 223);
 		
 		productsScroll = new JScrollPane(productsTable);
@@ -152,7 +203,8 @@ public class ViewClientDetailsGUI extends JFrame{
 	
 	private class DoneButtonListener implements ActionListener{
 		@Override
-		public void actionPerformed(ActionEvent a) {
+		public void actionPerformed(ActionEvent a) 
+		{
 			if(a.getSource().equals(doneButton)){
 				dispose();
 			}

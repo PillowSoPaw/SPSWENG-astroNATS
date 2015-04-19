@@ -13,8 +13,8 @@ public class Client
 	private Date dateJoined;
 	private Date dateLastVisited;
 	private Date birthday;
-	
-	public Client( String sClientId, String sName, String sAddress, String sContactNumber, String sEmail, Date dateJoined, Date dateLastVisited , Date birthday)
+	private String sGender;
+	public Client( String sClientId, String sName, String sAddress, String sContactNumber, String sEmail, Date dateJoined, Date dateLastVisited , Date birthday, String sGender)
 	{
 		this.sClientId = sClientId;
 		this.sName = sName;
@@ -24,8 +24,9 @@ public class Client
 		this.dateJoined = dateJoined;
 		this.dateLastVisited = dateLastVisited;
 		this.birthday = birthday;
+		this.sGender = sGender;
 	}
-	public Client(String sName, String sAddress, String sContactNumber, String sEmail, Date dateJoined, Date dateLastVisited, Date birthday )
+	public Client(String sName, String sAddress, String sContactNumber, String sEmail, Date dateJoined, Date dateLastVisited, Date birthday, String sGender )
 	{
 		this.sName = sName;
 		this.sAddress = sAddress;
@@ -34,6 +35,7 @@ public class Client
 		this.dateJoined = dateJoined;
 		this.dateLastVisited = dateLastVisited;
 		this.birthday = birthday;
+		this.sGender = sGender;
 	}
 	
 	//getters
@@ -76,6 +78,11 @@ public class Client
 	{
 		return birthday;
 	}
+	
+	public String getsGender() 
+	{
+		return sGender;
+	}
 
 	//setters
 	public void setsClientId(String sClientId)
@@ -116,6 +123,11 @@ public class Client
 	public void setBirthday(Date birthday)
 	{
 		this.birthday = birthday;
+	}
+
+	public void setsGender(String sGender) 
+	{
+		this.sGender = sGender;
 	}
 	
 }
