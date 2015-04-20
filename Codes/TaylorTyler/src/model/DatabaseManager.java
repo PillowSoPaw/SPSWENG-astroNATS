@@ -99,6 +99,40 @@ public class DatabaseManager
 		return null;
 	}
 	
+        public Iterator getClientsByName( String name )
+        {
+                try
+		{
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM client WHERE name LIKE ?%");
+                        
+                        ps.setString(1, name);
+                        
+			ResultSet rs = ps.executeQuery();
+			
+			ArrayList<model.Client> clients = new ArrayList<>(0);
+			
+			while( rs.next() )
+			{
+				model.Client c = new Client(Integer.toString(rs.getInt("client_id")),
+									   rs.getString("name"), 
+									   rs.getString("address"), 
+									   rs.getString("contactNumber"), 
+									   rs.getString("email"), 
+									   rs.getDate("dateJoined"), 
+									   rs.getDate("dateLastVisited"),
+									   rs.getDate("birthday"),
+									   rs.getString("gender"));
+				clients.add(c);
+			}
+			
+			return clients.iterator();
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+        }
+        
 	public Iterator getAllClients()
 	{
 		try
@@ -594,46 +628,60 @@ public class DatabaseManager
 	*/
 	
 	//INSERT STATEMENTS
-		public int addClient( Client c )
-		{
-			try
-			{
-				PreparedStatement ps = connection.prepareStatement("INSERT INTO client(name, address, contactNumber, email, dateJoined, dateLastVisited, birthday, gender) "
-												  + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",Statement.RETURN_GENERATED_KEYS);
-				ps.setString(1, c.getsName());
-				ps.setString(2, c.getsAddress());
-				ps.setString(3, c.getsContactNumber());
-				ps.setString(4, c.getsEmail());
-				ps.setDate(5, c.getDateJoined());
-				ps.setDate(6, c.getDateLastVisited());
-				ps.setDate(7, c.getBirthday());
-				ps.setString(8, c.getsGender());
-				int affectedRows = ps.executeUpdate();
-				int genId;
-				
-				if (affectedRows == 0) 
-					throw new SQLException("Creating user failed, no rows affected.");
-		
-				try (ResultSet generatedKeys = ps.getGeneratedKeys()) 
-				{
-					if (generatedKeys.next()) 
-					{
-						genId = generatedKeys.getInt(1);
-						return genId;
-					}
-					else 
-						throw new SQLException("Creating user failed, no ID obtained.");
-				}catch(SQLException e)
-				{
-					e.printStackTrace();
-				}
-			}catch(SQLException e)
-			{
-				e.printStackTrace();
-			}
-			return -999;
-		}
+        public int addClient( Client c )
+        {
+            try
+            {
+                PreparedStatement ps = connection.prepareStatement("INSERT INTO client(name, address, contactNumber, email, dateJoined, dateLastVisited, birthday, gender) "
+                                                                                                      + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)",Statement.RETURN_GENERATED_KEYS);
+                ps.setString(1, c.getsName());
+                ps.setString(2, c.getsAddress());
+                ps.setString(3, c.getsContactNumber());
+                ps.setString(4, c.getsEmail());
+                ps.setDate(5, c.getDateJoined());
+                ps.setDate(6, c.getDateLastVisited());
+                ps.setDate(7, c.getBirthday());
+                ps.setString(8, c.getsGender());
+                int affectedRows = ps.executeUpdate();
+                int genId;
+
+                if (affectedRows == 0) 
+                    throw new SQLException("Creating user failed, no rows affected.");
+
+                    try (ResultSet generatedKeys = ps.getGeneratedKeys()) 
+                    {
+                        if (generatedKeys.next()) 
+                        {
+                            genId = generatedKeys.getInt(1);
+                            return genId;
+                        }
+                        else 
+                            throw new SQLException("Creating user failed, no ID obtained.");
+                    }catch(SQLException e)
+                    {
+                        e.printStackTrace();
+                    }
+            }catch(SQLException e)
+            {
+                e.printStackTrace();
+            }
+            return -999;
+        }
 	
+//        public int addCard(Card c)
+//        {
+//            try
+//            {
+//                PreparedStatement ps = connection.prepareStatement("INSERT INTO card(client_id, stamps, status) "
+//                                                                + "VALUES (?,?,?)");
+//                
+//                ps.setInt(1, c.);
+//            }catch(Exception e)
+//            {
+//                e.printStackTrace();
+//            }
+//        }
+                
 	public int addTransaction(Transaction t)
 	{
 		try
@@ -824,6 +872,25 @@ public class DatabaseManager
                 e.printStackTrace();
             }
         }
+        
+        public void addEmployee( Employee e )
+        {
+            try
+            {
+                PreparedStatement ps = connection.prepareStatement("INSERT INTO employee(branch_id, name, dateStartedWorking, hoursRendered, type)"
+                                                                    + "VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+                ps.setInt(1, Integer.parseInt(e.getBranch().getsBranchId()));
+                ps.setString(2, e.getsName());
+                ps.setDate(3, e.getDateStartedWorking());
+                ps.setFloat(4, (float) 0.0);
+                ps.setString(5, e.getsType());
+                
+                ps.executeUpdate();
+            }catch(Exception exception)
+            {
+                exception.printStackTrace();
+            }
+        }
 	//UPDATE STATEMENTS
 	public void updateProductQuantity( ArrayList<ProductLineItem> pLineItem )
 	{
@@ -866,4 +933,67 @@ public class DatabaseManager
 			e.printStackTrace();
 		}
 	}
+        
+        public void updateEmployee( Employee e )
+        {
+            try
+            {
+                PreparedStatement ps = connection.prepareStatement("UPDATE employee "
+                                                                    + "SET branch_id = ?, name = ?, dateStartedWorking = ?, hoursRendered = ?, type = ? "
+                                                                    + "WHERE employee_id = ?");
+                ps.setInt(1, Integer.parseInt(e.getBranch().getsBranchId()));
+                ps.setString(2, e.getsName());
+                ps.setDate(3, e.getDateStartedWorking());
+                ps.setFloat(4, (float) e.getdHoursRendered());
+                ps.setString(5, e.getsType());
+                ps.setInt(6, Integer.parseInt(e.getsEmployeeId()));
+                
+                ps.executeUpdate();
+            }catch(Exception exception)
+            {
+                exception.printStackTrace();
+            }
+        }
+        
+        public void updateClient( Client c )
+        {
+            try
+            {
+                PreparedStatement ps = connection.prepareStatement("UPDATE client "
+                                                                    + "SET name = ?, address = ?, contactNumber = ?, email = ?, "
+                                                                    + "dateJoined = ?, dateLastVisited = ?, birthday = ?, gender = ? "
+                                                                    + "WHERE client_id = ?");
+                
+                ps.setString(1, c.getsName());
+                ps.setString(2, c.getsAddress());
+                ps.setString(3, c.getsContactNumber());
+                ps.setString(4, c.getsEmail());
+                ps.setDate(5, c.getDateJoined());
+                ps.setDate(6, c.getDateLastVisited());
+                ps.setDate(7, c.getBirthday());
+                ps.setString(8, c.getsGender());
+                ps.setInt(9, Integer.parseInt(c.getsClientId()));
+                
+                ps.executeUpdate();
+            }catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+        
+        public void updateClientLastVisit( Client c, Date date )
+        {
+            try
+            {
+                PreparedStatement ps = connection.prepareStatement("UPDATE client "
+                                                                    + "SET dateLastVisited = ? "
+                                                                    + "WHERE client_id = ?");
+                ps.setDate(1, date);
+                ps.setInt(2, Integer.parseInt(c.getsClientId()));
+            }catch(Exception e)
+            {
+                e.printStackTrace();
+            }
+        }
+        
 }
