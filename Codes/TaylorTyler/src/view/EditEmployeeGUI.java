@@ -3,20 +3,27 @@ package view;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.text.ParseException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
 import javax.swing.border.Border;
 
+import controller.EditClientDetailsController;
+import controller.EditEmployeeController;
 import model.Employee;
 
-public class EditEmployeeGUI extends JFrame{
-	
+public class EditEmployeeGUI extends JFrame implements ActionListener
+{
+	private EditEmployeeController editEmployeesController = new EditEmployeeController();
+	private ManageEmployeesGUI manageEmployeesGUI;
 	private ViewClientsGUI mainFrame;
 	public Border blackline;
 	private JTextArea nameText;
@@ -24,16 +31,16 @@ public class EditEmployeeGUI extends JFrame{
 	private JComboBox cmbBranch;
 	private Employee employee;
 	
-	private JButton confirm;
+	private JButton saveButton;
 	
-	public EditEmployeeGUI(Employee e){
+	public EditEmployeeGUI(Employee employee, ManageEmployeesGUI manageEmployeesGUI){
 		//this.mainFrame = mainFrame; //Pass the view clients GUI
-		
+		this.manageEmployeesGUI = manageEmployeesGUI;
 		// Combo Box items
-		String[] typeItems = {"Senior Employee", "Junior Employee"};
+		String[] typeItems = {"senior", "junior", "salonmanager"};
 		String[] branchItems = {"Sample Branch 1", "Sample Branch 2", "Sample Branch 3"};
 		
-		this.employee = e;
+		this.employee = employee;
 		
 		blackline = BorderFactory.createLineBorder(Color.black);
 		this.setTitle("Edit Employee");
@@ -54,7 +61,7 @@ public class EditEmployeeGUI extends JFrame{
 		
 		// JLabels
 		
-		JLabel nameLabel = new JLabel("Name:");
+		JLabel nameLabel = new JLabel("Name*:");
 		nameLabel.setBounds(10, 39, 93, 14);
 		mainPanel.add(nameLabel);
 		
@@ -63,50 +70,60 @@ public class EditEmployeeGUI extends JFrame{
 		mainPanel.add(separator0);
 		
 		JLabel branchLabel = new JLabel("Salon Branch*:");
-		branchLabel.setBounds(10, 89, 93, 14);
-		mainPanel.add(branchLabel);
+		branchLabel.setBounds(10, 122, 93, 14);
+		//mainPanel.add(branchLabel);
 		
 		JLabel typeLabel = new JLabel("Employee Type*:");
-		typeLabel.setBounds(10, 122, 117, 14);
+		typeLabel.setBounds(10, 89, 117, 14);
 		mainPanel.add(typeLabel);
 		
 		//Text Areas
 		
-		nameText = new JTextArea();
-		nameText.setEditable(false);
+		nameText = new JTextArea(employee.getsName());
 		nameText.setBounds(133, 34, 231, 19);
 		mainPanel.add(nameText);
 		
 		cmbType = new JComboBox(typeItems);
-		cmbType.setBounds(133, 118, 231, 22);
+		cmbType.setBounds(133, 85, 231, 22);
 		mainPanel.add(cmbType);
 				
-		confirm = new JButton("Save");
-		confirm.setBounds(50, 165, 294, 30);
-		mainPanel.add(confirm);
+		saveButton = new JButton("Save");
+		saveButton.setBounds(50, 151, 294, 30);
+		saveButton.addActionListener(this);
+		mainPanel.add(saveButton);
 				
-		//Adding listeners for confirm and date Combo Boxes
-		confirm.addActionListener(new ListenerAddEvent());
+
 		getContentPane().add(mainPanel);
 		
 		cmbBranch = new JComboBox(branchItems);
-		cmbBranch.setBounds(133, 85, 231, 22);
-		mainPanel.add(cmbBranch);
+		cmbBranch.setBounds(133, 118, 231, 22);
+		//mainPanel.add(cmbBranch);
 	}
-	
-	class ListenerAddEvent implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent a) {
-			if (a.getSource().equals(confirm)) {
-				if(!nameText.getText().equals("")){
-					
-					/*
-						DEVS do the adding to the database here :)
-					*/
-					
-					//dispose();
+
+	@Override
+	public void actionPerformed(ActionEvent e) 
+	{
+		// TODO Auto-generated method stub
+		if(e.getSource() == saveButton)
+		{
+			if(nameText.getText().equals(""))
+				JOptionPane.showMessageDialog(null, "Please enter a name.");
+			else
+			{
+				//String sClientId, String sName, String sType
+				try 
+				{
+					editEmployeesController.editEmployee(employee.getsEmployeeId(), nameText.getText(), cmbType.getSelectedItem().toString());
+				} catch (ParseException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
 				}
+				JOptionPane.showMessageDialog(null, "Successfully updated employee!");
+				this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+			}
+			manageEmployeesGUI.addEmployee();
+			manageEmployeesGUI.getData();
 		}
 	}
-	}
+	
 }

@@ -421,12 +421,11 @@ public class DatabaseManager
 		try
 		{
 			PreparedStatement ps = connection.prepareStatement("UPDATE employee "
-																+ "SET  name = ?, dateStartedWorking = ?, type = ? "
+																+ "SET  name = ?, type = ? "
 																+ "WHERE employee_id = ?");
 			ps.setString(1, e.getsName());
-			ps.setDate(2, e.getDateStartedWorking());
-			ps.setString(3, e.getsType());
-			ps.setInt(4, Integer.parseInt(e.getsEmployeeId()));
+			ps.setString(2, e.getsType());
+			ps.setInt(3, Integer.parseInt(e.getsEmployeeId()));
 			
 			ps.executeUpdate();
 		}catch(Exception exception)

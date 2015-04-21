@@ -1,12 +1,16 @@
 package view;
+import model.Employee;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.border.Border;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
@@ -14,11 +18,19 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JComboBox;
 import javax.swing.JCheckBox;
+import javax.swing.ListSelectionModel;
+
+import controller.ManageEmployeesController;
+import controller.ViewClientsController;
+import model.Client;
+
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class ManageEmployeesGUI extends JPanel{
-	
+public class ManageEmployeesGUI extends JPanel implements ActionListener
+{
+	private ManageEmployeesController manageEmployeesController;
+	private ArrayList<Employee> employees;
 	private Border blackline;
 	private String title;
 	
@@ -40,17 +52,14 @@ public class ManageEmployeesGUI extends JPanel{
 	private String[] sortByListOwner = {"Name", "Hours Rendered", "Branch"};
 	private String[] sortByList = {"Name", "Hours Rendered"};
 	
-	private DefaultTableModel employeeListModel;
+	private DefaultTableModel employeeTableModel;
 	private JTable employeeListTable;
-	private String[] employeeListColumn = {"Name", "Type", "Hours Rendered", "Address"}; //for Salon Manager
-	private String[] employeeListColumnOwner = {"Name", "Type", "Hours Rendered", "Address", "Branch"}; //for Owner
-	private ArrayList<Object[]> employeeListRows;
-	private ArrayList<ArrayList<String>> employees;
-	private ArrayList<ArrayList<Integer>> employeesQuantity;
+	private String[] employeeListColumn = {"Employee Id", "Name", "Type", "Date Started Working"}; //for Salon Manager
+	//private String[] employeeListColumnOwner = {"Name", "Type", "Hours Rendered", "Address", "Branch"}; //for Owner
 	private JCheckBox ShowSalonManagerCheckBox;
 	
-	public ManageEmployeesGUI() {
-		
+	public ManageEmployeesGUI(ManageEmployeesController manageEmployeesController ) {
+		this.manageEmployeesController = manageEmployeesController;
 		blackline = BorderFactory.createLineBorder(Color.black);
 		
 		this.title = "Manage Employees";
@@ -62,7 +71,7 @@ public class ManageEmployeesGUI extends JPanel{
 		this.repaint();
 		
 		
-		employeeListModel = new DefaultTableModel()
+		employeeTableModel = new DefaultTableModel()
 		{
 			public boolean isCellEditable(int row, int column)
 			{
@@ -72,10 +81,10 @@ public class ManageEmployeesGUI extends JPanel{
 		
 		for( int i = 0; i < employeeListColumn.length; i++ )
 		{
-			employeeListModel.addColumn(employeeListColumn[i]);
+			employeeTableModel.addColumn(employeeListColumn[i]);
 		}
 		
-		employeeListTable = new JTable(employeeListModel);
+		employeeListTable = new JTable(employeeTableModel);
 		employeeListTable.getTableHeader().setReorderingAllowed(false);
 		employeeListTable.getTableHeader().setResizingAllowed(false);
 		employeeListScrollPane = new JScrollPane(employeeListTable);
@@ -94,27 +103,20 @@ public class ManageEmployeesGUI extends JPanel{
 		add(searchButton);
 		
 		addEmployeeButton = new JButton("Add Employee");
-		addEmployeeButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				new AddEmployeeGUI();
-			}
-		});
 		addEmployeeButton.setBounds(312, 11, 130, 26);
+		addEmployeeButton.addActionListener(this);
 		add(addEmployeeButton);
 		
 		editDetailsButton = new JButton("Edit Details");
 		editDetailsButton.setBounds(682, 442, 129, 26);
-		editDetailsButton.addActionListener(new ActionListener(){
-			public void actionPerformed(ActionEvent e) {
-				//new EditEmployeeGUI(); pass here the employee selected
-			}
-			
-		});
+		editDetailsButton.setEnabled(false);
+		editDetailsButton.addActionListener(this);
 		add(editDetailsButton);
 		
 		viewDetailsButton = new JButton("View Details");
 		viewDetailsButton.setBounds(543, 442, 129, 26);
-		add(viewDetailsButton);
+		viewDetailsButton.setEnabled(false);
+		//add(viewDetailsButton);
 		
 		totalCountEmployeesLabel = new JLabel("Total no. of employees:");
 		totalCountEmployeesLabel.setForeground(Color.WHITE);
@@ -151,31 +153,38 @@ public class ManageEmployeesGUI extends JPanel{
 		ShowSalonManagerCheckBox.setBackground(new Color(128, 128, 0));
 		ShowSalonManagerCheckBox.setBounds(475, 15, 154, 26);
 		add(ShowSalonManagerCheckBox);
+		
+		ListSelectionModel listSelectionModel = employeeListTable.getSelectionModel();
+		listSelectionModel.addListSelectionListener(new ListSelectionListener() 
+		{
+	        public void valueChanged(ListSelectionEvent e)
+	        { 
+	            ListSelectionModel lsm = (ListSelectionModel)e.getSource();
+	            viewDetailsButton.setEnabled(!lsm.isSelectionEmpty());
+	            editDetailsButton.setEnabled(!lsm.isSelectionEmpty());
+	        }
+		});
 	
 	}
-	
+	//GET DATA FROM THE DATABASE
 	public void getData()
 	{
-		updateEmployeeTable();
-		//updateProductTable();
-		
+		manageEmployeesController.getEmployees();
 		this.repaint();
 		this.revalidate();
+		
 	}
 	
 	public void resetAll()
 	{
-		employeeListRows.clear();
 		employees.clear();
-		employeesQuantity.clear();
 		resetTables();
-		updateEmployeeTable();
-		//updateProductTable();
+		//updateEmployeeTable();
 	}
 	
 	public void resetTables()
 	{
-		employeeListModel = new DefaultTableModel()
+		employeeTableModel = new DefaultTableModel()
 		{
 			public boolean isCellEditable(int row, int column)
 			{
@@ -185,7 +194,7 @@ public class ManageEmployeesGUI extends JPanel{
 		
 		for( int i = 0; i < employeeListColumn.length; i++ )
 		{
-			employeeListModel.addColumn(employeeListColumn[i]);
+			employeeTableModel.addColumn(employeeListColumn[i]);
 		}
 		
 	}
@@ -212,31 +221,78 @@ public class ManageEmployeesGUI extends JPanel{
 //		clientListTable.setModel(clientListModel);
 //	}
 	
-	public void addEmployees(ArrayList<ArrayList<String>> employees, ArrayList<ArrayList<Integer>> employeesQuantity)
+//	public void addEmployees(ArrayList<ArrayList<String>> employees, ArrayList<ArrayList<Integer>> employeesQuantity)
+//	{
+//		for( int i = 0; i < employees.size(); i++ )
+//		{
+//			for( int j = 0; j < employees.get(i).size(); j++ )
+//			{
+//				Object[] row = {employees.get(i).get(j), employeesQuantity.get(i).get(j), "N/A", "N/A"};
+//				employeeListRows.add(row);
+//			}
+//			employees.add(employees.get(i));
+//			this.employeesQuantity.add(employeesQuantity.get(i));
+//		}
+//		
+//		updateEmployeeTable();
+//	}
+	
+//	public void updateEmployeeTable()
+//	{	
+//		resetTables();
+//		
+//		for( int i = 0; i < employeeListRows.size(); i++ )
+//		{
+//			employeeTableModel.addRow(employeeListRows.get(i));
+//		}
+//		employeeListTable.setModel(employeeTableModel);
+//	}
+	
+	public void getEmployees(Iterator e)
 	{
+	    employees = new ArrayList<>(0);
+		while (e.hasNext() == true)
+		{
+			employees.add((Employee) e.next());
+		}
+		if(employees.size()>0)
+			
 		for( int i = 0; i < employees.size(); i++ )
 		{
-			for( int j = 0; j < employees.get(i).size(); j++ )
-			{
-				Object[] row = {employees.get(i).get(j), employeesQuantity.get(i).get(j), "N/A", "N/A"};
-				employeeListRows.add(row);
-			}
-			this.employees.add(employees.get(i));
-			this.employeesQuantity.add(employeesQuantity.get(i));
+			//"Name", "Type", "Date Started Working"
+			Object[] row = {employees.get(i).getsEmployeeId(), employees.get(i).getsName(), employees.get(i).getsType(), employees.get(i).getDateStartedWorking()};
+			employeeTableModel.addRow(row);
+			System.out.println(employees.get(i).getsName());
 		}
 		
-		updateEmployeeTable();
 	}
-	
-	public void updateEmployeeTable()
-	{	
-		resetTables();
-		
-		for( int i = 0; i < employeeListRows.size(); i++ )
+	@Override
+	public void actionPerformed(ActionEvent e) 
+	{
+		// TODO Auto-generated method stub
+		if(e.getSource().equals(addEmployeeButton))
 		{
-			employeeListModel.addRow(employeeListRows.get(i));
+			new AddEmployeeGUI(this);
 		}
-		employeeListTable.setModel(employeeListModel);
+		else if(e.getSource().equals(editDetailsButton))
+		{
+			for( int i = 0; i < employees.size() ; i++ )
+			{
+				if(employees.get(i).getsEmployeeId().equals((String) employeeTableModel.getValueAt(employeeListTable.getSelectedRow(), 0)))
+					new EditEmployeeGUI(employees.get(i), this);
+			}
+		}
+		
+	}
+	public void addEmployee() 
+	{
+		// TODO Auto-generated method stub
+		for( int i = 0; i < employees.size(); i++ )
+		{
+			employeeTableModel.removeRow(0);
+		}
+		this.repaint();
+		this.revalidate();
 	}
 	
 }

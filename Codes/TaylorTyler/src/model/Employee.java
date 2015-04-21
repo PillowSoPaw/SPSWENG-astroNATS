@@ -19,7 +19,12 @@ public class Employee
 		this.dateStartedWorking = dateStartedWorking;
 		this.sType = sType;
 	}
-	
+	public Employee(String sName, Date dateStartedWorking, String sType )
+	{
+		this.sName = sName;
+		this.dateStartedWorking = dateStartedWorking;
+		this.sType = sType;
+	}
 	//getters
 	public String getsEmployeeId()
 	{

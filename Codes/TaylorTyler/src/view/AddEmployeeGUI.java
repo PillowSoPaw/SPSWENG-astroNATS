@@ -4,29 +4,40 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
+import controller.AddClientController;
+import controller.AddEmployeeController;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.text.ParseException;
+import java.util.Calendar;
 
-public class AddEmployeeGUI extends JFrame{
-	
+public class AddEmployeeGUI extends JFrame implements ActionListener
+{
+	private AddEmployeeController addEmployeeController = new AddEmployeeController();
+	private ManageEmployeesGUI manageEmployeesGUI;
 	private ViewClientsGUI mainFrame;
 	public Border blackline;
 	private JTextArea firstNameText;
 	private JTextArea middleNameText;
 	private JTextArea lastNameText;
 	private JComboBox cmbType;
-	private JComboBox cmbBranch;
-	
+	private JComboBox cmbBranch;	
 	private JButton confirm;
-	
-	public AddEmployeeGUI(){
+	private String dateToday;
+	public AddEmployeeGUI(ManageEmployeesGUI manageEmployeesGUI){
 		//this.mainFrame = mainFrame; //Pass the view clients GUI
-		
+		this.manageEmployeesGUI = manageEmployeesGUI;
 		// Combo Box items
-		String[] typeItems = {"Senior Employee", "Junior Employee"};
+		String[] typeItems = {"senior", "junior", "salonmanager"};
 		String[] branchItems = {"Sample Branch 1", "Sample Branch 2", "Sample Branch 3"};
-		
+		//Calendar stuff
+		int currYear = Calendar.getInstance().get(Calendar.YEAR);
+		int currDay = Calendar.getInstance().get(Calendar.DAY_OF_MONTH);
+		int currMonth = Calendar.getInstance().get(Calendar.MONTH);
+		dateToday = currYear+"-" + (currMonth +1) + "-" + currDay;
 		blackline = BorderFactory.createLineBorder(Color.black);
 		this.setTitle("Add Employee");
 		
@@ -63,11 +74,11 @@ public class AddEmployeeGUI extends JFrame{
 		mainPanel.add(separator0);
 		
 		JLabel branchLabel = new JLabel("Salon Branch*:");
-		branchLabel.setBounds(10, 141, 93, 14);
-		mainPanel.add(branchLabel);
+		branchLabel.setBounds(10, 181, 93, 14);
+		//mainPanel.add(branchLabel);
 		
 		JLabel typeLabel = new JLabel("Employee Type*:");
-		typeLabel.setBounds(10, 171, 117, 14);
+		typeLabel.setBounds(10, 141, 117, 14);
 		mainPanel.add(typeLabel);
 		
 		//Text Areas
@@ -85,36 +96,49 @@ public class AddEmployeeGUI extends JFrame{
 		mainPanel.add(lastNameText);
 		
 		cmbType = new JComboBox(typeItems);
-		cmbType.setBounds(133, 166, 231, 22);
+		cmbType.setBounds(133, 141, 231, 22);
 		mainPanel.add(cmbType);
-		
-		cmbBranch = new JComboBox(branchItems);
-		cmbBranch.setBounds(133, 138, 231, 22);
-		getContentPane().add(cmbBranch);
 				
 		confirm = new JButton("Confirm");
-		confirm.setBounds(50, 234, 294, 30);
+		confirm.setBounds(50, 210, 294, 30);
+		confirm.addActionListener(this);
 		mainPanel.add(confirm);
-				
-		//Adding listeners for confirm and date Combo Boxes
-		confirm.addActionListener(new ListenerAddEvent());
 		getContentPane().add(mainPanel);
+		
+		cmbBranch = new JComboBox(branchItems);
+		cmbBranch.setBounds(133, 177, 231, 22);
+		//mainPanel.add(cmbBranch);
 	}
-	
-	class ListenerAddEvent implements ActionListener {
-		@Override
-		public void actionPerformed(ActionEvent a) {
-			if (a.getSource().equals(confirm)) {
-				if(!firstNameText.getText().equals("") && !middleNameText.getText().equals("")
-				   && !lastNameText.getText().equals("")){
-					
-					/*
-						DEVS do the adding to the database here :)
-					*/
-					
-					//dispose();
-				}
+
+	@Override
+	public void actionPerformed(ActionEvent arg0) 
+	{
+		// TODO Auto-generated method stub
+		if(firstNameText.getText().equals(""))
+			JOptionPane.showMessageDialog(null, "Please enter a first name.");
+		else if(lastNameText.getText().equals(""))
+			JOptionPane.showMessageDialog(null, "Please enter a last name.");
+		else
+		{
+			String sFname = firstNameText.getText();
+			String sMname = middleNameText.getText();
+			String sLname = lastNameText.getText();
+			if(!sMname.equals(""))
+				sMname = sMname + " ";
+			String sName = sFname +" "+ sMname + sLname;
+			try 
+			{
+				String sType = cmbType.getSelectedItem().toString();
+				addEmployeeController.addEmployee(sName, dateToday, sType);
+				JOptionPane.showMessageDialog(null, "Successfully added employee!");
+				this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+			} catch (ParseException e1) 
+			{
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			manageEmployeesGUI.addEmployee();
+			manageEmployeesGUI.getData();
 		}
-	}
 	}
 }
