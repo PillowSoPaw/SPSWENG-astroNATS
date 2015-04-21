@@ -5,6 +5,8 @@ import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
 
+import controller.LogInController;
+
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -20,6 +22,8 @@ import java.awt.event.ActionEvent;
 
 public class LogInGUI extends JFrame implements ActionListener
 {	
+	private LogInController logInController;
+	
 	private JLabel logoLabel;
 	private Image logoImage;
 	private JTextField usernameTextField;
@@ -27,18 +31,20 @@ public class LogInGUI extends JFrame implements ActionListener
 	private JButton logInButton;
 	private JLabel usernameLabel;
 	private JLabel passwordLabel;
-	private controller.LogInController LogInController;
 	
-	public LogInGUI()
+	public LogInGUI( LogInController logInController )
 	{
+		this.logInController = logInController;
+		
 		try
 		{
-	        logoImage = ImageIO.read(new File("src\\view\\logo.png"));
-	    }
-	    catch(IOException e)
+			logoImage = ImageIO.read(new File("src\\view\\logo.png"));
+		} 
+		catch (IOException e)
 		{
-	        JOptionPane.showMessageDialog(null, null, e.getMessage(), JOptionPane.ERROR_MESSAGE);
-	    }
+			JOptionPane.showMessageDialog(null, null, e.getMessage(),
+					JOptionPane.ERROR_MESSAGE);
+		}
 		
 		logoImage = logoImage.getScaledInstance(245, 225, logoImage.SCALE_DEFAULT);
 		
@@ -84,12 +90,13 @@ public class LogInGUI extends JFrame implements ActionListener
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setVisible(true);
 		this.setResizable(false);
-		LogInController = new controller.LogInController();
+		logInController = new controller.LogInController();
 		
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e) 
+	{
 		// TODO Auto-generated method stub
 		
 		if(e.getSource() == logInButton)
@@ -106,7 +113,7 @@ public class LogInGUI extends JFrame implements ActionListener
 			}
 			else
 			{	
-				boolean access = LogInController.checkLoginDetails(username, password);
+				boolean access = logInController.checkLoginDetails(username, password);
 				
 				if(access == true)
 				{

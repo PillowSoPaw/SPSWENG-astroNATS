@@ -32,6 +32,7 @@ import controller.AddProductsController;
 import controller.AddTransactionController;
 import controller.AddServicesController;
 import controller.InventoryController;
+import controller.LogInController;
 import controller.ViewClientsController;
 import controller.ViewNotificationsController;
 import controller.ViewReceiptsController;
@@ -51,6 +52,7 @@ public class MainGUI extends JFrame implements ActionListener, MouseListener
 	private ViewNotificationsController viewNotificationsController;
 	private ViewReceiptsController viewReceiptsController;
 	private InventoryController inventoryController;
+	private LogInController logInController;
 	
 	private JPanel logoPanel;
 	private Image logoImage;
@@ -101,6 +103,7 @@ public class MainGUI extends JFrame implements ActionListener, MouseListener
 		viewNotificationsController = new ViewNotificationsController();
 		viewReceiptsController = new ViewReceiptsController();
 		inventoryController = new InventoryController();
+		logInController = new LogInController();
 		
 		getContentPane().setLayout(null);
 		
@@ -494,7 +497,7 @@ public class MainGUI extends JFrame implements ActionListener, MouseListener
 		} 
 		else if (e.getSource().equals(logOutLabel))
 		{
-			new LogInGUI();
+			new LogInGUI(logInController);
 			dispose();
 		}
 		else if( e.getSource().equals(notificationLabel))
