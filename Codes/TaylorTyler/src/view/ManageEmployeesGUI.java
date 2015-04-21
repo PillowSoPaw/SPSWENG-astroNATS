@@ -76,6 +76,8 @@ public class ManageEmployeesGUI extends JPanel{
 		}
 		
 		employeeListTable = new JTable(employeeListModel);
+		employeeListTable.getTableHeader().setReorderingAllowed(false);
+		employeeListTable.getTableHeader().setResizingAllowed(false);
 		employeeListScrollPane = new JScrollPane(employeeListTable);
 		employeeListScrollPane.setBounds(10, 58, 801, 373);
 		employeeListScrollPane.setBorder(blackline);

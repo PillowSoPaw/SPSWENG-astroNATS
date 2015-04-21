@@ -50,7 +50,7 @@ public class AddEmployeeGUI extends JFrame{
 		fnameLabel.setBounds(10, 39, 93, 14);
 		mainPanel.add(fnameLabel);
 		
-		JLabel mnameLabel = new JLabel("Middle Name*:");
+		JLabel mnameLabel = new JLabel("Middle Name:");
 		mnameLabel.setBounds(10, 69, 93, 14);
 		mainPanel.add(mnameLabel);
 		

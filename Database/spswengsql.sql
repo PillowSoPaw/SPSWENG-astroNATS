@@ -107,7 +107,9 @@ DROP TABLE IF EXISTS `client`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `client` (
   `client_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL,
+  `fname` varchar(45) NOT NULL,
+  `mname` varchar(45) NOT NULL,
+  `lname` varchar(45) NOT NULL,
   `address` varchar(45) NOT NULL,
   `contactNumber` varchar(45) NOT NULL,
   `email` varchar(45) DEFAULT NULL,
@@ -117,7 +119,7 @@ CREATE TABLE `client` (
   `gender` varchar(45) NOT NULL,
   PRIMARY KEY (`client_id`),
   UNIQUE KEY `idclient_UNIQUE` (`client_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -126,7 +128,7 @@ CREATE TABLE `client` (
 
 LOCK TABLES `client` WRITE;
 /*!40000 ALTER TABLE `client` DISABLE KEYS */;
-INSERT INTO `client` VALUES (1,'Client One','Manila','09000000001','one@mail.com','2015-01-01','2015-03-01','1996-01-01','Male'),(2,'Client Two','Manila','09000000002','two@mail.com','2015-01-02','2015-03-02','1996-01-01','Male'),(3,'Client Three','Manila','09000000003','three@mail.com','2015-01-03','2015-03-03','1996-01-01','Male'),(4,'Client Four','Manila','09000000004','four@mail.com','2015-01-04','2015-03-04','1996-01-01','Male'),(5,'Client Five','Manila','09000000005','five@mail.com','2015-01-05','2015-03-05','1996-01-01','Male'),(6,'Client Six','Manila','09000000006','six@mail.com','2015-01-06','2015-03-06','1996-01-01','Female'),(7,'Client Seven','Manila','09000000007','seven@mail.com','2015-01-07','2015-03-06','1996-01-01','Female'),(8,'Client Eigth','Manila','09000000008','eight@mail.com','2015-01-08','2015-03-06','1996-01-01','Female'),(9,'Client Nine','Manila','09000000009','nine@mail.com','2015-01-09','2015-03-06','1996-01-01','Female'),(10,'Client Ten','Manila','09000000010','ten@mail.com','2015-01-10','2015-03-06','1996-01-01','Female');
+INSERT INTO `client` VALUES (1,'Client','','One','Manila','09000000001','one@mail.com','2015-01-01','2015-03-01','1996-01-01','Male'),(2,'Client','','Two','Manila','09000000002','two@mail.com','2015-01-02','2015-03-02','1996-02-01','Male'),(3,'Client','','Three','Manila','09000000003','three@mail.com','2015-01-03','2015-03-03','1996-03-01','Male'),(4,'Client','','Four','Manila','09000000004','four@mail.com','2015-01-04','2015-03-04','1996-04-01','Male'),(5,'Client','','Five','Manila','09000000005','five@mail.com','2015-01-05','2015-03-05','1996-05-01','Male'),(6,'Client','','Six','Manila','09000000006','six@mail.com','2015-01-06','2015-03-06','1996-06-01','Female'),(7,'Client','T','Seven','Manila','09000000007','seven@mail.com','2015-01-07','2015-03-07','1996-07-01','Female'),(8,'Client','T','Eigth','Manila','09000000008','eight@mail.com','2015-01-08','2015-03-08','1996-08-01','Female'),(9,'Client','T','Nine','Manila','09000000009','nine@mail.com','2015-01-09','2015-03-09','1996-09-01','Female'),(10,'Client','T','Ten','Manila','09000000010','ten@mail.com','2015-01-10','2015-03-10','1996-10-01','Female'),(11,'Sea','','Bear','Manila','1000000000','bearygood','2015-04-21','2015-04-21','2015-06-21','Male'),(12,'not so','very','hot','earth','09169','notveryhot@gmail.not','2015-04-21','2015-04-21','1958-04-01','Female');
 /*!40000 ALTER TABLE `client` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -140,7 +142,9 @@ DROP TABLE IF EXISTS `employee`;
 CREATE TABLE `employee` (
   `employee_id` int(11) NOT NULL AUTO_INCREMENT,
   `branch_id` int(11) NOT NULL,
-  `name` varchar(45) NOT NULL,
+  `fname` varchar(45) NOT NULL,
+  `mname` varchar(45) NOT NULL,
+  `lname` varchar(45) NOT NULL,
   `dateStartedWorking` date NOT NULL,
   `hoursRendered` float NOT NULL,
   `type` varchar(45) NOT NULL,
@@ -157,7 +161,7 @@ CREATE TABLE `employee` (
 
 LOCK TABLES `employee` WRITE;
 /*!40000 ALTER TABLE `employee` DISABLE KEYS */;
-INSERT INTO `employee` VALUES (1,1,'Sen One','2013-01-02',10,'senior'),(2,3,'Sen Two','2014-07-10',20,'senior'),(3,2,'Jun Three','2015-03-12',1,'junior'),(4,3,'Jun Four','2015-03-12',5,'junior'),(5,1,'Man Five','2013-02-13',50,'salonmanager'),(6,3,'Taylor Tyler','2010-01-01',0,'owner'),(7,2,'Man Seven','2011-02-14',90,'salonmanager');
+INSERT INTO `employee` VALUES (1,1,'Sen','','One','2013-01-02',10,'senior'),(2,3,'Sen','','Two','2014-07-10',20,'senior'),(3,2,'Jun','','Three','2015-03-12',1,'junior'),(4,3,'Jun','','Four','2015-03-12',5,'junior'),(5,1,'Man','','Five','2013-02-13',50,'salonmanager'),(6,3,'Taylor','','Tyler','2010-01-01',0,'owner'),(7,2,'Man','','Seven','2011-02-14',90,'salonmanager');
 /*!40000 ALTER TABLE `employee` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -187,7 +191,7 @@ CREATE TABLE `product` (
 
 LOCK TABLES `product` WRITE;
 /*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES (1,'Shampoo','For the hair',50,0,100,'Cups'),(2,'Conditioner','For the hair',40,0,90,'Cups'),(3,'Herbal','for the hair',30,0,200,NULL),(4,'Wax','for styling the hair',20,0,150,NULL),(5,'Nail Polish','for the nails',10,0,50,'mL'),(6,'Hair Color','for coloring the hair',10,0,NULL,'mL');
+INSERT INTO `product` VALUES (1,'Shampoo','For the hair',44,0,100,'Cups'),(2,'Conditioner','For the hair',40,0,90,'Cups'),(3,'Herbal','for the hair',30,0,200,NULL),(4,'Wax','for styling the hair',20,0,150,NULL),(5,'Nail Polish','for the nails',10,0,50,'mL'),(6,'Hair Color','for coloring the hair',10,0,NULL,'mL');
 /*!40000 ALTER TABLE `product` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -206,7 +210,7 @@ CREATE TABLE `productlineitem` (
   PRIMARY KEY (`productlineitem_id`),
   KEY `product_id_idx` (`product_id`),
   CONSTRAINT `product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -215,6 +219,7 @@ CREATE TABLE `productlineitem` (
 
 LOCK TABLES `productlineitem` WRITE;
 /*!40000 ALTER TABLE `productlineitem` DISABLE KEYS */;
+INSERT INTO `productlineitem` VALUES (1,1,2,NULL),(2,1,1,NULL),(3,1,1,NULL);
 /*!40000 ALTER TABLE `productlineitem` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -241,6 +246,7 @@ CREATE TABLE `productlist` (
 
 LOCK TABLES `productlist` WRITE;
 /*!40000 ALTER TABLE `productlist` DISABLE KEYS */;
+INSERT INTO `productlist` VALUES (1,1),(2,2),(3,3);
 /*!40000 ALTER TABLE `productlist` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -261,7 +267,7 @@ CREATE TABLE `receipt` (
   UNIQUE KEY `receipt_id_UNIQUE` (`receipt_id`),
   KEY `client_id_idx` (`client_id`),
   CONSTRAINT `client_id2` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -270,6 +276,7 @@ CREATE TABLE `receipt` (
 
 LOCK TABLES `receipt` WRITE;
 /*!40000 ALTER TABLE `receipt` DISABLE KEYS */;
+INSERT INTO `receipt` VALUES (1,1,'2015-04-19 00:06:34','Cash',100),(2,1,'2015-04-19 00:17:54','Cash',100),(3,1,'2015-04-19 03:24:54','Cash',100),(4,1,'2015-04-19 03:42:09','Cash',0);
 /*!40000 ALTER TABLE `receipt` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -321,7 +328,7 @@ CREATE TABLE `servicelineitem` (
   CONSTRAINT `employee_id13` FOREIGN KEY (`employee_id1`) REFERENCES `employee` (`employee_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `employee_id23` FOREIGN KEY (`employee_id2`) REFERENCES `employee` (`employee_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `service_id3` FOREIGN KEY (`service_id`) REFERENCES `service` (`service_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -330,6 +337,7 @@ CREATE TABLE `servicelineitem` (
 
 LOCK TABLES `servicelineitem` WRITE;
 /*!40000 ALTER TABLE `servicelineitem` DISABLE KEYS */;
+INSERT INTO `servicelineitem` VALUES (1,1,1,1,3),(2,1,1,1,NULL);
 /*!40000 ALTER TABLE `servicelineitem` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -356,6 +364,7 @@ CREATE TABLE `servicelist` (
 
 LOCK TABLES `servicelist` WRITE;
 /*!40000 ALTER TABLE `servicelist` DISABLE KEYS */;
+INSERT INTO `servicelist` VALUES (1,2),(2,3);
 /*!40000 ALTER TABLE `servicelist` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -403,7 +412,7 @@ CREATE TABLE `transaction` (
   UNIQUE KEY `transaction_id_UNIQUE` (`transaction_id`),
   KEY `client_id_idx` (`client_id`),
   CONSTRAINT `client_id` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -412,6 +421,7 @@ CREATE TABLE `transaction` (
 
 LOCK TABLES `transaction` WRITE;
 /*!40000 ALTER TABLE `transaction` DISABLE KEYS */;
+INSERT INTO `transaction` VALUES (1,1,''),(2,1,''),(3,1,'');
 /*!40000 ALTER TABLE `transaction` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -438,6 +448,7 @@ CREATE TABLE `transactionlist` (
 
 LOCK TABLES `transactionlist` WRITE;
 /*!40000 ALTER TABLE `transactionlist` DISABLE KEYS */;
+INSERT INTO `transactionlist` VALUES (1,1),(2,2),(3,3);
 /*!40000 ALTER TABLE `transactionlist` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -450,4 +461,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-04-18 17:44:52
+-- Dump completed on 2015-04-21 14:40:36

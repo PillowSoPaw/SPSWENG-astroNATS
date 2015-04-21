@@ -4,17 +4,22 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 
+import controller.EditClientDetailsController;
+import model.Client;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowEvent;
+import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
-public class EditClientDetailsGUI extends JFrame
+public class EditClientDetailsGUI extends JFrame implements ActionListener
 {
-	
-	private ManageClientsGUI mainFrame;
+	private EditClientDetailsController editClientDetailsController = new EditClientDetailsController();
+	private ManageClientsGUI manageClientsGUI;
 	public Border blackline;
 	private JTextArea firstNameTextField;
 	private JTextArea middleNameTextField;
@@ -32,10 +37,12 @@ public class EditClientDetailsGUI extends JFrame
 	
 	private int currYear;
 	private JButton cancelButton;
-	
+	private Client client;
 	//add the parameters inside action listener of ManageClientsGUI
-	public EditClientDetailsGUI(/*String firstname, String middlename, String lastname, String email, Date birthday, String address, String contactNo, String gender*/)
+	public EditClientDetailsGUI(Client client, ManageClientsGUI manageClientsGUI)
 	{
+		this.manageClientsGUI = manageClientsGUI;
+		this.client = client;
 		getContentPane().setForeground(Color.WHITE);
 		setResizable(false);
 		//this.mainFrame = mainFrame; //Pass the view clients GUI
@@ -53,11 +60,13 @@ public class EditClientDetailsGUI extends JFrame
 		
 		String[] genderItems = {"Male", "Female"};
 		
-		for (int i = 0; i < 31; i++) {
+		for (int i = 0; i < 31; i++)
+		{
 			cmbDayItems[i] = new String("" + (i + 1));
 		}
 		
-		for (int i = 0; i < 151; i++) {
+		for (int i = 0; i < 151; i++) 
+		{
 			cmbYearItems[i] = new String("" + ((currYear - 151) + i + 1));
 		}
 		
@@ -128,41 +137,48 @@ public class EditClientDetailsGUI extends JFrame
 		
 		//Text Areas
 		
-		firstNameTextField = new JTextArea();
+		firstNameTextField = new JTextArea(client.getsFname());
 		firstNameTextField.setBounds(141, 29, 231, 19);
 		getContentPane().add(firstNameTextField);
 		
-		middleNameTextField = new JTextArea();
+		middleNameTextField = new JTextArea(client.getsMname());
 		middleNameTextField.setBounds(141, 59, 231, 19);
 		getContentPane().add(middleNameTextField);
 		
-		lastNameTextField = new JTextArea();
+		lastNameTextField = new JTextArea(client.getsLname());
 		lastNameTextField.setBounds(141, 89, 231, 19);
 		getContentPane().add(lastNameTextField);
 		
-		emailTextField = new JTextArea();
+		emailTextField = new JTextArea(client.getsEmail());
 		emailTextField.setBounds(141, 131, 231, 19);
 		getContentPane().add(emailTextField);
 		
-		addressTextField = new JTextArea();
+		addressTextField = new JTextArea(client.getsAddress());
 		addressTextField.setBounds(141, 192, 231, 19);
 		getContentPane().add(addressTextField);
 		
-		contactNumberTextField = new JTextArea();
+		contactNumberTextField = new JTextArea(client.getsContactNumber());
 		contactNumberTextField.setBounds(141, 222, 231, 19);
 		getContentPane().add(contactNumberTextField );
-		
 		genderComboBox = new JComboBox(genderItems);
 		genderComboBox.setBounds(141, 252, 231, 22);
+		int iGender=0;
+		if(client.getsGender().equals("Female"))
+			iGender = 1;
+		genderComboBox.setSelectedIndex(iGender);
 		getContentPane().add(genderComboBox);
 		
 				dayComboBox = new JComboBox(cmbDayItems);
+				dayComboBox.setSelectedIndex(client.getBirthday().getDate()-1);
 				dayComboBox.setBounds(250, 156, 46, 25);
 				getContentPane().add(dayComboBox);
 				monthComboBox = new JComboBox(cmbMonthItems);
+				System.out.println("Month" + client.getBirthday().getMonth());
+				monthComboBox.setSelectedIndex(client.getBirthday().getMonth());
 				monthComboBox.setBounds(141, 156, 99, 25);
 				getContentPane().add(monthComboBox);
 				yearComboBox = new JComboBox(cmbYearItems);
+				yearComboBox.setSelectedIndex(client.getBirthday().getYear()+35);
 				yearComboBox.setBounds(306, 156, 66, 25);
 				getContentPane().add(yearComboBox);
 				
@@ -170,28 +186,30 @@ public class EditClientDetailsGUI extends JFrame
 		saveButton.setBackground(new Color(0, 128, 0));
 		saveButton.setBounds(208, 305, 127, 30);
 		getContentPane().add(saveButton);
-		
+		saveButton.addActionListener(this);
 		cancelButton = new JButton("Cancel");
 		cancelButton.setBackground(Color.RED);
 		cancelButton.setBounds(50, 305, 127, 30);
 		getContentPane().add(cancelButton);
 				
 		//Adding listeners for confirm and date Combo Boxes
-		saveButton.addActionListener(new ListenerAddEvent());
 		monthComboBox.addActionListener(new ListenerAddEvent());
 		yearComboBox.addActionListener(new ListenerAddEvent());
 		
 		refreshChoices();
 		
-		yearComboBox.setSelectedIndex(150);
-		monthComboBox.setSelectedIndex(currMonth);
-		dayComboBox.setSelectedIndex(currDay - 1);
+		//yearComboBox.setSelectedIndex(150);
+		//monthComboBox.setSelectedIndex(currMonth);
+		//dayComboBox.setSelectedIndex(currDay - 1);
 	}
 	
-	class ListenerAddEvent implements ActionListener {
+	class ListenerAddEvent implements ActionListener 
+	{
 		@Override
-		public void actionPerformed(ActionEvent a) {
-			if (a.getSource().equals(saveButton)) {
+		public void actionPerformed(ActionEvent a)
+		{
+			if (a.getSource().equals(saveButton)) 
+			{
 				if(!firstNameTextField.getText().equals("") && !middleNameTextField.getText().equals("")
 				   && !lastNameTextField.getText().equals("") && !emailTextField.getText().equals("")){
 					int month, year, day;
@@ -206,13 +224,15 @@ public class EditClientDetailsGUI extends JFrame
 					
 					//dispose();
 				}
-			} else if (a.getActionCommand() == "comboBoxChanged") {
+			} else if (a.getActionCommand() == "comboBoxChanged") 
+			{
 				refreshChoices();
 			}
 		}
 	}
 	
-	public void refreshChoices() {
+	public void refreshChoices() 
+	{
 		int year, month, nod;
 
 		month = monthComboBox.getSelectedIndex();
@@ -223,14 +243,87 @@ public class EditClientDetailsGUI extends JFrame
 
 		String cmbDayItems[] = new String[nod];
 
-		for (int i = 0; i < nod; i++) {
+		for (int i = 0; i < nod; i++)
+		{
 			cmbDayItems[i] = new String("" + (i + 1));
 		}
-
 		DefaultComboBoxModel days = new DefaultComboBoxModel(cmbDayItems);
 		dayComboBox.setModel(days);
+		try
+		{
+			dayComboBox.setSelectedIndex(client.getBirthday().getDate()-1);
+		}
+		catch( Exception e)
+		{
+			dayComboBox.setSelectedIndex(nod-1);
+		}
 		repaint();
 	}// Please use this and combo boxes for anything that requires dates 
 	 // so that the user will not make any errors in placing dates.
 	 // This accounts for dates that doesn't exist (ex.: February 29 xxxx)
+	
+	@Override
+	public void actionPerformed(ActionEvent e) 
+	{
+		// TODO Auto-generated method stub
+		if(e.getSource() == saveButton )
+		{
+			if(firstNameTextField.getText().equals(""))
+				JOptionPane.showMessageDialog(null, "Please enter a first name.");
+			else if(lastNameTextField.getText().equals(""))
+				JOptionPane.showMessageDialog(null, "Please enter a last name.");
+			else if(emailTextField.getText().equals(""))
+				JOptionPane.showMessageDialog(null, "Please enter an email.");
+			else if(addressTextField.getText().equals(""))
+				JOptionPane.showMessageDialog(null, "Please enter an address.");
+			else if(contactNumberTextField.getText().equals(""))
+				JOptionPane.showMessageDialog(null, "Please enter a contact number.");
+			else
+			{
+				//String sMiddleName = middleNameText.getText();
+				//if(!middleNameText.getText().equals(""))
+				//	sMiddleName = sMiddleName + " ";
+				//String sName = firstNameText.getText() +" "+ sMiddleName + lastNameText.getText();
+				String sFname = firstNameTextField.getText();
+				String sMname = middleNameTextField.getText();
+				String sLname = lastNameTextField.getText();
+				String sAddress = addressTextField.getText();
+				String sEmail = emailTextField.getText();
+				String sBirthday = (yearComboBox.getSelectedIndex()+ (currYear - 150))+"-"+(monthComboBox.getSelectedIndex()+1)+"-"+ (dayComboBox.getSelectedIndex()+1) ;
+				String sContactNumber = contactNumberTextField.getText();
+//				System.out.println(sName);
+//				System.out.println(sAddress);
+//				System.out.println(sEmail);
+//				System.out.println(sBirthday);
+//				System.out.println(sContactNumber);
+//				System.out.println(sDateJoined);
+//				System.out.println(sDateLastVisited);
+				//addClient(String sName, String sAddress, String sContactNumber, String sEmail, String sDateJoined, String sDateLastVisited, String sBirthday) 
+				try 
+				{
+					String sGender =genderComboBox.getSelectedItem().toString();
+					System.out.println("Edit client gui");
+					System.out.println(client.getsClientId());
+					System.out.println(sFname);
+					System.out.println(sMname);
+					System.out.println(sLname);
+					System.out.println(sAddress);
+					System.out.println(sContactNumber);
+					System.out.println(sEmail);
+					System.out.println(sBirthday);
+					System.out.println(sGender);
+					editClientDetailsController.editClient(client.getsClientId(), sFname, sMname, sLname, sAddress, sContactNumber, sEmail, sBirthday, sGender);
+					JOptionPane.showMessageDialog(null, "Successfully updated client!");
+					this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
+				} catch (ParseException e1) 
+				{
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				manageClientsGUI.addClient();
+				manageClientsGUI.getData();
+			}
+		}
+		
+	}
 }

@@ -11,16 +11,25 @@ public class Employee
 	private ArrayList<TimeLog> timelog;
 	private Branch branch;
 	private String sName;
+	private String sFname;
+	private String sMname;
+	private String sLname;
 	private Date dateStartedWorking;
 	private double dHoursRendered;
 	private String sType;
 	
-	public Employee(String sEmployeeId, Branch branch, String sName, Date dateStartedWorking, double dHoursRendered, String sType )
+	public Employee(String sEmployeeId, Branch branch, String sFname, String sMname, String sLname, Date dateStartedWorking, double dHoursRendered, String sType )
 	{
 		this.sEmployeeId = sEmployeeId;
 		this.timelog = new ArrayList<TimeLog>(0);
 		this.branch = branch;
-		this.sName = sName;
+		this.setsFname(sFname);
+		this.setsMname(sMname);
+		this.setsLname(sLname);
+		String sMiddleName = sMname;
+		if(!sMname.equals(""))
+			sMiddleName = sMiddleName + " ";
+		this.sName = sFname +" "+ sMiddleName + sLname;
 		this.dateStartedWorking = dateStartedWorking;
 		this.dHoursRendered = dHoursRendered;
 		this.sType = sType;
@@ -61,7 +70,21 @@ public class Employee
 	{
 		return sType;
 	}
+
+	public String getsFname()
+	{
+		return sFname;
+	}
+
+	public String getsMname() 
+	{
+		return sMname;
+	}
 	
+	public String getsLname() 
+	{
+		return sLname;
+	}
 	//setters
 	public void setsEmployeeId(String sEmployeeId)
 	{
@@ -103,4 +126,21 @@ public class Employee
 	{
 		this.timelog.add(timelog);
 	}
+
+	public void setsFname(String sFname)
+	{
+		this.sFname = sFname;
+	}
+
+	public void setsMname(String sMname) 
+	{
+		this.sMname = sMname;
+	}
+	
+	public void setsLname(String sLname) 
+	{
+		this.sLname = sLname;
+	}
+
+
 }

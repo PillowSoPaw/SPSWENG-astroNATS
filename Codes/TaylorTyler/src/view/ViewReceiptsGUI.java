@@ -48,11 +48,11 @@ public class ViewReceiptsGUI extends JPanel implements ActionListener
 		
 		sortByLabel = new JLabel("Sort by:");
 		sortByLabel.setForeground(Color.WHITE);
-		sortByLabel.setBounds(480, 11, 46, 26);
+		sortByLabel.setBounds(619, 11, 46, 26);
 		add(sortByLabel);
 		
 		categoryComboBox = new JComboBox();
-		categoryComboBox.setBounds(526, 14, 129, 20);
+		categoryComboBox.setBounds(665, 14, 129, 20);
 		add(categoryComboBox);
 		
 		viewDetailsButton = new JButton("View Details");
@@ -81,6 +81,8 @@ public class ViewReceiptsGUI extends JPanel implements ActionListener
 				{sample, sample, sample}
 			};
 		receiptsTable = new JTable(rowDatareceiptsTable, columnNamesreceiptsTable);
+		receiptsTable.getTableHeader().setReorderingAllowed(false);
+		receiptsTable.getTableHeader().setResizingAllowed(false);
 		receiptsTable.setSize(784, 380);
 		receiptsTable.setBorder(blackline);
 		

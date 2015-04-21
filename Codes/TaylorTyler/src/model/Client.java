@@ -7,6 +7,9 @@ public class Client
 	
 	private String sClientId;
 	private String sName;
+	private String sFname; //first name
+	private String sMname; //middle name
+	private String sLname; //last name
 	private String sAddress;
 	private String sContactNumber;
 	private String sEmail;
@@ -14,10 +17,16 @@ public class Client
 	private Date dateLastVisited;
 	private Date birthday;
 	private String sGender;
-	public Client( String sClientId, String sName, String sAddress, String sContactNumber, String sEmail, Date dateJoined, Date dateLastVisited , Date birthday, String sGender)
+	public Client( String sClientId, String sFname,String sMname,String sLname, String sAddress, String sContactNumber, String sEmail, Date dateJoined, Date dateLastVisited , Date birthday, String sGender)
 	{
 		this.sClientId = sClientId;
-		this.sName = sName;
+		this.sFname = sFname;
+		this.sMname = sMname;
+		this.sLname = sLname;
+		String sMiddleName = sMname;
+		if(!sMname.equals(""))
+			sMiddleName = sMiddleName + " ";
+		this.sName = sFname +" "+ sMiddleName + sLname;
 		this.sAddress = sAddress;
 		this.sContactNumber = sContactNumber;
 		this.sEmail = sEmail;
@@ -26,9 +35,15 @@ public class Client
 		this.birthday = birthday;
 		this.sGender = sGender;
 	}
-	public Client(String sName, String sAddress, String sContactNumber, String sEmail, Date dateJoined, Date dateLastVisited, Date birthday, String sGender )
+	public Client(String sFname,String sMname,String sLname, String sAddress, String sContactNumber, String sEmail, Date dateJoined, Date dateLastVisited, Date birthday, String sGender )
 	{
-		this.sName = sName;
+		this.sFname = sFname;
+		this.sMname = sMname;
+		this.sLname = sLname;
+		String sMiddleName = sMname;
+		if(!sMname.equals(""))
+			sMiddleName = sMiddleName + " ";
+		this.sName = sFname +" "+ sMiddleName + sLname;
 		this.sAddress = sAddress;
 		this.sContactNumber = sContactNumber;
 		this.sEmail = sEmail;
@@ -83,7 +98,21 @@ public class Client
 	{
 		return sGender;
 	}
-
+	
+	public String getsFname() {
+		return sFname;
+	}
+	
+	public String getsMname() 
+	{
+		return sMname;
+	}
+	
+	public String getsLname() 
+	{
+		return sLname;
+	}
+	
 	//setters
 	public void setsClientId(String sClientId)
 	{
@@ -128,6 +157,21 @@ public class Client
 	public void setsGender(String sGender) 
 	{
 		this.sGender = sGender;
+	}
+
+	public void setsFname(String sFname) 
+	{
+		this.sFname = sFname;
+	}
+
+	public void setsMname(String sMname) 
+	{
+		this.sMname = sMname;
+	}
+
+	public void setsLname(String sLname)
+	{
+		this.sLname = sLname;
 	}
 	
 }

@@ -91,7 +91,7 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 	private JLabel percentLabel;
 	private JLabel editInstructionsLabel;
 	private JLabel addDiscountLabel;
-	private JCheckBox addDiscountCheckBox;
+	private JLabel discountWarningLabel;
 	private DefaultTableModel productTableModel;
 	private DefaultTableModel serviceTableModel;
 	private DefaultComboBoxModel<String> productComboBoxModel;
@@ -119,7 +119,7 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 	private boolean bIsEditing = false;
 	private boolean bSeniorSelected = false;
 	private boolean bJuniorSelected = false;
-	
+	private boolean bHasDiscount = false;
 	
 	public AddServicesGUI( AddServicesController addServicesController, AddTransactionGUI addTransactionGUI )
 	{
@@ -199,6 +199,8 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 		productTableModel.addColumn("Quantity");
 		
 		productTable = new JTable(productTableModel);
+		productTable.getTableHeader().setReorderingAllowed(false);
+		productTable.getTableHeader().setResizingAllowed(false);
 		productsScrollPane = new JScrollPane(productTable);
 		productsScrollPane.setBounds(187, 11, 227, 120);
 		productsScrollPane.setBorder(blackline);
@@ -291,7 +293,7 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 		employeePanel.add(addJuniorButton);
 		
 		newServiceLabel = new JLabel("+ New Service");
-		newServiceLabel.setBounds(10, 450, 100, 14);
+		newServiceLabel.setBounds(10, 496, 100, 14);
 		//newServiceLabel.setBounds(10, 505, 100, 14);
 		newServiceLabel.addMouseListener(this);
 		getContentPane().add(newServiceLabel);
@@ -299,7 +301,7 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 		addServiceButton = new JButton("Add Service");
 		addServiceButton.setForeground(Color.WHITE);
 		addServiceButton.setBackground(new Color(34, 139, 34));
-		addServiceButton.setBounds(307, 454, 127, 23);
+		addServiceButton.setBounds(306, 492, 127, 23);
 		//addServiceButton.setBounds(307, 501, 127, 23);
 		addServiceButton.setEnabled(false);
 		addServiceButton.addActionListener(this);
@@ -308,7 +310,7 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 		updateServiceButton = new JButton("Update Service");
 		updateServiceButton.setForeground(Color.WHITE);
 		updateServiceButton.setBackground(new Color(34, 139, 34));
-		updateServiceButton.setBounds(259, 454, 175, 23);
+		updateServiceButton.setBounds(259, 492, 175, 23);
 		//updateServiceButton.setBounds(259, 501, 175, 23);
 		updateServiceButton.setVisible(false);
 		updateServiceButton.addActionListener(this);
@@ -330,6 +332,8 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 		serviceTableModel.addColumn("Price");
 		
 		servicesTable = new JTable(serviceTableModel);
+		servicesTable.getTableHeader().setReorderingAllowed(false);
+		servicesTable.getTableHeader().setResizingAllowed(false);
 		servicesScrollPane = new JScrollPane(servicesTable);
 		servicesScrollPane.setBackground(new Color(189, 183, 107));
 		servicesScrollPane.setBorder(blackline);
@@ -379,10 +383,12 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 		addDiscountPanel.setLayout(null);
 		addDiscountPanel.setBorder(blackline);
 		getContentPane().add(addDiscountPanel);
-		addDiscountPanel.setVisible(false);
 		
 		discountTextField = new JTextField();
 		discountTextField.setBounds(208, 11, 44, 20);
+		discountTextField.setText(Integer.toString(0));
+		discountTextField.addKeyListener(this);
+		discountTextField.addFocusListener(this);
 		addDiscountPanel.add(discountTextField);
 		discountTextField.setColumns(10);
 		
@@ -395,17 +401,16 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 		percentLabel.setBounds(258, 14, 25, 14);
 		addDiscountPanel.add(percentLabel);
 		
+		discountWarningLabel = new JLabel("Input 0 - 100 only");
+		discountWarningLabel.setBounds(300, 14, 114, 14);
+		discountWarningLabel.setVisible(false);
+		addDiscountPanel.add(discountWarningLabel);
+		
 		addDiscountLabel = new JLabel("Add Discount");
 		addDiscountLabel.setFont(new Font("Tahoma", Font.BOLD, 12));
 		addDiscountLabel.setBounds(10, 429, 138, 14);
 		getContentPane().add(addDiscountLabel);
-		addDiscountLabel.setVisible(false);
 		
-		addDiscountCheckBox = new JCheckBox("Add discount");
-		addDiscountCheckBox.setBounds(324, 431, 110, 14);
-		getContentPane().add(addDiscountCheckBox);
-		addDiscountCheckBox.setBackground(new Color(189, 183, 107));
-		addDiscountCheckBox.addActionListener(this);
 	}
 	
 //	void itemStateChanged(ItemEvent e)
@@ -439,29 +444,7 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 	@Override
 	public void actionPerformed(ActionEvent e)
 	{	
-		if( e.getSource() == addDiscountCheckBox )
-		{
-			boolean selected = addDiscountCheckBox.getModel().isSelected();
-			
-			if(selected == true)
-			{
-				addDiscountPanel.setVisible(true);
-				addDiscountLabel.setVisible(true);
-				newServiceLabel.setBounds(10, 505, 100, 14);
-				addServiceButton.setBounds(307, 501, 127, 23);
-				updateServiceButton.setBounds(259, 501, 175, 23);
-			}
-			else
-			{
-				addDiscountPanel.setVisible(false);
-				addDiscountLabel.setVisible(false);
-				newServiceLabel.setBounds(10, 450, 100, 14);
-				addServiceButton.setBounds(307, 454, 127, 23);
-				updateServiceButton.setBounds(259, 454, 175, 23);
-			}
-			
-		}
-		
+		double price = 0;
 		
 		if( e.getSource() == addProductButton )
 		{
@@ -518,9 +501,14 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 		}
 		else if( e.getSource() == addServiceButton )
 		{	
+			price = servicePrice[serviceComboBox.getSelectedIndex()];
+			
+			if( bHasDiscount == true )
+				price *= ( 1 - (Double.parseDouble(discountTextField.getText()) / 100) );
+			
 			addToServiceTable(customerNameTextField.getText(), serviceOptions[serviceComboBox.getSelectedIndex()], 
 							 seniorEmployees[seniorComboBox.getSelectedIndex()], juniorEmployees[juniorComboBox.getSelectedIndex()],
-							 servicePrice[serviceComboBox.getSelectedIndex()]);
+							 price);
 			
 			consumablesUsed.add(tempConsumablesUsed);
 			resetForm();
@@ -570,6 +558,11 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 			if( quantityTextField.getText().equals("Positive Integer") )
 				quantityTextField.setText("");
 		}
+		else if( e.getSource() == discountTextField )
+		{
+			if( discountTextField.getText().equals("0") )
+				discountTextField.setText("");
+		}
 	}
 
 	@Override
@@ -586,6 +579,15 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 		{
 			if( quantityTextField.getText().equals("") )
 				quantityTextField.setText("Positive Integer");
+		}
+		else if( e.getSource() == discountTextField )
+		{
+			if( discountTextField.getText().equals("") )
+			{
+				discountTextField.setText(Integer.toString(0));
+				discountTextField.setBackground(Color.WHITE);
+				discountWarningLabel.setVisible(false);
+			}
 		}
 	}
 	
@@ -644,17 +646,20 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 			checkClient();
 		else if( e.getSource() == quantityTextField )
 			checkQuantityInput();
+		else if( e.getSource() == discountTextField )
+			checkDiscountInput();
 		
-		if( (bCustomerNameInDB == false || bEmployeeAdded == false) && (tempConsumablesUsed.size() > 0 || editConsumablesUsed.size() > 0) )
+		if( (bCustomerNameInDB == false || bEmployeeAdded == false) && (tempConsumablesUsed.size() > 0 || editConsumablesUsed.size() > 0) || checkDiscountInput() == false )
 		{
 			addServiceButton.setEnabled(false);
 			updateServiceButton.setEnabled(false);
 		}
-		else if( bCustomerNameInDB == true && (tempConsumablesUsed.size() > 0 || editConsumablesUsed.size() > 0) )
+		else if( bCustomerNameInDB == true && (tempConsumablesUsed.size() > 0 || editConsumablesUsed.size() > 0) && checkDiscountInput() == true )
 		{
 			addServiceButton.setEnabled(bEmployeeAdded);
 			updateServiceButton.setEnabled(bEmployeeAdded);
 		}
+		
 	}
 	
 	public void resetForm()
@@ -822,12 +827,45 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 		return false;
 	}
 	
+	public boolean checkDiscountInput()
+	{
+		try
+		{
+			int temp = Integer.parseInt(discountTextField.getText());
+			
+			if( temp < 0 || temp >= 101 )
+				throw new IllegalArgumentException();
+			
+			discountTextField.setBackground(Color.GREEN);
+			discountWarningLabel.setVisible(false);
+			if( temp != 0 )
+				bHasDiscount = true;
+			else
+				discountTextField.setBackground(Color.WHITE);
+			return true;
+		} 
+		catch (NumberFormatException ex)
+		{
+			discountTextField.setBackground(Color.RED);
+			discountWarningLabel.setVisible(true);
+			bHasDiscount = false;
+		}
+		catch (IllegalArgumentException ex)
+		{
+			discountTextField.setBackground(Color.RED);
+			discountWarningLabel.setVisible(true);
+			bValidQuantityInput = false;
+		}
+		return false;
+	}
+	
 	public boolean checkProductQuantity( String name, int temp )
 	{
 		Product p = addServicesController.getProduct(name);
 		int quantity = 0;
 		
 		quantity += this.addTransactionGUI.getConsumableQuantityUsed(name);
+		quantity += this.addTransactionGUI.getProductQuantity(name);
 		
 		for( int i = 0; i < consumablesUsed.size(); i++ )
 		{

@@ -14,8 +14,6 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class ViewClientDetailsGUI extends JFrame{
-	
-	private JLabel nameLabel;
 	private JLabel emailLabel;
 	private JLabel birthdayLabel;
 	private JLabel addressLabel;
@@ -86,34 +84,35 @@ public class ViewClientDetailsGUI extends JFrame{
 		setVisible(true);
 		setTitle("Client Details");
 		setResizable(false);
-		JPanel namePanel = new JPanel();
 		getContentPane().setLayout(null);
 		JPanel detailsPanel = new JPanel();
+		detailsPanel.setBackground(new Color(128, 128, 0));
 		JLabel lblEmail = new JLabel("E-mail:");
-		nameLabel = new JLabel(client.getsName()); //Replace this
+		lblEmail.setForeground(Color.WHITE);
 		JLabel lblBirthday = new JLabel("Birthday(y-m-d):");
+		lblBirthday.setForeground(Color.WHITE);
 		JLabel lblAddress = new JLabel("Address:");
+		lblAddress.setForeground(Color.WHITE);
 		JLabel lblContactNo = new JLabel("Contact No.:");
+		lblContactNo.setForeground(Color.WHITE);
 		JLabel lblGender = new JLabel("Gender:");
+		lblGender.setForeground(Color.WHITE);
 		emailLabel = new JLabel(client.getsEmail());
+		emailLabel.setForeground(Color.WHITE);
 		birthdayLabel = new JLabel(client.getBirthday().toString());
+		birthdayLabel.setForeground(Color.WHITE);
 		addressLabel = new JLabel(client.getsAddress());
+		addressLabel.setForeground(Color.WHITE);
 		contactLabel = new JLabel(client.getsContactNumber());
+		contactLabel.setForeground(Color.WHITE);
 		genderLabel = new JLabel(client.getsGender());
+		genderLabel.setForeground(Color.WHITE);
 		lblServices = new JLabel("AVAILED SERVICES");
 		lblProducts = new JLabel("PRODUCTS BOUGHT");
 		doneButton = new JButton("Done");
 		
-		namePanel.setBorder(new LineBorder(new Color(0, 0, 0)));
-		namePanel.setBounds(10, 11, 624, 34);
-		getContentPane().add(namePanel);
-		
-		nameLabel.setFont(new Font("Tahoma", Font.BOLD, 14));
-		nameLabel.setBounds(10, 10, 300, 20);
-		namePanel.add(nameLabel);
-		
 		detailsPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
-		detailsPanel.setBounds(10, 56, 624, 141);
+		detailsPanel.setBounds(10, 51, 624, 141);
 		detailsPanel.setLayout(null);
 		
 		getContentPane().add(detailsPanel);
@@ -170,7 +169,7 @@ public class ViewClientDetailsGUI extends JFrame{
 		servicesTable.setSize(307, 223);
 		
 		servicesScroll = new JScrollPane(servicesTable);
-		servicesScroll.setBounds(10, 238, 307, 223);
+		servicesScroll.setBounds(10, 220, 307, 241);
 		servicesScroll.setBorder(blackline);
 		getContentPane().add(servicesScroll);
 		
@@ -180,25 +179,32 @@ public class ViewClientDetailsGUI extends JFrame{
 		productsTable.setSize(307, 223);
 		
 		productsScroll = new JScrollPane(productsTable);
-		productsScroll.setBounds(327, 238, 307, 223);
+		productsScroll.setBounds(327, 220, 307, 241);
 		productsScroll.setBorder(blackline);
 		getContentPane().add(productsScroll);
 		
 		lblServices.setHorizontalAlignment(SwingConstants.CENTER);
 		lblServices.setFont(new Font("Tahoma", Font.BOLD, 13));
 		lblServices.setForeground(Color.WHITE);
-		lblServices.setBounds(10, 208, 307, 27);
+		lblServices.setBounds(10, 192, 307, 27);
 		getContentPane().add(lblServices);
 		
 		lblProducts.setHorizontalAlignment(SwingConstants.CENTER);
 		lblProducts.setForeground(Color.WHITE);
 		lblProducts.setFont(new Font("Tahoma", Font.BOLD, 13));
-		lblProducts.setBounds(327, 208, 307, 27);
+		lblProducts.setBounds(327, 192, 307, 27);
 		getContentPane().add(lblProducts);
 		
 		doneButton.setBounds(538, 472, 96, 23);
 		doneButton.addActionListener(new DoneButtonListener());
 		getContentPane().add(doneButton);
+		
+		JLabel nameLabel = new JLabel(client.getsName());
+		nameLabel.setHorizontalAlignment(SwingConstants.CENTER);
+		nameLabel.setForeground(Color.WHITE);
+		nameLabel.setFont(new Font("Tahoma", Font.BOLD, 16));
+		nameLabel.setBounds(141, 11, 351, 29);
+		getContentPane().add(nameLabel);
 	}
 	
 	private class DoneButtonListener implements ActionListener{

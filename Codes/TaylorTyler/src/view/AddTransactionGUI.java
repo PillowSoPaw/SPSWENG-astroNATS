@@ -36,14 +36,13 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 	private String title;
 	private Border blackline;
 	private JTextField nameTextField;
-        private JComboBox nameComboBox;
+     private JComboBox nameComboBox;
 	private JScrollPane servicesTransactionScrollPane;
 	private JScrollPane productsTransactionScrollPane;
 	private JPanel imagePanel;
 	private JLabel nameLabel;
 	private JButton addServiceButton;
 	private JButton addProductButton;
-	private JButton addPromoButton;
 	private JButton clearButton;
 	private JButton saveTransactionButton;
 	private JLabel servicesLabel;
@@ -115,6 +114,8 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 		}
 		
 		servicesTransactionTable = new JTable(serviceModel);
+		servicesTransactionTable.getTableHeader().setReorderingAllowed(false);
+		servicesTransactionTable.getTableHeader().setResizingAllowed(false);
 		servicesTransactionScrollPane = new JScrollPane(servicesTransactionTable);
 		servicesTransactionScrollPane.setBounds(161, 42, 355, 398);
 		servicesTransactionScrollPane.setBorder(blackline);
@@ -136,6 +137,8 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 		}
 		
 		productsTransactionTable = new JTable(productModel);
+		productsTransactionTable.getTableHeader().setReorderingAllowed(false);
+		productsTransactionTable.getTableHeader().setResizingAllowed(false);
 		productsTransactionScrollPane = new JScrollPane(productsTransactionTable);
 		productsTransactionScrollPane.setBounds(521, 42, 290, 398);
 		productsTransactionScrollPane.setBorder(blackline);
@@ -188,12 +191,6 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 		addProductButton.setBounds(10, 280, 141, 20);
 		addProductButton.addActionListener(this);
 		add(addProductButton);
-		
-		addPromoButton = new JButton("Add Promo");
-		addPromoButton.setBounds(10, 311, 141, 20);
-		addPromoButton.addActionListener(this);
-		addPromoButton.setEnabled(false);
-		add(addPromoButton);
 		
 		clearButton = new JButton("Clear All");
 		clearButton.setForeground(Color.BLACK);
@@ -340,7 +337,7 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 		
 		for( int i = 0; i < productTableRows.size(); i++ )
 		{
-			productModel.addRow(productTableRows.get(i));
+			productModel.addRow(new Object[]{productTableRows.get(i)[0], productTableRows.get(i)[1], productTableRows.get(i)[2], productTableRows.get(i)[3], productTableRows.get(i)[4]});
 		}
 		productsTransactionTable.setModel(productModel);
 	}
@@ -460,10 +457,6 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 				});
 			}
 		}
-		else if( e.getSource() == addPromoButton )
-		{
-			
-		}
 		else if( e.getSource() == clearButton )
 		{
 			resetAll();
@@ -527,9 +520,9 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 		
 		for( int i = 0; i < productTableRows.size(); i++ )
 		{
-			if( ((String) productTableRows.get(i)[0]).equalsIgnoreCase(name) == true )
+			if( ((String) productTableRows.get(i)[1]).equalsIgnoreCase(name) == true )
 			{
-				quantity += ((int) productTableRows.get(i)[1]);
+				quantity += ((int) productTableRows.get(i)[2]);
 			}
 		}
 		

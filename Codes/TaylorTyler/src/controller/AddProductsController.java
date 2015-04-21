@@ -25,6 +25,11 @@ public class AddProductsController
 		addProductsGUI.getOverTheCounterList(DBManager.getAllOverTheCounterProducts());
 	}
 	
+	public void getStaff()
+	{
+		addProductsGUI.getStaffList(DBManager.getAllStaff());
+	}
+	
 	//get product from model
 	public Product getProduct(String name)
 	{

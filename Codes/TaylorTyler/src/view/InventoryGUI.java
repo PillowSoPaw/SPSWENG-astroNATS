@@ -1,5 +1,6 @@
 package view;
 
+import controller.InventoryController;
 import java.awt.Color;
 
 import javax.swing.BorderFactory;
@@ -15,8 +16,12 @@ import javax.swing.JComboBox;
 import java.awt.Font;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.table.DefaultTableModel;
 
-public class InventoryGUI extends JPanel
+public class InventoryGUI extends JPanel implements ActionListener, ListSelectionListener
 {	
 	public Border blackline;
 	private String title;
@@ -26,28 +31,31 @@ public class InventoryGUI extends JPanel
 	private JPanel productsTab;
 	private JScrollPane productsScrollPane;
 	private JTextField searchProductTextField;
-	private JLabel sortByLabel;
+	private JLabel filterByLabel;
 	private JLabel productsLabel;
 	private JScrollPane notificationScrollPane;
 	private JLabel sortByLabel2;
-	private JComboBox<String> categoryComboBox2;
+	//private JComboBox<String> categoryComboBox2;
 	private JButton markDoneButton;
-	private JButton deleteNotificationButton;
 	private JLabel searchLabel2;
 	private JTextField searchTextField2;
 	private JButton goButton;
 	private JButton searchButton;
 	private JComboBox<String> categoryComboBox;
 	private JTable inventoryTable;
-	private JButton addNotificationButton;
-	private JButton addNotesButton;
-	private JTable notificationsTable;
 	private JButton deleteProductButton;
 	private JButton editProductButton;
 	private JButton addProductButton;
 	
-	public InventoryGUI()
+        private DefaultTableModel inventoryModel;
+        private String[] inventoryTableColumn = {"Product ID", "Product Name", "Quantity"}; 
+	private ArrayList<Object[]> inventoryTableRows;
+        
+        private InventoryController controller;
+	public InventoryGUI(InventoryController controller)
 	{	
+                this.controller = controller;
+                this.controller.setView(this);
 		blackline = BorderFactory.createLineBorder(Color.black);
 		
 		this.title = "Inventory";
@@ -55,73 +63,6 @@ public class InventoryGUI extends JPanel
 		this.setBounds(0, 0, 821, 483);
 		this.setBorder(blackline);
 		this.setLayout(null);
-		
-		
-		
-//		mainTabbedPane = new JTabbedPane(JTabbedPane.TOP);
-//		mainTabbedPane.setBackground(new Color(128, 128, 0));
-//		mainTabbedPane.setBounds(10, 10, 801, 462);
-//		mainTabbedPane.setBorder(blackline);
-		//mainTabbedPane.setLayout(null);
-//		add(mainTabbedPane);
-		
-		
-		//notification moved - new panel
-//		notificationsTab = new JPanel();
-//		notificationsTab.setBackground(new Color(128, 128, 0));
-//		notificationsTab.setLayout(null);
-		//mainTabbedPane.addTab("Notifications", notificationsTab);
-		
-//		notificationScrollPane = new JScrollPane();
-//		notificationScrollPane.setBounds(166, 10, 620, 413);
-//		notificationScrollPane.setLayout(null);
-//		notificationScrollPane.setBorder(blackline);
-		//notificationsTab.add(notificationScrollPane);
-		
-//		sortByLabel2 = new JLabel("Sort by:");
-//		sortByLabel2.setForeground(new Color(255, 255, 255));
-//		sortByLabel2.setBounds(60, 55, 46, 14);
-//		notificationsTab.add(sortByLabel2);
-//		
-//		categoryComboBox2 = new JComboBox<String>();
-//		categoryComboBox2.setBounds(10, 72, 146, 20);
-//		notificationsTab.add(categoryComboBox2);
-//		
-//		markDoneButton = new JButton("Mark Done");
-//		markDoneButton.setBounds(10, 298, 146, 38);
-//		notificationsTab.add(markDoneButton);
-//		
-//		deleteNotificationButton = new JButton("Delete Notification");
-//		deleteNotificationButton.setBounds(10, 347, 146, 38);
-//		notificationsTab.add(deleteNotificationButton);
-//		
-//		searchLabel2 = new JLabel("Search");
-//		searchLabel2.setForeground(new Color(255, 255, 255));
-//		searchLabel2.setBounds(60, 133, 46, 14);
-//		notificationsTab.add(searchLabel2);
-//		
-//		searchTextField2 = new JTextField();
-//		searchTextField2.setBounds(10, 149, 146, 20);
-//		notificationsTab.add(searchTextField2);
-//		searchTextField2.setColumns(10);
-//		
-//		goButton = new JButton("Go");
-//		goButton.setBounds(50, 180, 62, 23);
-//		notificationsTab.add(goButton);
-//		
-//		addNotesButton = new JButton("Add Notes");
-//		addNotesButton.addActionListener(new ActionListener() 
-//		{
-//			public void actionPerformed(ActionEvent e) 
-//			{
-//				if(e.getSource() == addNotesButton)
-//				{
-//					new AddNotesGUI();
-//				}
-//			}
-//		});
-//		addNotesButton.setBounds(10, 249, 146, 38);
-//		notificationsTab.add(addNotesButton);
 	
 		productsTab = new JPanel();
 		productsTab.setBackground(new Color(128, 128, 0));
@@ -129,13 +70,7 @@ public class InventoryGUI extends JPanel
 		productsTab.setBorder(blackline);
 		productsTab.setLayout(null);
 		add(productsTab);
-		
-		productsScrollPane = new JScrollPane();
-		productsScrollPane.setBounds(10, 71, 801, 367);
-		productsScrollPane.setLayout(null);
-		productsScrollPane.setBorder(blackline);
-		productsTab.add(productsScrollPane);
-		
+
 		searchProductTextField = new JTextField("Enter Product Name here...");
 		searchProductTextField.setBounds(10, 37, 168, 23);
 		productsTab.add(searchProductTextField);
@@ -143,15 +78,17 @@ public class InventoryGUI extends JPanel
 		
 		searchButton = new JButton("Search");
 		searchButton.setBounds(188, 37, 87, 23);
+                searchButton.addActionListener(this);
 		productsTab.add(searchButton);
 		
-		sortByLabel = new JLabel("Sort by:");
-		sortByLabel.setForeground(new Color(255, 255, 255));
-		sortByLabel.setBounds(628, 40, 46, 14);
-		productsTab.add(sortByLabel);
+		filterByLabel = new JLabel("Filter:");
+		filterByLabel.setForeground(new Color(255, 255, 255));
+		filterByLabel.setBounds(628, 40, 46, 14);
+		productsTab.add(filterByLabel);
 		
-		categoryComboBox = new JComboBox<String>();
+		categoryComboBox = new JComboBox<String>(new String[]{"All", "Consumables", "Over-the-Counter", "Hybrid"});
 		categoryComboBox.setBounds(672, 37, 139, 20);
+                categoryComboBox.addActionListener(this);
 		productsTab.add(categoryComboBox);
 		
 		productsLabel = new JLabel("Products");
@@ -160,56 +97,256 @@ public class InventoryGUI extends JPanel
 		productsLabel.setBounds(10, 11, 78, 21);
 		productsTab.add(productsLabel);
 		
-		//add Notification feature - jframe to follow
-		addNotificationButton = new JButton("Add Notification");
-		addNotificationButton.setToolTipText("Add a notification for a chosen product");
-		addNotificationButton.setBounds(672, 449, 139, 23);
-		productsTab.add(addNotificationButton);
-		
 		//delete - edit - add only available to owner. salon manager may request delete-edit-add(to follow)
 		deleteProductButton = new JButton("Delete Product");
 		deleteProductButton.setToolTipText("Delete the selected product");
 		deleteProductButton.setBounds(523, 449, 139, 23);
+                deleteProductButton.addActionListener(this);
 		productsTab.add(deleteProductButton);
 		
 		editProductButton = new JButton("Edit Product");
 		editProductButton.setToolTipText("Edit the selected product details");
 		editProductButton.setBounds(374, 449, 139, 23);
+                editProductButton.addActionListener(this);
 		productsTab.add(editProductButton);
 		
 		addProductButton = new JButton("Add Product");
 		addProductButton.setToolTipText("Add a product to inventory");
 		addProductButton.setBounds(285, 37, 108, 23);
+                addProductButton.addActionListener(this);
 		productsTab.add(addProductButton);
+	
+                
+                inventoryModel = new DefaultTableModel()
+		{
+			public boolean isCellEditable(int row, int column)
+			{
+				return false;// This causes all cells to be not editable
+			}
+		};
+
+                for( int i = 0; i < inventoryTableColumn.length; i++ )
+		{
+			inventoryModel.addColumn(inventoryTableColumn[i]);
+		}
 		
-		String sample = "sampledata";
-		//column names for notificationsTable
-//				String[] columnNamesNotificationsTable = {"Notification Date", "Priority Level", "Product/Services Affected", "Description"};
-//				Object[][] rowDataNotificationsTable = 
-//					{	columnNamesNotificationsTable,
-//						{sample, sample, sample, sample, sample},
-//						{sample, sample, sample, sample, sample},
-//						{sample, sample, sample, sample, sample}
-//					};
-//		notificationsTable = new JTable(rowDataNotificationsTable, columnNamesNotificationsTable);
-//		notificationsTable.setSize(620, 413);
-//		notificationsTable.setBorder(blackline);
-//		notificationScrollPane.add(notificationsTable);
-		
-		//column names for inventoryTable
-		String[] columnNamesInventoryTable = {"Product ID", "Product Name", "Quantity", "Date Last Restocked", "Services catered"}; 
-		
-		Object[][] rowDataInventoryTable = 
-			{	columnNamesInventoryTable,
-				{sample, sample, sample, sample, sample},
-				{sample, sample, sample, sample, sample},
-				{sample, sample, sample, sample, sample}
-			};
-		inventoryTable = new JTable(rowDataInventoryTable, columnNamesInventoryTable);
-		inventoryTable.setSize(801, 367);
-		inventoryTable.setBorder(blackline);
-		productsScrollPane.add(inventoryTable);
+                
+		inventoryTable = new JTable(inventoryModel);
+		inventoryTable.getTableHeader().setReorderingAllowed(false);
+		inventoryTable.getTableHeader().setResizingAllowed(false);
+                inventoryTable.getSelectionModel().addListSelectionListener(this);
+                
+		productsScrollPane=new JScrollPane(inventoryTable);
+                productsScrollPane.setBounds(10, 71, 801, 367);
+		productsScrollPane.setBorder(blackline);
+                productsTab.add(productsScrollPane);
+                
+                editProductButton.setEnabled(false);
+                deleteProductButton.setEnabled(false);
+                
+                inventoryTableRows = new ArrayList(0);
+                
+                resetTable();
+                controller.updateProducts();
+                updateInventoryTable();
 		
 		
 	}
+        public void resetTable()
+	{
+                System.out.println("Resetting tables");
+                
+                inventoryTableRows.clear();
+                
+                while (inventoryModel.getRowCount() > 0){
+                        inventoryModel.removeRow(0);
+                }
+	}
+        public void updateInventoryTable()
+        {
+                
+		for( int i = 0; i < inventoryTableRows.size(); i++ )
+		{
+			for( int j = 0; j < inventoryTableRows.get(i).length; j++ ){
+                            System.out.println(inventoryTableRows.get(i)[j]);
+                        }
+				
+			inventoryModel.addRow(inventoryTableRows.get(i));
+		}
+		inventoryTable.setModel(inventoryModel);
+                
+                this.revalidate();
+                this.repaint();
+                
+	}
+
+        public Border getBlackline() 
+        {
+                    return blackline;
+        }
+
+        public String getTitle() 
+        {
+                    return title;
+        }
+
+        public JTabbedPane getMainTabbedPane() 
+        {
+                    return mainTabbedPane;
+        }
+
+        public JPanel getNotificationsTab() 
+        {
+                    return notificationsTab;
+        }
+
+        public JPanel getProductsTab() 
+        {
+                    return productsTab;
+        }
+
+        public JScrollPane getProductsScrollPane() 
+        {
+                    return productsScrollPane;
+        }
+
+        public JTextField getSearchProductTextField() 
+        {
+                    return searchProductTextField;
+        }
+
+        public JLabel getSortByLabel() 
+        {
+                    return filterByLabel;
+        }
+
+        public JLabel getProductsLabel() 
+        {
+                    return productsLabel;
+        }
+
+        public JScrollPane getNotificationScrollPane() 
+        {
+                    return notificationScrollPane;
+        }
+
+        public JLabel getSortByLabel2() 
+        {
+                    return sortByLabel2;
+        }
+
+        public JButton getMarkDoneButton() 
+        {
+                    return markDoneButton;
+        }
+
+        public JLabel getSearchLabel2() 
+        {
+                    return searchLabel2;
+        }
+
+        public JTextField getSearchTextField2() 
+        {
+                    return searchTextField2;
+        }
+
+        public JButton getGoButton() 
+        {
+                    return goButton;
+        }
+
+        public JButton getSearchButton() 
+        {
+                    return searchButton;
+        }
+
+        public JComboBox<String> getCategoryComboBox() 
+        {
+                    return categoryComboBox;
+        }
+
+        public JTable getInventoryTable() 
+        {
+                    return inventoryTable;
+        }
+
+
+        public JButton getDeleteProductButton() 
+        {
+                    return deleteProductButton;
+        }
+
+        public JButton getEditProductButton() 
+        {
+                    return editProductButton;
+        }
+
+        public JButton getAddProductButton() 
+        {
+                    return addProductButton;
+        }
+
+        public InventoryController getController() 
+        {
+                    return controller;
+        }
+
+        public DefaultTableModel getInventoryModel() {
+            return inventoryModel;
+        }
+
+        public String[] getInventoryTableColumn() {
+            return inventoryTableColumn;
+        }
+
+        public ArrayList<Object[]> getInventoryTableRows() {
+            return inventoryTableRows;
+        }
+
+
+
+
+        @Override
+        public void actionPerformed(ActionEvent e) 
+        {
+                    if (e.getSource() == searchButton)
+                    {
+                            controller.search();
+                    }
+                    else if (e.getSource() == addProductButton)
+                    {
+                            controller.addProduct();
+                    }
+                    else if (e.getSource() == editProductButton)
+                    {
+                            controller.editProduct();
+                    }
+                    else if (e.getSource() == deleteProductButton)
+                    {
+                            controller.deleteProduct();
+                    }
+                    else if (e.getSource() == categoryComboBox)
+                    {
+                            controller.updateProducts(categoryComboBox.getSelectedIndex());
+                    }
+        }
+
+        @Override
+        public void valueChanged(ListSelectionEvent e) 
+        {
+                    int row = inventoryTable.getSelectedRow();
+                    if (row < 0)
+                    {
+                             editProductButton.setEnabled(false);
+                             deleteProductButton.setEnabled(false);
+                    }else{
+                             editProductButton.setEnabled(true);
+                             deleteProductButton.setEnabled(true);
+                    }
+        }
 }
+
+//
+
+
+ 

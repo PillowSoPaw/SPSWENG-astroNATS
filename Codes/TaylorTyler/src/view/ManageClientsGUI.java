@@ -68,7 +68,8 @@ public class ManageClientsGUI extends JPanel implements ActionListener
 			clientTableModel.addColumn(clientTableColumn[i]);
 		}
 		clientsTable = new JTable(clientTableModel);
-		
+		clientsTable.getTableHeader().setReorderingAllowed(false);
+		clientsTable.getTableHeader().setResizingAllowed(false);
 		clientsScrollPane = new JScrollPane(clientsTable);
 		clientsScrollPane.setBounds(10, 48, 801, 385);
 		clientsScrollPane.setBorder(blackline);
@@ -212,7 +213,12 @@ public class ManageClientsGUI extends JPanel implements ActionListener
 		// TODO Auto-generated method stub
 		if(e.getSource().equals(editDetailsButton))
 		{
-			new EditClientDetailsGUI();
+			for( int i = 0; i < clients.size() ; i++ )
+			{
+				if(clients.get(i).getsClientId().equals((String) clientTableModel.getValueAt(clientsTable.getSelectedRow(), 0)))
+				new EditClientDetailsGUI(clients.get(i), this);
+			}
+			
 		}
 		else if(e.getSource().equals(viewDetailsButton))
 		{

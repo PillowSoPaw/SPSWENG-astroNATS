@@ -38,7 +38,7 @@ public class AddClientGUI extends JFrame implements ActionListener
 	private ManageClientsGUI manageClientsGUI;
 	public AddClientGUI(ManageClientsGUI manageClientsGUI){
 		//this.mainFrame = mainFrame; //Pass the view clients GUI
-		this.setLocationRelativeTo(null);
+		this.setLocation(500, 175);
 		this.manageClientsGUI = manageClientsGUI;
 		//Calendar stuff
 		currYear = Calendar.getInstance().get(Calendar.YEAR);
@@ -82,15 +82,18 @@ public class AddClientGUI extends JFrame implements ActionListener
 		// JLabels
 		
 		JLabel fnameLabel = new JLabel("First Name*:");
-		fnameLabel.setBounds(10, 39, 93, 14);
+		fnameLabel.setForeground(Color.WHITE);
+		fnameLabel.setBounds(10, 28, 93, 14);
 		mainPanel.add(fnameLabel);
 		
 		JLabel mnameLabel = new JLabel("Middle Name:");
-		mnameLabel.setBounds(10, 69, 93, 14);
+		mnameLabel.setForeground(Color.WHITE);
+		mnameLabel.setBounds(10, 58, 93, 14);
 		mainPanel.add(mnameLabel);
 		
 		JLabel lnameLabel = new JLabel("Last Name*:");
-		lnameLabel.setBounds(10, 99, 93, 14);
+		lnameLabel.setForeground(Color.WHITE);
+		lnameLabel.setBounds(10, 88, 93, 14);
 		mainPanel.add(lnameLabel);
 		
 		JLabel separator0 = new JLabel("__________________________________________________");
@@ -98,37 +101,42 @@ public class AddClientGUI extends JFrame implements ActionListener
 		mainPanel.add(separator0);
 		
 		JLabel emailLabel = new JLabel("E-mail*:");
+		emailLabel.setForeground(Color.WHITE);
 		emailLabel.setBounds(10, 141, 46, 14);
 		mainPanel.add(emailLabel);
 		
 		JLabel birthdayLabel = new JLabel("Birthday (MM/DD/YY):");
+		birthdayLabel.setForeground(Color.WHITE);
 		birthdayLabel.setBounds(10, 172, 117, 14);
 		mainPanel.add(birthdayLabel);
 		
 		JLabel addressLabel = new JLabel("Address*:");
+		addressLabel.setForeground(Color.WHITE);
 		addressLabel.setBounds(10, 202, 117, 14);
 		mainPanel.add(addressLabel);
 		
 		JLabel contactNumberLabel = new JLabel("Contact Number*:");
+		contactNumberLabel.setForeground(Color.WHITE);
 		contactNumberLabel.setBounds(10, 232, 117, 14);
 		mainPanel.add(contactNumberLabel);
 		
 		JLabel genderLabel = new JLabel("Gender*:");
+		genderLabel.setForeground(Color.WHITE);
 		genderLabel.setBounds(10, 262, 117, 14);
 		mainPanel.add(genderLabel);
 		
 		//Text Areas
 		
 		firstNameText = new JTextArea();
-		firstNameText.setBounds(133, 34, 231, 19);
+		firstNameText.setBounds(133, 23, 231, 19);
 		mainPanel.add(firstNameText);
 		
 		middleNameText = new JTextArea();
-		middleNameText.setBounds(133, 64, 231, 19);
+		middleNameText.setBounds(133, 53, 231, 19);
 		mainPanel.add(middleNameText);
 		
 		lastNameText = new JTextArea();
-		lastNameText.setBounds(133, 94, 231, 19);
+		lastNameText.setBounds(133, 83, 231, 19);
 		mainPanel.add(lastNameText);
 		
 		emailText = new JTextArea();
@@ -146,12 +154,6 @@ public class AddClientGUI extends JFrame implements ActionListener
 		cmbGender = new JComboBox(genderItems);
 		cmbGender.setBounds(133, 257, 231, 22);
 		mainPanel.add(cmbGender);
-		
-		JLabel lblAddClient = new JLabel("Add Client");
-		lblAddClient.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		lblAddClient.setHorizontalAlignment(SwingConstants.CENTER);
-		lblAddClient.setBounds(0, 0, 374, 30);
-		mainPanel.add(lblAddClient);
 		
 				cmbDay = new JComboBox(cmbDayItems);
 				cmbDay.setBounds(242, 161, 46, 25);
@@ -244,28 +246,31 @@ public class AddClientGUI extends JFrame implements ActionListener
 				JOptionPane.showMessageDialog(null, "Please enter a contact number.");
 			else
 			{
-				String sMiddleName = middleNameText.getText();
-				if(!middleNameText.getText().equals(""))
-					sMiddleName = sMiddleName + " ";
-				String sName = firstNameText.getText() +" "+ sMiddleName + lastNameText.getText();
+				//String sMiddleName = middleNameText.getText();
+				//if(!middleNameText.getText().equals(""))
+				//	sMiddleName = sMiddleName + " ";
+				//String sName = firstNameText.getText() +" "+ sMiddleName + lastNameText.getText();
+				String sFname = firstNameText.getText();
+				String sMname = middleNameText.getText();
+				String sLname = lastNameText.getText();
 				String sAddress = addressText.getText();
 				String sEmail = emailText.getText();
 				String sBirthday = (cmbYear.getSelectedIndex()+ (currYear - 150))+"-"+(cmbMonth.getSelectedIndex()+1)+"-"+ (cmbDay.getSelectedIndex()+1) ;
 				String sContactNumber = contactNumberText.getText();
 				String sDateJoined = dateToday;
 				String sDateLastVisited = dateToday;
-				System.out.println(sName);
-				System.out.println(sAddress);
-				System.out.println(sEmail);
-				System.out.println(sBirthday);
-				System.out.println(sContactNumber);
-				System.out.println(sDateJoined);
-				System.out.println(sDateLastVisited);
+//				System.out.println(sName);
+//				System.out.println(sAddress);
+//				System.out.println(sEmail);
+//				System.out.println(sBirthday);
+//				System.out.println(sContactNumber);
+//				System.out.println(sDateJoined);
+//				System.out.println(sDateLastVisited);
 				//addClient(String sName, String sAddress, String sContactNumber, String sEmail, String sDateJoined, String sDateLastVisited, String sBirthday) 
 				try 
 				{
 					String sGender =cmbGender.getSelectedItem().toString();
-					addClientController.addClient(sName, sAddress, sContactNumber, sEmail, sDateJoined, sDateLastVisited, sBirthday, sGender);
+					addClientController.addClient(sFname,sMname,sLname, sAddress, sContactNumber, sEmail, sDateJoined, sDateLastVisited, sBirthday, sGender);
 					JOptionPane.showMessageDialog(null, "Successfully added client!");
 					this.dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 				} catch (ParseException e1) 

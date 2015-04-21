@@ -31,6 +31,7 @@ import javax.swing.DefaultComboBoxModel;
 import controller.AddProductsController;
 import controller.AddTransactionController;
 import controller.AddServicesController;
+import controller.InventoryController;
 import controller.ViewClientsController;
 
 import java.awt.event.ActionListener;
@@ -45,6 +46,7 @@ public class MainGUI extends JFrame implements ActionListener, MouseListener
 	private AddServicesController addServicesController;
 	private AddProductsController addProductsController;
 	private ViewClientsController viewClientsController;
+	private InventoryController inventoryController;
 	
 	private JPanel logoPanel;
 	private Image logoImage;
@@ -91,6 +93,7 @@ public class MainGUI extends JFrame implements ActionListener, MouseListener
 		addServicesController = new AddServicesController();
 		addProductsController = new AddProductsController();
 		viewClientsController = new ViewClientsController();
+		inventoryController = new InventoryController();
 		
 		getContentPane().setLayout(null);
 		
@@ -135,7 +138,7 @@ public class MainGUI extends JFrame implements ActionListener, MouseListener
 		OptionsLabel.setBounds(84, 2, 82, 23);
 		optionsPanel.add(OptionsLabel);
 		
-		viewTransactionsButton = new JButton("View Transactions");
+		viewTransactionsButton = new JButton("View Receipts");
 		viewTransactionsButton.addActionListener(this);
 		viewTransactionsButton.setFont(new Font("Tahoma", Font.BOLD, 12));
 		viewTransactionsButton.setBounds(36, 97, 158, 37);
@@ -393,7 +396,7 @@ public class MainGUI extends JFrame implements ActionListener, MouseListener
 			reportsButton.setEnabled(true);
 			viewTransactionsButton.setEnabled(true);
 			getContentPane().remove(mainPanel);
-			mainPanel = new InventoryGUI();
+			mainPanel = new InventoryGUI(inventoryController);
 			mainPanel.setBounds(253, 67, 821, 483);
 			getContentPane().add(mainPanel);
 			updatePanelTitle();
