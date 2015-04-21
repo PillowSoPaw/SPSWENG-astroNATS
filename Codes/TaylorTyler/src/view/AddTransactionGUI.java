@@ -3,6 +3,7 @@ package view;
 import controller.AddProductsController;
 import controller.AddServicesController;
 import controller.AddTransactionController;
+
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
@@ -11,6 +12,7 @@ import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.Iterator;
+
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -24,6 +26,7 @@ import javax.swing.border.Border;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
+
 import model.Client;
 import model.Transaction;
 
@@ -61,6 +64,7 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 	private boolean addProductsHandler;
 	private String[] serviceTableColumn = {"Customer Name", "Service", "Senior E.", "Junior E.", "Price"};
 	private String[] productTableColumn = {"Customer Name", "Quantity", "Product", "Unit Price", "Subtotal"};
+	private ArrayList<String> clientNames;
 	private ArrayList<Object[]> serviceTableRows;
 	private ArrayList<Object[]> productTableRows;
 	private ArrayList<ArrayList<Object[]>> consumables;
@@ -151,7 +155,7 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 		add(imagePanel);
 		
 		Iterator<Client> clients = addTransactionController.getAllClients();
-		ArrayList<String> clientNames = new ArrayList();
+		clientNames = new ArrayList();
 		
 		while(clients.hasNext())
 		{
@@ -159,9 +163,9 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 			clientNames.add(c.getsName());
 		}	
 	
-                nameComboBox = new Java2sAutoComboBox(clientNames.subList(0, clientNames.size()));
-                nameComboBox.setBounds(10, 183, 141, 20);
-                add(nameComboBox);
+          nameComboBox = new Java2sAutoComboBox(clientNames);
+          nameComboBox.setBounds(10, 183, 141, 20);
+          add(nameComboBox);
                 
 //		nameTextField = new Java2sAutoTextField(clientNames.subList(0, clientNames.size()));
 //		nameTextField.setBounds(10, 183, 141, 20);
@@ -200,6 +204,7 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 		add(clearButton);
 		
 		saveTransactionButton = new JButton("Save Transaction");
+		saveTransactionButton.setEnabled(false);
 		saveTransactionButton.setForeground(Color.BLACK);
 		saveTransactionButton.setBackground(new Color(50, 205, 50));
 		saveTransactionButton.setBounds(10, 414, 141, 23);
@@ -236,18 +241,10 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 		removeProductButton.setEnabled(false);
 		add(removeProductButton);
 	}
-
-	public void getData()
-	{
-//		updateServiceTable();
-//		updateProductTable();
-//		
-//		this.repaint();
-//		this.revalidate();
-	}
 	
 	public void resetAll()
 	{
+		saveTransactionButton.setEnabled(false);
 		serviceTableRows.clear();
 		productTableRows.clear();
 		consumables.clear();
@@ -291,6 +288,7 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 			serviceTableRows.add(services.get(i));
 		
 		updateServiceTable();
+		saveTransactionButton.setEnabled(true);
 	}
 	
 	public void updateServiceTable()
@@ -318,7 +316,7 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 //			}
 			this.consumables.add(consumables.get(i));
 		}
-		
+		saveTransactionButton.setEnabled(true);
 //		updateProductTable();
 	}
 	
@@ -328,6 +326,7 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 		{
 			productTableRows.add(products.get(i));
 		}
+		saveTransactionButton.setEnabled(true);
 		updateProductTable();
 	}
 	
@@ -464,6 +463,8 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 		else if( e.getSource() == saveTransactionButton )
 		{
                     ArrayList<String> clientNames = new ArrayList<>();
+                    
+                    
                     for(int i = 0; i < serviceTableRows.size(); i ++)
                     {
                         if(!clientNames.contains((String) serviceTableRows.get(i)[0]))
@@ -480,10 +481,12 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
                     
                     for(int i = 0; i < clientNames.size(); i ++)
                     {
-			 tList.add(addTransactionController.createTransaction(serviceTableRows, productTableRows, consumables, clientNames.get(i)));
+                    	
+                    	tList.add(addTransactionController.createTransaction(serviceTableRows, productTableRows, consumables, clientNames.get(i)));
                     }
                     
                     addTransactionController.createReceipt(tList, (String) nameComboBox.getSelectedItem(), totalPrice);
+                    resetAll();
 		}
                 
                 
@@ -498,6 +501,11 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 	}
 	
 	//GETTERS
+	public ArrayList<String> getClients()
+	{
+		return clientNames;
+	}
+	
 	public int getConsumableQuantityUsed(String name)
 	{
 		int quantity = 0;

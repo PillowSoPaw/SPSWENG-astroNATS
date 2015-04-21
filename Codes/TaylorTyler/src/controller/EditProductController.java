@@ -110,6 +110,7 @@ public class EditProductController
                                 
                                 break;
                         }
+                        break;
                     case 'e':
                          String ID = editProductGUI.getInventoryGUI().getInventoryTable().getValueAt(editProductGUI.getInventoryGUI().getInventoryTable().getSelectedRow(), 0).toString();
                          Product p = new Product(ID, "", description, 0, threshold);

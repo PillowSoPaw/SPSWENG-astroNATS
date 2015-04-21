@@ -26,12 +26,16 @@ public class AddTransactionController
 	public void setView( AddTransactionGUI addTransactionGUI )
 	{
 		this.addTransactionGUI = addTransactionGUI;
-		addTransactionGUI.getData();
 	}
 	
 	public Client getClient(String name)
 	{
 		return DBManager.getClient(name);
+	}
+	
+	public Client getClient(int client_id)
+	{
+		return DBManager.getClient(client_id);
 	}
 	
 	public Service getService(String name)
@@ -46,6 +50,10 @@ public class AddTransactionController
 	
 	public Employee getEmployee(String name)
 	{
+		if(name.equals(""))
+		{
+			return DBManager.getEmployee("Taylor Tyler");
+		}
 		return DBManager.getEmployee(name);
 	}
 	
@@ -72,33 +80,33 @@ public class AddTransactionController
 		boolean success;
                 
 		ArrayList<Product> cs = new ArrayList<>(0);
-                ArrayList<Integer> csAmount = new ArrayList<>(0);
+		ArrayList<Integer> csAmount = new ArrayList<>(0);
 		Client c = getClient(clientName);
 		Transaction t = new Transaction("", c, "");
 		
-                for(int i = 0; i < consumable.size(); i++)
-                {
-                    if(clientName.equals((String) servicesAvailed.get(i)[0]))
-                        {
-                            for(int k = 0; k < consumable.get(i).size(); k++)
-                            {
-                                cs.add(getProduct( (String) consumable.get(i).get(k)[0]));
-                                csAmount.add((int) consumable.get(i).get(k)[1]);
-                            }
-                        }
-                }
+//                for(int i = 0; i < consumable.size(); i++)
+//                {
+//                    if(clientName.equals((String) servicesAvailed.get(i)[0]))
+//                        {
+//                            for(int k = 0; k < consumable.get(i).size(); k++)
+//                            {
+//                                cs.add(getProduct( (String) consumable.get(i).get(k)[0]));
+//                                csAmount.add((int) consumable.get(i).get(k)[1]);
+//                            }
+//                        }
+//                }
                 
 		for( int i = 0; i < productsBought.size(); i++ )
 		{
                     if(clientName.equals((String) productsBought.get(i)[0]))
 			t.addProductLineItem(new ProductLineItem("", getProduct((String) productsBought.get(i)[1]),
-                                (int) productsBought.get(i)[2]));
+                                (int) productsBought.get(i)[2], getEmployee((String) productsBought.get(i)[5])));
 		}
                 
-                for(int i = 0; i < cs.size(); i++)
-                {
-                    t.addProductLineItem(new ProductLineItem("", cs.get(i), csAmount.get(i)));
-                }
+//                for(int i = 0; i < cs.size(); i++)
+//                {
+//                    t.addProductLineItem(new ProductLineItem("", cs.get(i), csAmount.get(i)));
+//                }
 		
 		for( int i = 0; i < servicesAvailed.size(); i++ )
 		{	

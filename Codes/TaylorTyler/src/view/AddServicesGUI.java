@@ -113,6 +113,7 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 	private String[] seniorEmployees;
 	private String[] juniorEmployees;
 	private double[] servicePrice;
+	private int clientIndex;
 	private boolean bCustomerNameInDB = false;
 	private boolean bValidQuantityInput = false;
 	private boolean bEmployeeAdded = false;
@@ -506,7 +507,7 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 			if( bHasDiscount == true )
 				price *= ( 1 - (Double.parseDouble(discountTextField.getText()) / 100) );
 			
-			addToServiceTable(customerNameTextField.getText(), serviceOptions[serviceComboBox.getSelectedIndex()], 
+			addToServiceTable(addTransactionGUI.getClients().get(clientIndex), serviceOptions[serviceComboBox.getSelectedIndex()], 
 							 seniorEmployees[seniorComboBox.getSelectedIndex()], juniorEmployees[juniorComboBox.getSelectedIndex()],
 							 price);
 			
@@ -664,6 +665,7 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 	
 	public void resetForm()
 	{
+		clientIndex = -1;
 		customerNameTextField.setText("Enter customer name here...");
 		serviceComboBox.setSelectedIndex(0);
 		productComboBox.setSelectedIndex(0);
@@ -762,7 +764,7 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 		
 		int x = servicesTable.getSelectedRow();
 		
-		Object[] service = { customerNameTextField.getText(), serviceOptions[serviceComboBox.getSelectedIndex()], 
+		Object[] service = { addTransactionGUI.getClients().get(clientIndex), serviceOptions[serviceComboBox.getSelectedIndex()], 
 						 seniorEmployees[seniorComboBox.getSelectedIndex()], juniorEmployees[juniorComboBox.getSelectedIndex()],
 						 servicePrice[serviceComboBox.getSelectedIndex()] };
 		
@@ -778,9 +780,17 @@ public class AddServicesGUI extends JFrame implements ActionListener, FocusListe
 	//INPUT VALIDATION METHODS
 	public void checkClient()
 	{
+		boolean hasClient = false;
 		String s = customerNameTextField.getText();
-		if( s.equalsIgnoreCase("Client one") || s.equalsIgnoreCase("Client two") ||
-		    s.equalsIgnoreCase("Client three") || s.equalsIgnoreCase("Client four") )
+		
+		for( int i = 0; i < addTransactionGUI.getClients().size(); i++ )
+			if( s.equalsIgnoreCase(addTransactionGUI.getClients().get(i)) == true )
+			{
+				clientIndex = i;
+				hasClient = true;
+			}
+		
+		if( hasClient == true  )
 		{
 			customerNameTextField.setBackground(Color.GREEN);
 			bCustomerNameInDB = true;

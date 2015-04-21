@@ -78,7 +78,7 @@ public class Controller
 		
 		for( int i = 0; i < p.size(); i++ )
 		{
-			t.addProductLineItem(new ProductLineItem("", p.get(i), productsQuantity.get(i)));
+//			t.addProductLineItem(new ProductLineItem("", p.get(i), productsQuantity.get(i)));
 		}
 		
 		for( int i = 0; i < s.size(); i++ )

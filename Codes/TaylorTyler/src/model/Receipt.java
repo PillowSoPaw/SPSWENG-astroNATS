@@ -11,7 +11,7 @@ public class Receipt
 	private String sReceiptId;
 	private Client client;
 	private Date dateOfReceipt;
-        private Time timeOfReceipt;
+     private Time timeOfReceipt;
 	private String sModeOfPayment;
 	private ArrayList<Transaction> transactions;
 	private double dTotalBill;

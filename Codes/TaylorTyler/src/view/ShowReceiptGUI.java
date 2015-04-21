@@ -29,8 +29,6 @@ public class ShowReceiptGUI extends JFrame
 	private String[] productTableColumn = {"Customer Name", "Product", "Quantity", "Price(per unit)", "Subtotal"};
 	private ArrayList<Object[]> serviceTableRows;
 	private ArrayList<Object[]> productTableRows;
-	private ArrayList<ArrayList<String>> consumables;
-	private ArrayList<ArrayList<Integer>> consumablesQuantity;
 	private JLabel servicesLabel;
 	private JLabel productsLabel;
 	private JLabel customerNameLabel;
@@ -43,8 +41,11 @@ public class ShowReceiptGUI extends JFrame
 	private JLabel totalPriceLabel;
 	private JPanel receiptPanel;
 	
-	public ShowReceiptGUI() 
+	public ShowReceiptGUI( String clientName, String date, ArrayList<Object[]> services, ArrayList<Object[]> products ) 
 	{
+		this.serviceTableRows = services;
+		this.productTableRows = products;
+		
 		this.setTitle("Receipt");
 		getContentPane().setBackground(new Color(128, 128, 0));
 		getContentPane().setLayout(null);
@@ -114,13 +115,13 @@ public class ShowReceiptGUI extends JFrame
 		productsLabel.setVisible(true);
 		receiptPanel.add(productsLabel);
 		
-		customerNameLabel = new JLabel("Customer Name: Lastname, Firstname Middleinitial");
+		customerNameLabel = new JLabel("Customer Name: " + clientName);
 		customerNameLabel.setForeground(Color.WHITE);
 		customerNameLabel.setBounds(10, 11, 371, 27);
 		customerNameLabel.setVisible(true);
 		receiptPanel.add(customerNameLabel);
 		
-		dateLabel = new JLabel("Date/Time: mm-dd-yyyy  /  hh:mm:ss");
+		dateLabel = new JLabel("Date/Time: " + date);
 		dateLabel.setForeground(Color.WHITE);
 		dateLabel.setBounds(391, 10, 294, 28);
 		dateLabel.setVisible(true);
@@ -131,31 +132,41 @@ public class ShowReceiptGUI extends JFrame
 		separatorLabel.setVisible(true);
 		receiptPanel.add(separatorLabel);
 		
-		serviceCountLabel = new JLabel("Service Count:");
+		
+		serviceCountLabel = new JLabel("Service Count: " + services.size());
 		serviceCountLabel.setForeground(Color.WHITE);
 		serviceCountLabel.setBounds(10, 475, 200, 22);
 		serviceCountLabel.setVisible(true);
 		receiptPanel.add(serviceCountLabel);
 		
-		serviceSubtotalLabel = new JLabel("Services Subtotal:");
+		double serviceSubtotal = 0;
+		
+		for( int i = 0; i < services.size(); i++ )
+			serviceSubtotal += (double) services.get(i)[4];
+		
+		serviceSubtotalLabel = new JLabel("Services Subtotal: P " + serviceSubtotal);
 		serviceSubtotalLabel.setForeground(Color.WHITE);
 		serviceSubtotalLabel.setBounds(10, 495, 200, 22);
 		serviceSubtotalLabel.setVisible(true);
 		receiptPanel.add(serviceSubtotalLabel);
 		
-		productCountLabel = new JLabel("Product Count:");
+		productCountLabel = new JLabel("Product Count: " + products.size());
 		productCountLabel.setForeground(Color.WHITE);
 		productCountLabel.setBounds(391, 475, 200, 22);
 		productCountLabel.setVisible(true);
 		receiptPanel.add(productCountLabel);
 		
-		productsSubTotal = new JLabel("Products Subtotal: ");
+		double productSubtotal = 0;
+		for( int i = 0; i < products.size(); i++ )
+			productSubtotal += (double) products.get(i)[4];
+		
+		productsSubTotal = new JLabel("Products Subtotal: P " + productSubtotal);
 		productsSubTotal.setForeground(Color.WHITE);
 		productsSubTotal.setBounds(391, 495, 200, 22);
 		productsSubTotal.setVisible(true);
 		receiptPanel.add(productsSubTotal);
 		
-		totalPriceLabel = new JLabel("Total Price: ");
+		totalPriceLabel = new JLabel("Total Price: P " + (serviceSubtotal + productSubtotal));
 		totalPriceLabel.setForeground(Color.WHITE);
 		totalPriceLabel.setBounds(485, 519, 200, 22);
 		totalPriceLabel.setVisible(true);
@@ -164,111 +175,25 @@ public class ShowReceiptGUI extends JFrame
 		this.repaint();
 		receiptPanel.repaint();
 		
-		
-	}
-	
-	public void getData()
-	{
-//		updateServiceTable();
-//		updateProductTable();
-//		
-//		this.repaint();
-//		this.revalidate();
-	}
-	
-	public void resetAll()
-	{
-		serviceTableRows.clear();
-		productTableRows.clear();
-		consumables.clear();
-		consumablesQuantity.clear();
-		resetTables();
 		updateServiceTable();
 		updateProductTable();
 	}
 	
-	public void resetTables()
-	{
-		serviceModel = new DefaultTableModel()
-		{
-			public boolean isCellEditable(int row, int column)
-			{
-				return false;// This causes all cells to be not editable
-			}
-		};
-		
-		for( int i = 0; i < serviceTableColumn.length; i++ )
-		{
-			serviceModel.addColumn(serviceTableColumn[i]);
-		}
-		
-		productModel = new DefaultTableModel()
-		{
-			public boolean isCellEditable(int row, int column)
-			{
-				return false;// This causes all cells to be not editable
-			}
-		};
-		
-		for( int i = 0; i < productTableColumn.length; i++ )
-		{
-			productModel.addColumn(productTableColumn[i]);
-		}
-	}
-	
-	public void addService(ArrayList<Object[]> services)
-	{
-		for( int i = 0; i < services.size(); i++ )
-			serviceTableRows.add(services.get(i));
-		
-		updateServiceTable();
-	}
-	
 	public void updateServiceTable()
 	{	
-		resetTables();
-		
 		for( int i = 0; i < serviceTableRows.size(); i++ )
 		{
-			for( int j = 0; j < serviceTableRows.get(i).length; j++ )
-				System.out.println(serviceTableRows.get(i)[j]);
-			System.out.println();
 			serviceModel.addRow(serviceTableRows.get(i));
 		}
 		servicesTransactionTable.setModel(serviceModel);
 	}
 	
-	public void addConsumables(ArrayList<ArrayList<String>> consumables, ArrayList<ArrayList<Integer>> consumablesQuantity)
-	{
-		for( int i = 0; i < consumables.size(); i++ )
-		{
-			for( int j = 0; j < consumables.get(i).size(); j++ )
-			{
-				Object[] row = {consumables.get(i).get(j), consumablesQuantity.get(i).get(j), "N/A", "N/A"};
-				productTableRows.add(row);
-			}
-			this.consumables.add(consumables.get(i));
-			this.consumablesQuantity.add(consumablesQuantity.get(i));
-		}
-		
-		updateProductTable();
-	}
-	
 	public void updateProductTable()
 	{	
-		resetTables();
-		
 		for( int i = 0; i < productTableRows.size(); i++ )
 		{
 			productModel.addRow(productTableRows.get(i));
 		}
 		productsTransactionTable.setModel(productModel);
 	}
-
-	public static void main(String[] args){
-		
-		new ShowReceiptGUI();
-		
-	}
-	
 }

@@ -6,12 +6,14 @@ public class ProductLineItem
 	private String sProductLineItemId;
 	private Product product;
 	private int nQuantity;
+	private Employee employee;
 	
-	public ProductLineItem( String sProductLineItemId, Product product, int nQuantity )
+	public ProductLineItem( String sProductLineItemId, Product product, int nQuantity, Employee employee )
 	{
 		this.sProductLineItemId = sProductLineItemId;
 		this.product = product;
 		this.nQuantity = nQuantity;
+		this.employee = employee;
 	}
 
 	//getters
@@ -30,6 +32,11 @@ public class ProductLineItem
 		return nQuantity;
 	}
 	
+	public Employee getEmployee()
+	{
+		return employee;
+	}
+	
 	//setters
 	public void setsProductLineItemId(String sProductLineItemId)
 	{
@@ -46,4 +53,8 @@ public class ProductLineItem
 		this.nQuantity = nQuantity;
 	}
 	
+	public void setEmployeeID( Employee employee )
+	{
+		this.employee = employee;
+	}
 }

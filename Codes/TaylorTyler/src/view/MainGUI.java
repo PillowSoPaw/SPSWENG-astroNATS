@@ -33,6 +33,7 @@ import controller.AddTransactionController;
 import controller.AddServicesController;
 import controller.InventoryController;
 import controller.ViewClientsController;
+import controller.ViewReceiptsController;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
@@ -46,6 +47,7 @@ public class MainGUI extends JFrame implements ActionListener, MouseListener
 	private AddServicesController addServicesController;
 	private AddProductsController addProductsController;
 	private ViewClientsController viewClientsController;
+	private ViewReceiptsController viewReceiptsController;
 	private InventoryController inventoryController;
 	
 	private JPanel logoPanel;
@@ -93,6 +95,7 @@ public class MainGUI extends JFrame implements ActionListener, MouseListener
 		addServicesController = new AddServicesController();
 		addProductsController = new AddProductsController();
 		viewClientsController = new ViewClientsController();
+		viewReceiptsController = new ViewReceiptsController();
 		inventoryController = new InventoryController();
 		
 		getContentPane().setLayout(null);
@@ -344,7 +347,7 @@ public class MainGUI extends JFrame implements ActionListener, MouseListener
 			reportsButton.setEnabled(true);
 			viewTransactionsButton.setEnabled(false);
 			getContentPane().remove(mainPanel);
-			mainPanel = new ViewReceiptsGUI();
+			mainPanel = new ViewReceiptsGUI(viewReceiptsController);
 			mainPanel.setBounds(253, 67, 821, 483);
 			getContentPane().add(mainPanel);
 			updatePanelTitle();
