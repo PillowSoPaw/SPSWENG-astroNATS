@@ -18,7 +18,7 @@ import javax.swing.JButton;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 
-public class LogInGUI extends JFrame
+public class LogInGUI extends JFrame implements ActionListener
 {	
 	private JLabel logoLabel;
 	private Image logoImage;
@@ -27,6 +27,7 @@ public class LogInGUI extends JFrame
 	private JButton logInButton;
 	private JLabel usernameLabel;
 	private JLabel passwordLabel;
+	private controller.LogInController LogInController;
 	
 	public LogInGUI()
 	{
@@ -69,17 +70,8 @@ public class LogInGUI extends JFrame
 		getContentPane().add(passwordField);
 		
 		logInButton = new JButton("Log In");
-		logInButton.addActionListener(new ActionListener() 
-		{
-			public void actionPerformed(ActionEvent e) 
-			{
-				if(e.getSource() == logInButton)
-				{
-					new MainGUI();
-					dispose();
-				}
-			}
-		});
+		logInButton.addActionListener(this);
+		
 		logInButton.setForeground(new Color(255, 250, 250));
 		logInButton.setBackground(new Color(34, 139, 34));
 		logInButton.setFont(new Font("Tahoma", Font.BOLD, 12));
@@ -92,6 +84,45 @@ public class LogInGUI extends JFrame
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setVisible(true);
 		this.setResizable(false);
+		LogInController = new controller.LogInController();
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		
+		if(e.getSource() == logInButton)
+		{	
+			String username = usernameTextField.getText();
+			char[] pw = passwordField.getPassword();
+			String password = new String(pw);
+			//System.out.println(password);
+			boolean containsString = false;
+			
+			if(username.equalsIgnoreCase("") || password.equalsIgnoreCase(""))
+			{
+				JOptionPane.showMessageDialog(null, "Please input in both username and password fields.");
+			}
+			else
+			{	
+				boolean access = LogInController.checkLoginDetails(username, password);
+				
+				if(access == true)
+				{
+					new MainGUI();
+					dispose();
+				}
+				else if(access == false)
+				{
+					JOptionPane.showMessageDialog(null, "Incorrect username or password.");
+				}
+			}
+			
+			
+			
+		}
+		
 		
 	}
 }

@@ -1218,6 +1218,41 @@ public class DatabaseManager
 		}
 	}
     
+	//ACCOUNT QUERIES
+	public Iterator getAllAccounts()
+	{
+		try
+		{
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM account");
+			ResultSet rs = ps.executeQuery();
+			
+			ArrayList<Object[]> accountList = new ArrayList();
+			
+			//Account a;
+			
+			while(rs.next())
+			{	
+				Object[] oList = new Object[2];
+				oList[0] = rs.getString("username");
+				oList[1] = rs.getInt("password");
+				//oList[2] = rs.getString("username");
+				//oList[3] = rs.getString("password");
+				//oList[4] = rs.getString("type");
+				
+				//a = new Account((int)oList[0], (int)oList[1], (String)oList[2], (String)oList[3], (String)oList[4]);
+				
+				accountList.add(oList);
+			}
+			
+			return accountList.iterator();
+			
+		}catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+			return null;
+	}
+	
 	/*
 	public Iterator getAllTransactions()
 	{
