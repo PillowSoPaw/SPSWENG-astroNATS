@@ -48,6 +48,10 @@ public class ManageEmployeesGUI extends JPanel implements ActionListener
 	private JCheckBox ShowSeniorStaffCheckBox;
 	private JCheckBox ShowJuniorStaffCheckBox;
 	
+	private int nSenior = 0;
+	private int nJunior = 0;
+	private int nManager = 0;
+	private int nEmployee = 0;
 	
 	private String[] sortByListOwner = {"Name", "Hours Rendered", "Branch"};
 	private String[] sortByList = {"Name", "Hours Rendered"};
@@ -118,17 +122,17 @@ public class ManageEmployeesGUI extends JPanel implements ActionListener
 		viewDetailsButton.setEnabled(false);
 		//add(viewDetailsButton);
 		
-		totalCountEmployeesLabel = new JLabel("Total no. of employees:");
+		totalCountEmployeesLabel = new JLabel("Total no. of employees: "+ nEmployee);
 		totalCountEmployeesLabel.setForeground(Color.WHITE);
 		totalCountEmployeesLabel.setBounds(276, 440, 166, 27);
 		add(totalCountEmployeesLabel);
 		
-		juniorStaffCountLabel = new JLabel("Junior Staff count:");
+		juniorStaffCountLabel = new JLabel("Junior Staff count: " + nJunior);
 		juniorStaffCountLabel.setForeground(Color.WHITE);
 		juniorStaffCountLabel.setBounds(141, 440, 137, 27);
 		add(juniorStaffCountLabel);
 		
-		seniorStaffCountLabel = new JLabel("Senior Staff count:");
+		seniorStaffCountLabel = new JLabel("Senior Staff count: " + nSenior);
 		seniorStaffCountLabel.setForeground(Color.WHITE);
 		seniorStaffCountLabel.setBounds(10, 440, 137, 27);
 		add(seniorStaffCountLabel);
@@ -251,20 +255,34 @@ public class ManageEmployeesGUI extends JPanel implements ActionListener
 	public void getEmployees(Iterator e)
 	{
 	    employees = new ArrayList<>(0);
+	    nSenior = 0;
+		nJunior = 0;
+		nManager = 0;
+		nEmployee = 0;
 		while (e.hasNext() == true)
 		{
 			employees.add((Employee) e.next());
 		}
 		if(employees.size()>0)
-			
+		
 		for( int i = 0; i < employees.size(); i++ )
 		{
+			if(employees.get(i).getsType().equals("junior"))
+				nJunior++;
+			else if (employees.get(i).getsType().equals("senior"))
+				nSenior++;
+			else if (employees.get(i).getsType().equals("salonmanager"))
+				nManager++;
 			//"Name", "Type", "Date Started Working"
 			Object[] row = {employees.get(i).getsEmployeeId(), employees.get(i).getsName(), employees.get(i).getsType(), employees.get(i).getDateStartedWorking()};
 			employeeTableModel.addRow(row);
 			System.out.println(employees.get(i).getsName());
+			nEmployee++;
 		}
-		
+		System.out.println("total"+ nEmployee);
+		totalCountEmployeesLabel.setText("Total no. of employees: "+ nEmployee);
+		juniorStaffCountLabel.setText("Junior Staff count: " + nJunior);
+		seniorStaffCountLabel.setText("Senior Staff count: " + nSenior);
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) 
@@ -279,7 +297,7 @@ public class ManageEmployeesGUI extends JPanel implements ActionListener
 			for( int i = 0; i < employees.size() ; i++ )
 			{
 				if(employees.get(i).getsEmployeeId().equals((String) employeeTableModel.getValueAt(employeeListTable.getSelectedRow(), 0)))
-					new EditEmployeeGUI(employees.get(i), this);
+				new EditEmployeeGUI(employees.get(i), this);
 			}
 		}
 		
