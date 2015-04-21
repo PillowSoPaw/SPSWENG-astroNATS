@@ -46,6 +46,7 @@ public class InventoryGUI extends JPanel implements ActionListener, ListSelectio
 	private JButton deleteProductButton;
 	private JButton editProductButton;
 	private JButton addProductButton;
+	private JButton restockButton;
 	
         private DefaultTableModel inventoryModel;
         private String[] inventoryTableColumn = {"Product ID", "Product Name", "Quantity"}; 
@@ -116,7 +117,13 @@ public class InventoryGUI extends JPanel implements ActionListener, ListSelectio
                 addProductButton.addActionListener(this);
 		productsTab.add(addProductButton);
 	
-                
+        restockButton = new JButton("Restock");
+        restockButton.setToolTipText("Restock a product in the inventory");
+        restockButton.setBounds(225, 449, 139, 23);
+        	restockButton.addActionListener(this);
+        productsTab.add(restockButton);
+		
+		
                 inventoryModel = new DefaultTableModel()
 		{
 			public boolean isCellEditable(int row, int column)
