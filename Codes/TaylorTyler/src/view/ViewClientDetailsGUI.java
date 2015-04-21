@@ -167,7 +167,8 @@ public class ViewClientDetailsGUI extends JFrame{
 			};
 		//servicesTable = new JTable(servicesRow, servicesColumn);
 		servicesTable.setSize(307, 223);
-		
+		servicesTable.getTableHeader().setReorderingAllowed(false);
+		servicesTable.getTableHeader().setResizingAllowed(false);
 		servicesScroll = new JScrollPane(servicesTable);
 		servicesScroll.setBounds(10, 220, 307, 241);
 		servicesScroll.setBorder(blackline);
@@ -177,7 +178,8 @@ public class ViewClientDetailsGUI extends JFrame{
 		
 		//productsTable = new JTable(servicesRow, productsColumn);
 		productsTable.setSize(307, 223);
-		
+		productsTable.getTableHeader().setReorderingAllowed(false);
+		productsTable.getTableHeader().setResizingAllowed(false);
 		productsScroll = new JScrollPane(productsTable);
 		productsScroll.setBounds(327, 220, 307, 241);
 		productsScroll.setBorder(blackline);

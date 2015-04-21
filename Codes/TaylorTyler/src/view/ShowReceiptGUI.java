@@ -75,6 +75,8 @@ public class ShowReceiptGUI extends JFrame
 		}
 		
 		servicesTransactionTable = new JTable(serviceModel);
+		servicesTransactionTable.getTableHeader().setReorderingAllowed(false);
+		servicesTransactionTable.getTableHeader().setResizingAllowed(false);
 		servicesTransactionScrollPane = new JScrollPane(servicesTransactionTable);
 		servicesTransactionScrollPane.setBounds(10, 74, 338, 395);
 		servicesTransactionScrollPane.setBorder(blackline);
@@ -95,6 +97,8 @@ public class ShowReceiptGUI extends JFrame
 		}
 		
 		productsTransactionTable = new JTable(productModel);
+		productsTransactionTable.getTableHeader().setReorderingAllowed(false);
+		productsTransactionTable.getTableHeader().setResizingAllowed(false);
 		productsTransactionScrollPane = new JScrollPane(productsTransactionTable);
 		productsTransactionScrollPane.setBounds(363, 74, 322, 395);
 		productsTransactionScrollPane.setBorder(blackline);

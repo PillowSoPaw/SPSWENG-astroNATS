@@ -33,6 +33,7 @@ import controller.AddTransactionController;
 import controller.AddServicesController;
 import controller.InventoryController;
 import controller.ViewClientsController;
+import controller.ViewNotificationsController;
 import controller.ViewReceiptsController;
 
 import java.awt.event.ActionListener;
@@ -47,6 +48,7 @@ public class MainGUI extends JFrame implements ActionListener, MouseListener
 	private AddServicesController addServicesController;
 	private AddProductsController addProductsController;
 	private ViewClientsController viewClientsController;
+	private ViewNotificationsController viewNotificationsController;
 	private ViewReceiptsController viewReceiptsController;
 	private InventoryController inventoryController;
 	
@@ -75,6 +77,7 @@ public class MainGUI extends JFrame implements ActionListener, MouseListener
 	private JLabel logOutLabel;
 	private JLabel divLabel;
 	private JLabel manageAccountLabel;
+	private JLabel notificationLabel;
 	private JLabel panelLabel;
 	private JLabel branchNameLabel;
 //	private static int currentSecond; //for dynamic date and time
@@ -95,6 +98,7 @@ public class MainGUI extends JFrame implements ActionListener, MouseListener
 		addServicesController = new AddServicesController();
 		addProductsController = new AddProductsController();
 		viewClientsController = new ViewClientsController();
+		viewNotificationsController = new ViewNotificationsController();
 		viewReceiptsController = new ViewReceiptsController();
 		inventoryController = new InventoryController();
 		
@@ -281,8 +285,10 @@ public class MainGUI extends JFrame implements ActionListener, MouseListener
 		this.setTitle(frameTitle);
 		start(dateLabel, timeLabel);
 		
-		JLabel notificationLabel = new JLabel("Notifications");
+		notificationLabel = new JLabel("Notifications");
 		notificationLabel.setBounds(526, 32, 97, 14);
+		notificationLabel.addMouseListener(this);
+		notificationLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		topPanel.add(notificationLabel);
 		
 		JLabel divLabel2 = new JLabel("|");
@@ -480,12 +486,34 @@ public class MainGUI extends JFrame implements ActionListener, MouseListener
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
-		if(e.getSource().equals(manageAccountLabel)){
+	public void mouseClicked(MouseEvent e)
+	{
+		if (e.getSource().equals(manageAccountLabel))
+		{
 			new ManageAccountGUI();
-		}else if(e.getSource().equals(logOutLabel)){
+		} 
+		else if (e.getSource().equals(logOutLabel))
+		{
 			new LogInGUI();
 			dispose();
+		}
+		else if( e.getSource().equals(notificationLabel))
+		{
+			addTransactionButton.setEnabled(true);
+			inventoryButton.setEnabled(true);
+			viewClientsButton.setEnabled(true);
+			addClientButton.setEnabled(true);
+			reportsButton.setEnabled(true);
+			viewTransactionsButton.setEnabled(true);
+			getContentPane().remove(mainPanel);
+			mainPanel = new ViewNotificationsGUI(viewNotificationsController);
+			viewNotificationsController.setView((ViewNotificationsGUI) mainPanel);
+			mainPanel.setBounds(253, 67, 821, 483);
+			getContentPane().add(mainPanel);
+			updatePanelTitle();
+			panelLabel.setText(panelTitle);
+			getContentPane().validate();
+			getContentPane().repaint();
 		}
 	}
 
