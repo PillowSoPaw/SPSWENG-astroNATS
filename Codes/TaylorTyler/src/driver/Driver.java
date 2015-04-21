@@ -5,6 +5,7 @@ import javax.swing.JFrame;
 import view.LogInGUI;
 import view.MainGUI;
 import controller.Controller;
+import controller.LogInController;
 
 public class Driver
 {
@@ -12,6 +13,8 @@ public class Driver
 	{
 		//TransactionGUI panel = new TransactionGUI();
 		//Controller controller = new Controller(panel);
-		LogInGUI panel = new LogInGUI();
+		LogInController logInController = new LogInController();
+		LogInGUI panel = new LogInGUI(logInController);
+		logInController.setView((LogInGUI) panel);
 	}
 }
