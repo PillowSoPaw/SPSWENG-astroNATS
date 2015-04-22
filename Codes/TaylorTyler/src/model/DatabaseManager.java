@@ -782,6 +782,22 @@ public class DatabaseManager
 
 	}
 
+	public void updateProductQuantity( int product_id, int quantity )
+	{
+		try
+		{
+			PreparedStatement ps = connection.prepareStatement("UPDATE product SET quantity = ? WHERE product_id = ?");
+                        ps.setInt(1, quantity);
+                        ps.setInt(2, product_id);
+			ps.execute();
+			
+		} catch (SQLException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	public void updateProductQuantity( ArrayList<ProductLineItem> pLineItem )
 	{
 		try
