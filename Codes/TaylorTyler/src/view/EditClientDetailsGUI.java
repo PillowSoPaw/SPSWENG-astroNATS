@@ -190,6 +190,7 @@ public class EditClientDetailsGUI extends JFrame implements ActionListener
 		cancelButton = new JButton("Cancel");
 		cancelButton.setBackground(Color.RED);
 		cancelButton.setBounds(50, 305, 127, 30);
+		cancelButton.addActionListener(this);
 		getContentPane().add(cancelButton);
 				
 		//Adding listeners for confirm and date Combo Boxes
@@ -227,6 +228,10 @@ public class EditClientDetailsGUI extends JFrame implements ActionListener
 			} else if (a.getActionCommand() == "comboBoxChanged") 
 			{
 				refreshChoices();
+			}
+			else if( a.getSource() == cancelButton )
+			{
+				dispose();
 			}
 		}
 	}
@@ -323,6 +328,10 @@ public class EditClientDetailsGUI extends JFrame implements ActionListener
 				manageClientsGUI.addClient();
 				manageClientsGUI.getData();
 			}
+		}
+		else if( e.getSource() == cancelButton )
+		{
+			dispose();
 		}
 		
 	}
