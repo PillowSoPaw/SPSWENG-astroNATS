@@ -8,6 +8,9 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
@@ -23,6 +26,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.border.Border;
+import javax.swing.event.AncestorEvent;
+import javax.swing.event.AncestorListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
@@ -71,6 +76,9 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 	private double productsSubtotal;
 	private double totalPrice;
 	
+	private AddServicesGUI addServicesGUI;
+	private AddProductsGUI addProductsGUI;
+	
 	public AddTransactionGUI( AddTransactionController addTransactionController, AddServicesController addServicesController, AddProductsController addProductsController )
 	{
 		this.addTransactionController = addTransactionController;
@@ -89,6 +97,7 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 		this.setBounds(0, 0, 821, 483);
 		this.setBorder(blackline);
 		this.setLayout(null);
+		this.addAncestorListener(new visibilityListener());
 		this.repaint();
 		
 		servicesLabel = new JLabel("Services");
@@ -346,7 +355,7 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 			}
 			else
 			{
-				AddServicesGUI addServicesGUI = new AddServicesGUI( addServicesController, this );
+				addServicesGUI = new AddServicesGUI( addServicesController, this );
 				addServicesController.setView(addServicesGUI);
 				addServicesHandler = true;
 				addServicesGUI.addWindowListener(new WindowListener()
@@ -403,7 +412,7 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 			}
 			else
 			{
-				AddProductsGUI addProductsGUI = new AddProductsGUI( addProductsController, this );
+				addProductsGUI = new AddProductsGUI( addProductsController, this );
 				addProductsController.setView(addProductsGUI);
 				addProductsHandler = true;
 				addProductsGUI.addWindowListener(new WindowListener()
@@ -541,5 +550,29 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 		// TODO Auto-generated method stub
 		
 		
+	}
+	
+	private class visibilityListener implements AncestorListener{
+
+		@Override
+		public void ancestorAdded(AncestorEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void ancestorMoved(AncestorEvent arg0) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void ancestorRemoved(AncestorEvent arg0) {
+			if(addServicesGUI != null)
+				addServicesGUI.dispose();
+			
+			if(addProductsGUI != null)
+				addProductsGUI.dispose();
+		}
 	}
 }
