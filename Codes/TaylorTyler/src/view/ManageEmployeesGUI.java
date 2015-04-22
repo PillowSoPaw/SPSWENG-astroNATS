@@ -42,6 +42,7 @@ public class ManageEmployeesGUI extends JPanel implements ActionListener
 	private JButton searchButton;
 	private JButton addEmployeeButton;
 	private JButton editDetailsButton;
+	private JButton deactivateButton;
 	private JButton viewDetailsButton;
 	private JLabel totalCountEmployeesLabel;
 	private JLabel seniorStaffCountLabel;
@@ -113,10 +114,16 @@ public class ManageEmployeesGUI extends JPanel implements ActionListener
 		add(addEmployeeButton);
 		
 		editDetailsButton = new JButton("Edit Details");
-		editDetailsButton.setBounds(682, 442, 129, 26);
+		editDetailsButton.setBounds(669, 442, 129, 26);
 		editDetailsButton.setEnabled(false);
 		editDetailsButton.addActionListener(this);
 		add(editDetailsButton);
+		
+		deactivateButton = new JButton("Deactivate Employee");
+		deactivateButton.setBounds(501, 442, 151, 26);
+		deactivateButton.setEnabled(false);
+		deactivateButton.addActionListener(this);
+		add(deactivateButton);
 		
 		viewDetailsButton = new JButton("View Details");
 		viewDetailsButton.setBounds(543, 442, 129, 26);
@@ -143,6 +150,7 @@ public class ManageEmployeesGUI extends JPanel implements ActionListener
 		ShowSeniorStaffCheckBox.setForeground(Color.WHITE);
 		ShowSeniorStaffCheckBox.setBackground(new Color(128, 128, 0));
 		ShowSeniorStaffCheckBox.setBounds(660, 7, 151, 23);
+		ShowSeniorStaffCheckBox.addActionListener(this);
 		add(ShowSeniorStaffCheckBox);
 		
 		ShowJuniorStaffCheckBox = new JCheckBox("Show Junior Staff");
@@ -150,6 +158,7 @@ public class ManageEmployeesGUI extends JPanel implements ActionListener
 		ShowJuniorStaffCheckBox.setForeground(Color.WHITE);
 		ShowJuniorStaffCheckBox.setBackground(new Color(128, 128, 0));
 		ShowJuniorStaffCheckBox.setBounds(660, 28, 151, 23);
+		ShowJuniorStaffCheckBox.addActionListener(this);
 		add(ShowJuniorStaffCheckBox);	
 		
 		ShowSalonManagerCheckBox = new JCheckBox("Show Salon Manager");
@@ -157,6 +166,7 @@ public class ManageEmployeesGUI extends JPanel implements ActionListener
 		ShowSalonManagerCheckBox.setForeground(Color.WHITE);
 		ShowSalonManagerCheckBox.setBackground(new Color(128, 128, 0));
 		ShowSalonManagerCheckBox.setBounds(475, 15, 154, 26);
+		ShowSalonManagerCheckBox.addActionListener(this);
 		add(ShowSalonManagerCheckBox);
 		
 		ListSelectionModel listSelectionModel = employeeListTable.getSelectionModel();
@@ -167,6 +177,7 @@ public class ManageEmployeesGUI extends JPanel implements ActionListener
 	            ListSelectionModel lsm = (ListSelectionModel)e.getSource();
 	            viewDetailsButton.setEnabled(!lsm.isSelectionEmpty());
 	            editDetailsButton.setEnabled(!lsm.isSelectionEmpty());
+	            deactivateButton.setEnabled(!lsm.isSelectionEmpty());
 	        }
 		});
 	
@@ -276,6 +287,22 @@ public class ManageEmployeesGUI extends JPanel implements ActionListener
 				nManager++;
 			//"Name", "Type", "Date Started Working"
 			Object[] row = {employees.get(i).getsEmployeeId(), employees.get(i).getsName(), employees.get(i).getsType(), employees.get(i).getDateStartedWorking()};
+//			if( employees.get(i).getsType().equals("junior") && ShowJuniorStaffCheckBox.isSelected())
+//			{
+//				employeeTableModel.addRow(row);
+//			}
+//			else if( employees.get(i).getsType().equals("senior") && ShowSeniorStaffCheckBox.isSelected())
+//			{
+//				employeeTableModel.addRow(row);
+//			}
+//			else if( employees.get(i).getsType().equals("salonmanager") && ShowSalonManagerCheckBox.isSelected())
+//			{
+//				employeeTableModel.addRow(row);
+//			}
+//			else if( employees.get(i).getsType().equals("owner"))
+//			{
+//				employeeTableModel.addRow(row);
+//			}
 			employeeTableModel.addRow(row);
 			System.out.println(employees.get(i).getsName());
 			nEmployee++;
@@ -306,11 +333,23 @@ public class ManageEmployeesGUI extends JPanel implements ActionListener
 			addEmployee();
 			manageEmployeesController.getEmployeesByName(employeeNameTextField.getText());
 		}
-		
+		else if(e.getSource().equals(deactivateButton))
+		{
+			manageEmployeesController.deactivateEmployee((String) employeeTableModel.getValueAt(employeeListTable.getSelectedRow(), 0));
+			addEmployee();
+			getData();
+		}
+		else if(e.getSource().equals(ShowSeniorStaffCheckBox) || e.getSource().equals(ShowJuniorStaffCheckBox)||e.getSource().equals(ShowSalonManagerCheckBox))
+		{
+			addEmployee();
+			getData();
+		}
+	
 	}
 	public void addEmployee() 
 	{
 		// TODO Auto-generated method stub
+		if(employees.size()>0)
 		for( int i = 0; i < employees.size(); i++ )
 		{
 			employeeTableModel.removeRow(0);

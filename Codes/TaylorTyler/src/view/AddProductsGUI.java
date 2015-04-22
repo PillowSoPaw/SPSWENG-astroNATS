@@ -485,7 +485,8 @@ public class AddProductsGUI extends JFrame implements ActionListener, FocusListe
 			
 			for( int i = 0; i < productsBought.size(); i++ )
 			{
-				subtotal += getProductSubtotal((String) productsBought.get(i)[1], (int) productsBought.get(i)[2]);
+				subtotal += (double) productsBought.get(i)[4];
+//				subtotal += getProductSubtotal((String) productsBought.get(i)[1], (int) productsBought.get(i)[2]);
 			}
 			totalPriceLabel.setText("Total Price: P " + subtotal);
 		}

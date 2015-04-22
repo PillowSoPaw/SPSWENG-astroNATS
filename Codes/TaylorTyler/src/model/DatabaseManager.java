@@ -261,7 +261,7 @@ public class DatabaseManager
 	{
 		try
 		{
-			PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE name = ?");
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE name = ? AND status = 'active';");
 			ps.setString(1, name);
 			ResultSet rs = ps.executeQuery();
 			
@@ -277,6 +277,181 @@ public class DatabaseManager
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	public Iterator getAllEmployees()
+	{
+		try
+		{
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE status = 'active'");
+			ResultSet rs = ps.executeQuery();
+			ArrayList<model.Employee> employees = new ArrayList<>(0);
+			
+			while( rs.next() )
+			{
+				model.Employee e = new Employee(Integer.toString(rs.getInt("employee_id")), 
+										  rs.getString("name"),
+										  rs.getDate("dateStartedWorking"), 
+										  rs.getString("type"));
+				employees.add(e);
+			}
+			return employees.iterator();
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Iterator getAllStaff()
+	{
+		try
+		{
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE type NOT LIKE 'owner' AND status = 'active'");
+			ResultSet rs = ps.executeQuery();
+			ArrayList<model.Employee> employees = new ArrayList<>(0);
+			
+			while( rs.next() )
+			{
+				model.Employee e = new Employee(Integer.toString(rs.getInt("employee_id")), 
+										  rs.getString("name"),
+										  rs.getDate("dateStartedWorking"), 
+										  rs.getString("type"));
+				employees.add(e);
+			}
+			return employees.iterator();
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Iterator getWorkingEmployees()
+	{
+		try
+		{
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE type LIKE 'senior' OR type LIKE 'junior' AND status = 'active'");
+			ResultSet rs = ps.executeQuery();
+			ArrayList<model.Employee> wEmployees = new ArrayList<>(0);
+			
+			while( rs.next() )
+			{
+				model.Employee e = new Employee(Integer.toString(rs.getInt("employee_id")), 
+										  rs.getString("name"),
+										  rs.getDate("dateStartedWorking"), 
+										  rs.getString("type"));
+				wEmployees.add(e);
+			}
+			return wEmployees.iterator();
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Iterator getSeniorEmployees()
+	{
+		try
+		{
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE type LIKE 'senior' AND status = 'active'");
+			ResultSet rs = ps.executeQuery();
+			ArrayList<model.Employee> wEmployees = new ArrayList<>(0);
+			
+			while( rs.next() )
+			{
+				model.Employee e = new Employee(Integer.toString(rs.getInt("employee_id")), 
+										  rs.getString("name"),
+										  rs.getDate("dateStartedWorking"), 
+										  rs.getString("type"));
+				wEmployees.add(e);
+			}
+			return wEmployees.iterator();
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Iterator getJuniorEmployees()
+	{
+		try
+		{
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE type LIKE 'junior' AND status = 'active'");
+			ResultSet rs = ps.executeQuery();
+			ArrayList<model.Employee> wEmployees = new ArrayList<>(0);
+			
+			while( rs.next() )
+			{
+				model.Employee e = new Employee(Integer.toString(rs.getInt("employee_id")), 
+										  rs.getString("name"), 
+										  rs.getDate("dateStartedWorking"), 
+										  rs.getString("type"));
+				wEmployees.add(e);
+			}
+			return wEmployees.iterator();
+		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public void addEmployee( Employee e )
+	{
+		try
+		{
+			PreparedStatement ps = connection.prepareStatement("INSERT INTO employee(branch_id, name, dateStartedWorking, type, status)"
+																+ "VALUES (?, ?, ?, ?, 'active')", Statement.RETURN_GENERATED_KEYS);
+			ps.setInt(1, 1);
+			ps.setString(2, e.getsName());
+			ps.setDate(3, e.getDateStartedWorking());
+			ps.setString(4, e.getsType());
+			
+			ps.executeUpdate();
+		}catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
+	}
+	
+	public void deactivateEmployee(String employeeID)
+	{
+		try
+		{
+			
+			PreparedStatement ps = connection
+					.prepareStatement("UPDATE employee "
+							+ "SET status = 'inactive'"
+							+ "WHERE employee_id = ?");
+			ps.setInt(1, Integer.parseInt(employeeID));
+			ps.executeUpdate();
+
+		} catch (SQLException e)
+		{
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void updateEmployee( Employee e )
+	{
+		try
+		{
+			PreparedStatement ps = connection.prepareStatement("UPDATE employee "
+																+ "SET  name = ?, type = ? "
+																+ "WHERE employee_id = ?");
+			ps.setString(1, e.getsName());
+			ps.setString(2, e.getsType());
+			ps.setInt(3, Integer.parseInt(e.getsEmployeeId()));
+			
+			ps.executeUpdate();
+		}catch(Exception exception)
+		{
+			exception.printStackTrace();
+		}
 	}
 	
 	public Iterator getEmployeesByName(String name)
@@ -307,162 +482,6 @@ public class DatabaseManager
 			e.printStackTrace();
 		}
 		return null;
-	}
-	
-	public Iterator getAllEmployees()
-	{
-		try
-		{
-			PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee");
-			ResultSet rs = ps.executeQuery();
-			ArrayList<model.Employee> employees = new ArrayList<>(0);
-			
-			while( rs.next() )
-			{
-				model.Employee e = new Employee(Integer.toString(rs.getInt("employee_id")), 
-										  rs.getString("name"),
-										  rs.getDate("dateStartedWorking"), 
-										  rs.getString("type"));
-				employees.add(e);
-			}
-			return employees.iterator();
-		}catch(SQLException e)
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	public Iterator getAllStaff()
-	{
-		try
-		{
-			PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE type LIKE 'senior' OR type LIKE 'junior' OR type LIKE 'salonmanager'");
-			ResultSet rs = ps.executeQuery();
-			ArrayList<model.Employee> employees = new ArrayList<>(0);
-			
-			while( rs.next() )
-			{
-				model.Employee e = new Employee(Integer.toString(rs.getInt("employee_id")), 
-										  rs.getString("name"),
-										  rs.getDate("dateStartedWorking"), 
-										  rs.getString("type"));
-				employees.add(e);
-			}
-			return employees.iterator();
-		}catch(SQLException e)
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	public Iterator getWorkingEmployees()
-	{
-		try
-		{
-			PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE type LIKE 'senior' OR type LIKE 'junior'");
-			ResultSet rs = ps.executeQuery();
-			ArrayList<model.Employee> wEmployees = new ArrayList<>(0);
-			
-			while( rs.next() )
-			{
-				model.Employee e = new Employee(Integer.toString(rs.getInt("employee_id")), 
-										  rs.getString("name"),
-										  rs.getDate("dateStartedWorking"), 
-										  rs.getString("type"));
-				wEmployees.add(e);
-			}
-			return wEmployees.iterator();
-		}catch(SQLException e)
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	public Iterator getSeniorEmployees()
-	{
-		try
-		{
-			PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE type LIKE 'senior'");
-			ResultSet rs = ps.executeQuery();
-			ArrayList<model.Employee> wEmployees = new ArrayList<>(0);
-			
-			while( rs.next() )
-			{
-				model.Employee e = new Employee(Integer.toString(rs.getInt("employee_id")), 
-										  rs.getString("name"),
-										  rs.getDate("dateStartedWorking"), 
-										  rs.getString("type"));
-				wEmployees.add(e);
-			}
-			return wEmployees.iterator();
-		}catch(SQLException e)
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	public Iterator getJuniorEmployees()
-	{
-		try
-		{
-			PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE type LIKE 'junior'");
-			ResultSet rs = ps.executeQuery();
-			ArrayList<model.Employee> wEmployees = new ArrayList<>(0);
-			
-			while( rs.next() )
-			{
-				model.Employee e = new Employee(Integer.toString(rs.getInt("employee_id")), 
-										  rs.getString("name"), 
-										  rs.getDate("dateStartedWorking"), 
-										  rs.getString("type"));
-				wEmployees.add(e);
-			}
-			return wEmployees.iterator();
-		}catch(SQLException e)
-		{
-			e.printStackTrace();
-		}
-		return null;
-	}
-	
-	public void addEmployee( Employee e )
-	{
-		try
-		{
-			PreparedStatement ps = connection.prepareStatement("INSERT INTO employee(branch_id, name, dateStartedWorking, type)"
-																+ "VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-			ps.setInt(1, 1);
-			ps.setString(2, e.getsName());
-			ps.setDate(3, e.getDateStartedWorking());
-			ps.setString(4, e.getsType());
-			
-			ps.executeUpdate();
-		}catch(Exception exception)
-		{
-			exception.printStackTrace();
-		}
-	}
-	
-	public void updateEmployee( Employee e )
-	{
-		try
-		{
-			PreparedStatement ps = connection.prepareStatement("UPDATE employee "
-																+ "SET  name = ?, type = ? "
-																+ "WHERE employee_id = ?");
-			ps.setString(1, e.getsName());
-			ps.setString(2, e.getsType());
-			ps.setInt(3, Integer.parseInt(e.getsEmployeeId()));
-			
-			ps.executeUpdate();
-		}catch(Exception exception)
-		{
-			exception.printStackTrace();
-		}
 	}
 	
 	//PRODUCT QUERIES
@@ -646,7 +665,7 @@ public class DatabaseManager
 		try
 		{
 			PreparedStatement ps = connection
-					.prepareStatement("INSERT INTO product (name, description, quantity, threshold, measurement) VALUES (?, ?, ?, ?, ?);");
+					.prepareStatement("INSERT INTO xproduct (name, description, quantity, threshold, measurement) VALUES (?, ?, ?, ?, ?);");
 			ps.setString(1, c.getsName());
 			ps.setString(2, c.getsDescription());
 			ps.setInt(3, 0);
@@ -665,7 +684,7 @@ public class DatabaseManager
 		try
 		{
 			PreparedStatement ps = connection
-					.prepareStatement("INSERT INTO product (name, description, quantity, threshold, price) VALUES (?, ?, ?, ?, ?);");
+					.prepareStatement("INSERT INTO xproduct (name, description, quantity, threshold, price) VALUES (?, ?, ?, ?, ?);");
 			ps.setString(1, o.getsName());
 			ps.setString(2, o.getsDescription());
 			ps.setInt(3, 0);
@@ -685,7 +704,7 @@ public class DatabaseManager
 		try
 		{
 			PreparedStatement ps = connection
-					.prepareStatement("INSERT INTO product (name, description, quantity, threshold, price, measurement) VALUES (?, ?, ?, ?, ?, ?);");
+					.prepareStatement("INSERT INTO xproduct (name, description, quantity, threshold, price, measurement) VALUES (?, ?, ?, ?, ?, ?);");
 			ps.setString(1, p.getsName());
 			ps.setString(2, p.getsDescription());
 			ps.setInt(3, 0);
@@ -707,7 +726,7 @@ public class DatabaseManager
 		try
 		{
 			PreparedStatement ps = connection
-					.prepareStatement("UPDATE product SET description = ?, threshold = ?, price = ?, measurement = ? WHERE product_id = ?");
+					.prepareStatement("UPDATE xproduct SET description = ?, threshold = ?, price = ?, measurement = ? WHERE product_id = ?");
 
 			ps.setString(1, p.getsDescription());
 			ps.setInt(2, p.getnThreshold());
@@ -742,7 +761,7 @@ public class DatabaseManager
 		try
 		{
 			PreparedStatement ps = connection
-					.prepareStatement("DELETE FROM product WHERE product_id = ?");
+					.prepareStatement("UPDATE xproduct SET available = 'unavailable' WHERE product_id = ?");
 			ps.setString(1, productID);
 			ps.executeUpdate();
 
@@ -867,6 +886,42 @@ public class DatabaseManager
          return null;
      }
      
+	public Iterator getReceiptsByClientName(String name)
+	{
+		try
+		{
+			name = "%" + name + "%";
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM receiptsummary WHERE name1 LIKE ? OR name2 LIKE ?;");
+
+			ps.setString(1, name);
+			ps.setString(2, name);
+			ResultSet rs = ps.executeQuery();
+
+			ArrayList<model.Client> clients = new ArrayList<>(0);
+
+			while (rs.next())
+			{
+				model.Client c = new Client(Integer.toString(rs.getInt("client_id")), 
+										rs.getString("fname"),
+										rs.getString("mname"), 
+										rs.getString("lname"),
+										rs.getString("address"),
+										rs.getString("contactNumber"),
+										rs.getString("email"), rs.getDate("dateJoined"),
+										rs.getDate("dateLastVisited"),
+										rs.getDate("birthday"), rs.getString("gender"));
+				clients.add(c);
+				System.out.print("poooop" + c.getsFname());
+			}
+
+			return clients.iterator();
+		} catch (SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 	public Iterator getAllServiceTransactionsOfReceipt( int receipt_id )
      {
          try

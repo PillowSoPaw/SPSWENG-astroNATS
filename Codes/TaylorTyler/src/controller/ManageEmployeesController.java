@@ -32,5 +32,9 @@ public class ManageEmployeesController
 	{
 		manageEmployeesGUI.getEmployeesByName(DBManager.getEmployeesByName(name));
 	}
-
+	
+	public void deactivateEmployee(String employee_id)
+	{
+		DBManager.deactivateEmployee(employee_id);
+	}
 }

@@ -1,10 +1,10 @@
 CREATE DATABASE  IF NOT EXISTS `taylortyler` /*!40100 DEFAULT CHARACTER SET utf8 */;
 USE `taylortyler`;
--- MySQL dump 10.13  Distrib 5.6.17, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 5.6.17, for Win32 (x86)
 --
 -- Host: localhost    Database: taylortyler
 -- ------------------------------------------------------
--- Server version	5.6.21
+-- Server version	5.6.23-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -119,7 +119,7 @@ CREATE TABLE `client` (
   `gender` varchar(45) NOT NULL,
   PRIMARY KEY (`client_id`),
   UNIQUE KEY `idclient_UNIQUE` (`client_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -128,7 +128,7 @@ CREATE TABLE `client` (
 
 LOCK TABLES `client` WRITE;
 /*!40000 ALTER TABLE `client` DISABLE KEYS */;
-INSERT INTO `client` VALUES (1,'Client','','One','Manila','09000000001','one@mail.com','2015-01-01','2015-03-01','1996-01-01','Male'),(2,'Client','','Two','Manila','09000000002','two@mail.com','2015-01-02','2015-03-02','1996-02-01','Male'),(3,'Client','','Three','Manila','09000000003','three@mail.com','2015-01-03','2015-03-03','1996-03-01','Male'),(4,'Client','','Four','Manila','09000000004','four@mail.com','2015-01-04','2015-03-04','1996-04-01','Male'),(5,'Client','','Five','Manila','09000000005','five@mail.com','2015-01-05','2015-03-05','1996-05-01','Male'),(6,'Client','','Six','Manila','09000000006','six@mail.com','2015-01-06','2015-03-06','1996-06-01','Female'),(7,'Client','T','Seven','Manila','09000000007','seven@mail.com','2015-01-07','2015-03-07','1996-07-01','Female'),(8,'Client','T','Eigth','Manila','09000000008','eight@mail.com','2015-01-08','2015-03-08','1996-08-01','Female'),(9,'Client','T','Nine','Manila','09000000009','nine@mail.com','2015-01-09','2015-03-09','1996-09-01','Female'),(10,'Client','T','Ten','Manila','09000000010','ten@mail.com','2015-01-10','2015-03-10','1996-10-01','Female'),(11,'Sea','','Bear','Manila','1000000000','bearygood','2015-04-21','2015-04-21','2015-06-21','Male'),(12,'not so','very','hot','earth','09169','notveryhot@gmail.not','2015-04-21','2015-04-21','1958-04-01','Female');
+INSERT INTO `client` VALUES (1,'Client','','One','Manila','09000000001','one@mail.com','2015-01-01','2015-03-01','1996-01-01','Male'),(2,'Client','','Two','Manila','09000000002','two@mail.com','2015-01-02','2015-03-02','1996-02-01','Male'),(3,'Client','','Three','Manila','09000000003','three@mail.com','2015-01-03','2015-03-03','1996-03-01','Male'),(4,'Client','','Four','Manila','09000000004','four@mail.com','2015-01-04','2015-03-04','1996-04-01','Male'),(5,'Client','','Five','Manila','09000000005','five@mail.com','2015-01-05','2015-03-05','1996-05-01','Male'),(6,'Client','','Six','Manila','09000000006','six@mail.com','2015-01-06','2015-03-06','1996-06-01','Female'),(7,'Client','T','Seven','Manila','09000000007','seven@mail.com','2015-01-07','2015-03-07','1996-07-01','Female'),(8,'Client','T','Eigth','Manila','09000000008','eight@mail.com','2015-01-08','2015-03-08','1996-08-01','Female'),(9,'Client','T','Nine','Manila','09000000009','nine@mail.com','2015-01-09','2015-03-09','1996-09-01','Female'),(10,'Client','T','Ten','Manila','09000000010','ten@mail.com','2015-01-10','2015-03-10','1996-10-01','Female'),(11,'Sea','','Bear','Manila','1000000000','bearygood','2015-04-21','2015-04-21','2015-06-21','Male'),(12,'not so','very','hot','earth','09169','notveryhot@gmail.not','2015-04-21','2015-04-21','1958-04-01','Female'),(13,'Aj','IDK','Amadora','hahaha','09123456789','aj@yahoo.com','2015-04-21','2015-04-21','2015-04-21','Male');
 /*!40000 ALTER TABLE `client` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -145,11 +145,12 @@ CREATE TABLE `employee` (
   `name` varchar(45) NOT NULL,
   `dateStartedWorking` date NOT NULL,
   `type` varchar(45) NOT NULL,
+  `status` varchar(45) NOT NULL,
   PRIMARY KEY (`employee_id`),
   UNIQUE KEY `employee_id_UNIQUE` (`employee_id`),
   KEY `branch_id_idx` (`branch_id`),
   CONSTRAINT `branch_id` FOREIGN KEY (`branch_id`) REFERENCES `branch` (`branch_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -158,39 +159,29 @@ CREATE TABLE `employee` (
 
 LOCK TABLES `employee` WRITE;
 /*!40000 ALTER TABLE `employee` DISABLE KEYS */;
-INSERT INTO `employee` VALUES (1,1,'Sen One','2013-01-02','senior'),(2,3,'Sen Two','2014-07-10','senior'),(3,2,'Jun Three','2015-03-12','junior'),(4,3,'Jun Four','2015-03-12','junior'),(5,1,'Man Five','2013-02-13','salonmanager'),(6,3,'Taylor Tyler','2010-01-01','owner'),(7,2,'Man Seven','2011-02-14','salonmanager');
+INSERT INTO `employee` VALUES (1,1,'Sen One','2013-01-02','senior','active'),(2,3,'Sen Two','2014-07-10','senior','active'),(3,2,'Jun Three','2015-03-12','junior','active'),(4,3,'Jun Four','2015-03-12','junior','active'),(5,1,'Man Five','2013-02-13','salonmanager','active'),(6,3,'Taylor Tyler','2010-01-01','owner','active'),(7,2,'Man Seven','2011-02-14','salonmanager','active'),(8,1,'Emp1 Goo','2015-04-22','junior','out'),(9,1,'haha 12','2015-04-22','senior','inactive');
 /*!40000 ALTER TABLE `employee` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `product`
+-- Temporary table structure for view `product`
 --
 
 DROP TABLE IF EXISTS `product`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `product` (
-  `product_id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL,
-  `description` varchar(45) NOT NULL,
-  `quantity` float NOT NULL,
-  `threshold` int(11) NOT NULL,
-  `price` float DEFAULT NULL,
-  `measurement` varchar(45) DEFAULT NULL,
-  PRIMARY KEY (`product_id`),
-  UNIQUE KEY `product_id_UNIQUE` (`product_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `product`
---
-
-LOCK TABLES `product` WRITE;
-/*!40000 ALTER TABLE `product` DISABLE KEYS */;
-INSERT INTO `product` VALUES (1,'Shampoo','For the hair',44,0,100,'Cups'),(2,'Conditioner','For the hair',40,0,90,'Cups'),(3,'Herbal','for the hair',30,0,200,NULL),(4,'Wax','for styling the hair',20,0,150,NULL),(5,'Nail Polish','for the nails',10,0,50,'mL'),(6,'Hair Color','for coloring the hair',10,0,NULL,'mL');
-/*!40000 ALTER TABLE `product` ENABLE KEYS */;
-UNLOCK TABLES;
+/*!50001 DROP VIEW IF EXISTS `product`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `product` (
+  `product_id` tinyint NOT NULL,
+  `name` tinyint NOT NULL,
+  `description` tinyint NOT NULL,
+  `quantity` tinyint NOT NULL,
+  `threshold` tinyint NOT NULL,
+  `price` tinyint NOT NULL,
+  `measurement` tinyint NOT NULL,
+  `available` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `productlineitem`
@@ -206,7 +197,7 @@ CREATE TABLE `productlineitem` (
   `employee_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`productlineitem_id`),
   KEY `product_id_idx` (`product_id`),
-  CONSTRAINT `product_id` FOREIGN KEY (`product_id`) REFERENCES `product` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `product_id` FOREIGN KEY (`product_id`) REFERENCES `xproduct` (`product_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -276,6 +267,25 @@ LOCK TABLES `receipt` WRITE;
 INSERT INTO `receipt` VALUES (1,1,'2015-04-19 00:06:34','Cash',100),(2,1,'2015-04-19 00:17:54','Cash',100),(3,1,'2015-04-19 03:24:54','Cash',100),(4,1,'2015-04-19 03:42:09','Cash',0),(5,1,'2015-04-21 18:27:03','Cash',0);
 /*!40000 ALTER TABLE `receipt` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Temporary table structure for view `receiptsummary`
+--
+
+DROP TABLE IF EXISTS `receiptsummary`;
+/*!50001 DROP VIEW IF EXISTS `receiptsummary`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `receiptsummary` (
+  `receipt_id` tinyint NOT NULL,
+  `client_id` tinyint NOT NULL,
+  `date` tinyint NOT NULL,
+  `modeOfPayment` tinyint NOT NULL,
+  `totalBill` tinyint NOT NULL,
+  `name1` tinyint NOT NULL,
+  `name2` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `service`
@@ -448,6 +458,75 @@ LOCK TABLES `transactionlist` WRITE;
 INSERT INTO `transactionlist` VALUES (1,1),(2,2),(3,3);
 /*!40000 ALTER TABLE `transactionlist` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `xproduct`
+--
+
+DROP TABLE IF EXISTS `xproduct`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `xproduct` (
+  `product_id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `description` varchar(45) NOT NULL,
+  `quantity` float NOT NULL,
+  `threshold` int(11) NOT NULL,
+  `price` float DEFAULT NULL,
+  `measurement` varchar(45) DEFAULT NULL,
+  `available` varchar(45) NOT NULL DEFAULT 'available',
+  PRIMARY KEY (`product_id`),
+  UNIQUE KEY `product_id_UNIQUE` (`product_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `xproduct`
+--
+
+LOCK TABLES `xproduct` WRITE;
+/*!40000 ALTER TABLE `xproduct` DISABLE KEYS */;
+INSERT INTO `xproduct` VALUES (1,'Shampoo','For the hair',44,0,100,'Cups','available'),(2,'Conditioner','For the hair',40,0,90,'Cups','available'),(3,'Herbal','for the hair',30,0,200,NULL,'available'),(4,'Wax','for styling the hair',20,0,150,NULL,'available'),(5,'Nail Polish','for the nails',10,0,50,'mL','available'),(6,'Hair Color','for coloring the hair',10,0,NULL,'mL','available');
+/*!40000 ALTER TABLE `xproduct` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Final view structure for view `product`
+--
+
+/*!50001 DROP TABLE IF EXISTS `product`*/;
+/*!50001 DROP VIEW IF EXISTS `product`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `product` AS select `xproduct`.`product_id` AS `product_id`,`xproduct`.`name` AS `name`,`xproduct`.`description` AS `description`,`xproduct`.`quantity` AS `quantity`,`xproduct`.`threshold` AS `threshold`,`xproduct`.`price` AS `price`,`xproduct`.`measurement` AS `measurement`,`xproduct`.`available` AS `available` from `xproduct` where (`xproduct`.`available` like 'available') */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `receiptsummary`
+--
+
+/*!50001 DROP TABLE IF EXISTS `receiptsummary`*/;
+/*!50001 DROP VIEW IF EXISTS `receiptsummary`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
+/*!50001 VIEW `receiptsummary` AS select `receipt`.`receipt_id` AS `receipt_id`,`receipt`.`client_id` AS `client_id`,`receipt`.`date` AS `date`,`receipt`.`modeOfPayment` AS `modeOfPayment`,`receipt`.`totalBill` AS `totalBill`,concat(`c`.`fname`,' ',`c`.`mname`,' ',`c`.`lname`) AS `name1`,concat(`c`.`fname`,' ',`c`.`lname`) AS `name2` from (`receipt` join `client` `c` on((`c`.`client_id` = `receipt`.`client_id`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -458,4 +537,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-04-21 20:03:54
+-- Dump completed on 2015-04-22 12:50:51

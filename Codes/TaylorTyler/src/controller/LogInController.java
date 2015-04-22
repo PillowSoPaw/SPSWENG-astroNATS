@@ -5,7 +5,7 @@ import java.util.Iterator;
 import view.LogInGUI;
 import model.DatabaseManager;
 
-public class LogInController 
+public class LogInController
 {	
 	private static DatabaseManager DBManager;
 	private LogInGUI LogInGUI;

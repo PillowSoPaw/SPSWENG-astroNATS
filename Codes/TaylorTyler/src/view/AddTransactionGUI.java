@@ -67,7 +67,7 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 	private boolean addServicesHandler;
 	private boolean addProductsHandler;
 	private String[] serviceTableColumn = {"Customer Name", "Service", "Senior E.", "Junior E.", "Price"};
-	private String[] productTableColumn = {"Customer Name", "Quantity", "Product", "Unit Price", "Subtotal"};
+	private String[] productTableColumn = {"Customer Name", "Product", "Quantity", "Unit Price", "Subtotal"};
 	private ArrayList<String> clientNames;
 	private ArrayList<Object[]> serviceTableRows;
 	private ArrayList<Object[]> productTableRows;
@@ -450,7 +450,7 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 							productsSubtotal = 0;
 							for(int i = 0; i < rowCnt; i++)
 							{
-								productsSubtotal += (double) productsTransactionTable.getValueAt(i, 3);
+								productsSubtotal += (double) productsTransactionTable.getValueAt(i, 4);
 								totalPrice = servicesSubtotal + productsSubtotal;
 							}
 							productsSubtotalLabel.setText("Products Subtotal: " + productsSubtotal + " PHP");
