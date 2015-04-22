@@ -110,11 +110,11 @@ public class DatabaseManager
 	{
 		try
 		{
-			PreparedStatement ps = connection
-					.prepareStatement("SELECT * FROM client WHERE concat(fname,\" \",mname, \" \", lname) LIKE '?%' OR concat(fname, \" \", lname) LIKE '?%;");
+			name = "%" + name + "%";
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM client WHERE concat(fname,\" \",mname, \" \", lname) LIKE ? OR concat(fname, \" \", lname) LIKE ?;");
 
 			ps.setString(1, name);
-
+			ps.setString(2, name);
 			ResultSet rs = ps.executeQuery();
 
 			ArrayList<model.Client> clients = new ArrayList<>(0);
@@ -131,6 +131,7 @@ public class DatabaseManager
 										rs.getDate("dateLastVisited"),
 										rs.getDate("birthday"), rs.getString("gender"));
 				clients.add(c);
+				System.out.print("poooop" + c.getsFname());
 			}
 
 			return clients.iterator();
@@ -272,6 +273,36 @@ public class DatabaseManager
 					  rs.getString("type"));
 			return e;
 		}catch(SQLException e)
+		{
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+	public Iterator getEmployeesByName(String name)
+	{
+		try
+		{
+			name = "%" + name + "%";
+			PreparedStatement ps = connection.prepareStatement("SELECT * FROM employee WHERE name LIKE ?");
+
+			ps.setString(1, name);
+			ResultSet rs = ps.executeQuery();
+
+			ArrayList<model.Employee> employees = new ArrayList<>(0);
+
+			while (rs.next())
+			{
+				model.Employee c = new Employee(Integer.toString(rs.getInt("employee_id")), 
+						  rs.getString("name"), 
+						  rs.getDate("dateStartedWorking"), 
+						  rs.getString("type"));
+				employees.add(c);
+				System.out.print("poooop" + c.getsName());
+			}
+
+			return employees.iterator();
+		} catch (SQLException e)
 		{
 			e.printStackTrace();
 		}

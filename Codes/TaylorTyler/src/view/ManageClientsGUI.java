@@ -83,6 +83,7 @@ public class ManageClientsGUI extends JPanel implements ActionListener
 		
 		searchClientButton = new JButton("Search");
 		searchClientButton.setBounds(213, 11, 89, 26);
+		searchClientButton.addActionListener(this);
 		add(searchClientButton);
 		
 		sortByLabel = new JLabel("Sort by:");
@@ -225,11 +226,15 @@ public class ManageClientsGUI extends JPanel implements ActionListener
 			//System.out.print(clientTableModel.getValueAt(clientsTable.getSelectedRow(), 0));
 			viewClientsController.getClient(Integer.parseInt((String) clientTableModel.getValueAt(clientsTable.getSelectedRow(), 0)));
 		}
-		else if(e.getSource().equals(addNewClientButton)){
+		else if(e.getSource().equals(addNewClientButton))
+		{
 			new AddClientGUI(this);
 		}
-		
-		
+		else if(e.getSource().equals(searchClientButton))
+		{
+			addClient();
+			viewClientsController.getClientsByName(searchClientTextField.getText());
+		}
 	}
 	
 	public void addClient() 
@@ -241,5 +246,11 @@ public class ManageClientsGUI extends JPanel implements ActionListener
 		}
 		this.repaint();
 		this.revalidate();
+	}
+	
+	public void getClientByName(Iterator iClient)
+	{
+		System.out.println("LALALATCH) MANAGERR!");
+		getClients(iClient);
 	}
 }

@@ -24,9 +24,13 @@ public class ManageEmployeesController
 		manageEmployeesGUI.getEmployees(DBManager.getAllEmployees());
 	}
 	
-	public void getClient(int client_id)
+	public void getEmployee(int client_id)
 	{	
 	//manageClientsGUI.getClient(DBManager.getClient(client_id), DBManager.getServiceTransactionByClient(client_id),DBManager.getProductTransactionsByClient(client_id));
+	}
+	public void getEmployeesByName(String name)
+	{
+		manageEmployeesGUI.getEmployeesByName(DBManager.getEmployeesByName(name));
 	}
 
 }

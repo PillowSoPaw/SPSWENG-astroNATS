@@ -193,11 +193,6 @@ public class AddClientGUI extends JFrame implements ActionListener
 					month = cmbMonth.getSelectedIndex() + 1;
 					year = cmbYear.getSelectedIndex() + (currYear - 150);
 					day = cmbDay.getSelectedIndex() + 1;
-					
-					/*
-						DEVS do the adding to the database here :)
-					*/
-					
 					dispose();
 				}
 			} else if (a.getActionCommand() == "comboBoxChanged") {
@@ -234,16 +229,38 @@ public class AddClientGUI extends JFrame implements ActionListener
 		// TODO Auto-generated method stub
 		if(e.getSource() == confirm )
 		{
+			String errormessage = "";
+			boolean valid = true;
 			if(firstNameText.getText().equals(""))
-				JOptionPane.showMessageDialog(null, "Please enter a first name.");
+			{
+				errormessage+= "Please enter a first name.\n";
+				valid = false;
+			}
+			
 			else if(lastNameText.getText().equals(""))
-				JOptionPane.showMessageDialog(null, "Please enter a last name.");
+			{
+				errormessage+= "Please enter a last name.\n";
+				valid = false;
+			}
 			else if(emailText.getText().equals(""))
-				JOptionPane.showMessageDialog(null, "Please enter an email.");
+			{
+				errormessage+= "Please enter an email.\n";
+				valid = false;
+			}
 			else if(addressText.getText().equals(""))
-				JOptionPane.showMessageDialog(null, "Please enter an address.");
+			{
+				errormessage+= "Please enter an address.\n";
+				valid = false;
+			}
 			else if(contactNumberText.getText().equals(""))
-				JOptionPane.showMessageDialog(null, "Please enter a contact number.");
+			{
+				errormessage+= "Please enter a contact number.\n";
+				valid = false;
+			}	
+			if (!valid)
+			{
+				JOptionPane.showMessageDialog(null, errormessage);
+			}
 			else
 			{
 				//String sMiddleName = middleNameText.getText();

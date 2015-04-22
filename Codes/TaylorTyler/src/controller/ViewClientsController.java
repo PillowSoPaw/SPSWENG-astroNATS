@@ -29,4 +29,10 @@ public class ViewClientsController
 	{	
 		manageClientsGUI.getClient(DBManager.getClient(client_id), DBManager.getServiceTransactionByClient(client_id),DBManager.getProductTransactionsByClient(client_id));
 	}
+	
+	public void getClientsByName(String name)
+	{
+		manageClientsGUI.getClientByName(DBManager.getClientsByName(name));
+	}
+	
 }

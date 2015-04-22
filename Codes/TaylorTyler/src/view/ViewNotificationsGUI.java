@@ -9,34 +9,33 @@ import java.util.ArrayList;
 import javax.swing.table.DefaultTableModel;
 import model.Product;
 
-public class ViewNotificationsGUI extends JPanel{
-	
+public class ViewNotificationsGUI extends JPanel
+{
+
 	private JTable productsTable;
 	private JScrollPane productsScroll;
-        private ViewNotificationsController controller;
-        private ArrayList<Object[]> productRows;
-        private DefaultTableModel productTableModel;
-        
-	
-	public ViewNotificationsGUI(ViewNotificationsController controller){
-                this.controller = controller;
-                this.controller.setView(this);
+	private ViewNotificationsController controller;
+	private ArrayList<Object[]> productRows;
+	private DefaultTableModel productTableModel;
+	private String[] column = { "Product", "Amount in Stock" };
+
+	public ViewNotificationsGUI(ViewNotificationsController controller)
+	{
+		this.controller = controller;
+		this.controller.setView(this);
 		setBackground(new Color(128, 128, 0));
 		setSize(821, 483);
 		setVisible(true);
 		setLayout(null);
-		
+
 		JLabel title = new JLabel("Notifications");
+		title.setBackground(new Color(128, 128, 0));
+		title.setOpaque(true);
 		title.setHorizontalAlignment(SwingConstants.CENTER);
 		title.setFont(new Font("Tahoma", Font.BOLD, 20));
 		title.setBounds(10, 11, 801, 49);
 		add(title);
-		
-		String[] column = {"Product", "Amount in Stock"};
-		String[][] rows = {
-							{"SAMPLE", "SAMPLE"},
-							{"SAMPLE", "SAMPLE"}
-						  };
+
 		productTableModel = new DefaultTableModel()
 		{
 			public boolean isCellEditable(int row, int column)
@@ -45,61 +44,64 @@ public class ViewNotificationsGUI extends JPanel{
 			}
 		};
 
-                for( int i = 0; i < column.length; i++ )
+		for (int i = 0; i < column.length; i++)
 		{
 			productTableModel.addColumn(column[i]);
 		}
-                
+
 		productsTable = new JTable(productTableModel);
+		productsTable.getTableHeader().setReorderingAllowed(false);
+		productsTable.getTableHeader().setResizingAllowed(false);
 		productsTable.setSize(400, 300);
-		
 		productsScroll = new JScrollPane(productsTable);
 		productsScroll.setLocation(10, 71);
 		productsScroll.setSize(801, 371);
 		add(productsScroll);
-		
+
 		JPanel panel = new JPanel();
 		panel.setBounds(10, 11, 801, 51);
+		panel.setBackground(new Color(128, 128, 0));
 		add(panel);
-                productRows = new ArrayList(0);
-                resetTable();
-                controller.updateNotifications();
-                updateInventoryTable();
+		productRows = new ArrayList(0);
+		resetTable();
+		controller.updateNotifications();
+		updateInventoryTable();
 	}
-        
-        public void resetTable()
+
+	public void resetTable()
 	{
-                System.out.println("Resetting tables");
-                
-                productRows.clear();
-                
-                while (productTableModel.getRowCount() > 0)
-                {
-                        productTableModel.removeRow(0);
-                }
-	}
-        public void updateInventoryTable()
-        {
-                
-		for( int i = 0; i < productRows.size(); i++ )
+		System.out.println("Resetting tables");
+
+		productRows.clear();
+
+		while (productTableModel.getRowCount() > 0)
 		{
-			for( int j = 0; j < productRows.get(i).length; j++ ){
-                            System.out.println(productRows.get(i)[j]);
-                        }
-				
+			productTableModel.removeRow(0);
+		}
+	}
+
+	public void updateInventoryTable()
+	{
+
+		for (int i = 0; i < productRows.size(); i++)
+		{
+			for (int j = 0; j < productRows.get(i).length; j++)
+			{
+				System.out.println(productRows.get(i)[j]);
+			}
+
 			productTableModel.addRow(productRows.get(i));
 		}
 		productsTable.setModel(productTableModel);
-                
-                this.revalidate();
-                this.repaint();
-                
+
+		this.revalidate();
+		this.repaint();
+
 	}
 
-        public ArrayList<Object[]> getProductRows() 
-        {
-            return productRows;
-        }
-        
-        
+	public ArrayList<Object[]> getProductRows()
+	{
+		return productRows;
+	}
+
 }

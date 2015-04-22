@@ -104,6 +104,7 @@ public class ManageEmployeesGUI extends JPanel implements ActionListener
 		
 		searchButton = new JButton("Search");
 		searchButton.setBounds(213, 11, 89, 26);
+		searchButton.addActionListener(this);
 		add(searchButton);
 		
 		addEmployeeButton = new JButton("Add Employee");
@@ -300,6 +301,11 @@ public class ManageEmployeesGUI extends JPanel implements ActionListener
 				new EditEmployeeGUI(employees.get(i), this);
 			}
 		}
+		else if(e.getSource().equals(searchButton))
+		{
+			addEmployee();
+			manageEmployeesController.getEmployeesByName(employeeNameTextField.getText());
+		}
 		
 	}
 	public void addEmployee() 
@@ -313,4 +319,9 @@ public class ManageEmployeesGUI extends JPanel implements ActionListener
 		this.revalidate();
 	}
 	
+	public void getEmployeesByName(Iterator iEmployee)
+	{
+		System.out.println("LALALATCH) MANAGERR!");
+		getEmployees(iEmployee);
+	}
 }
