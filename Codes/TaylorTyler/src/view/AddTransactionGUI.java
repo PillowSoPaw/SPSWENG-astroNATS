@@ -258,9 +258,9 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 		servicesSubtotal = 0;
 		productsSubtotal = 0;
 		totalPrice = 0;
-		servicesSubtotalLabel.setText("Products Subtotal: " + servicesSubtotal + " PHP");
+		servicesSubtotalLabel.setText("Services Subtotal: " + servicesSubtotal + " PHP");
 		productsSubtotalLabel.setText("Products Subtotal: " + productsSubtotal + " PHP");
-		totalLabel.setText("Total : " + totalPrice + " PHP");
+		totalLabel.setText("Total: " + totalPrice + " PHP");
 	}
 	
 	public void resetTables()
