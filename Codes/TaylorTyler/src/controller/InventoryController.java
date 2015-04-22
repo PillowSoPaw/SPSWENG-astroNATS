@@ -7,6 +7,7 @@ import model.DatabaseManager;
 import model.Product;
 import view.EditProductGUI;
 import view.InventoryGUI;
+import view.RestockGUI;
 
 /**
  *
@@ -66,9 +67,10 @@ public class InventoryController
         {
             int row = inventoryGUI.getInventoryTable().getSelectedRow();
             DBManager.deleteProduct((String)inventoryGUI.getInventoryTable().getValueAt(row, 0));
-            inventoryGUI.resetTable();
-            updateProducts();
-            inventoryGUI.updateInventoryTable();
+            
+            
+            updateProducts(inventoryGUI.getCategoryComboBox().getSelectedIndex());
+            
             
          
             //update the UI
@@ -131,6 +133,16 @@ public class InventoryController
                 break;
         }
         inventoryGUI.updateInventoryTable();
+    }
+
+    public void restock()
+    {
+            RestockGUI restockGUI = new RestockGUI(new RestockController('r'), this.inventoryGUI);
+    }
+    
+    public void pullout()
+    {
+            RestockGUI restockGUI = new RestockGUI(new RestockController('p'), this.inventoryGUI);
     }
 	
 }

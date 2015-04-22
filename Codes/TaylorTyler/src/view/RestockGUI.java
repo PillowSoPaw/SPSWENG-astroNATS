@@ -1,5 +1,6 @@
 package view;
 
+import controller.RestockController;
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
 
@@ -26,19 +27,30 @@ public class RestockGUI extends JFrame implements ActionListener
 	private JLabel quantityLabel;
 	private JLabel pcsLabel;
 	private JButton restockButton;
-	
-	public RestockGUI()
+	private RestockController controller;
+        private InventoryGUI inventoryGUI;
+	public RestockGUI(RestockController controller, InventoryGUI inventoryGUI)
 	{	
+                this.controller = controller;
+                this.inventoryGUI = inventoryGUI;
+                controller.setView(this);
 		blackline = BorderFactory.createLineBorder(Color.black);
 		
+                
 		getContentPane().setBackground(new Color(128, 128, 0));
-		this.setTitle("Restock Product");
+                switch (controller.getcMode()){
+                    case 'r': 
+                        this.setTitle("Restock Product");
+                        break;
+                    case 'p':
+                        this.setTitle("Pull Out Product");
+                        break;
+                }
+		
 		getContentPane().setLayout(null);
-		//this.setLocationRelativeTo(null);
 		this.setVisible(true);
 		this.setLocation(550, 250);
 		this.setSize(287, 201);
-		
 		
 		restockPanel = new JPanel();
 		restockPanel.setBackground(new Color(128, 128, 0));
@@ -46,9 +58,9 @@ public class RestockGUI extends JFrame implements ActionListener
 		restockPanel.setLayout(null);
 		restockPanel.setBorder(blackline);
 		getContentPane().add(restockPanel);
-		
-		
-		productLabel = new JLabel("Product Name: " /* + String productName*/);
+                
+                String productName = inventoryGUI.getInventoryTable().getValueAt(inventoryGUI.getInventoryTable().getSelectedRow(), 1).toString();
+		productLabel = new JLabel("Product Name: " + productName);
 		productLabel.setForeground(Color.WHITE);
 		productLabel.setFont(new Font("Tahoma", Font.PLAIN, 12));
 		productLabel.setBounds(10, 10, 233, 29);
@@ -74,16 +86,31 @@ public class RestockGUI extends JFrame implements ActionListener
 		
 		restockButton = new JButton("Restock product");
 		restockButton.setBounds(10, 121, 253, 30);
+                restockButton.addActionListener(this);
 		getContentPane().add(restockButton);
 		
 		restockPanel.repaint();
 		getContentPane().repaint();
 	}
 
+        public JLabel getQuantityLabel() 
+        {
+                return quantityLabel;
+        }
+
+        public JTextField getQuantityTextField() {
+                return quantityTextField;
+        }
+
+    public InventoryGUI getInventoryGUI() {
+        return inventoryGUI;
+    }
+        
+        
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		// TODO Auto-generated method stub
-		
+		controller.confirm();
 	}
 	
 }

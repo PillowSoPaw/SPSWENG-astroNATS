@@ -48,6 +48,7 @@ public class InventoryGUI extends JPanel implements ActionListener,
 	private JButton editProductButton;
 	private JButton addProductButton;
 	private JButton restockButton;
+        private JButton pulloutButton;
 
 	private DefaultTableModel inventoryModel;
 	private String[] inventoryTableColumn = { "Product ID", "Product Name", "Quantity" };
@@ -109,6 +110,13 @@ public class InventoryGUI extends JPanel implements ActionListener,
 		deleteProductButton.addActionListener(this);
 		productsTab.add(deleteProductButton);
 
+                pulloutButton = new JButton("Pull Out");
+		pulloutButton.setToolTipText("Reduce the Quantity of a Product");
+		pulloutButton.setBounds(672, 449, 139, 23);
+		pulloutButton.setEnabled(false);
+		pulloutButton.addActionListener(this);
+		productsTab.add(pulloutButton);
+                
 		editProductButton = new JButton("Edit Product");
 		editProductButton.setToolTipText("Edit the selected product details");
 		editProductButton.setBounds(374, 449, 139, 23);
@@ -121,7 +129,7 @@ public class InventoryGUI extends JPanel implements ActionListener,
 		addProductButton.setBounds(285, 37, 108, 23);
 		addProductButton.addActionListener(this);
 		productsTab.add(addProductButton);
-
+                
 		restockButton = new JButton("Restock");
 		restockButton.setToolTipText("Restock a product in the inventory");
 		restockButton.setBounds(225, 449, 139, 23);
@@ -337,7 +345,11 @@ public class InventoryGUI extends JPanel implements ActionListener,
 		} 
 		else if( e.getSource() == restockButton )
 		{
-			
+			controller.restock();
+		}
+                else if( e.getSource() == pulloutButton )
+		{
+			controller.pullout();
 		}
 		else if (e.getSource() == categoryComboBox)
 		{
@@ -354,11 +366,14 @@ public class InventoryGUI extends JPanel implements ActionListener,
 			editProductButton.setEnabled(false);
 			deleteProductButton.setEnabled(false);
 			restockButton.setEnabled(false);
-		} else
+                        pulloutButton.setEnabled(false);
+		} 
+                else
 		{
 			editProductButton.setEnabled(true);
 			deleteProductButton.setEnabled(true);
 			restockButton.setEnabled(true);
+                        pulloutButton.setEnabled(true);
 		}
 	}
 }

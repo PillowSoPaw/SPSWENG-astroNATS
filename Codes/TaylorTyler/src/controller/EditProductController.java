@@ -28,11 +28,15 @@ public class EditProductController
         {
                 this.editProductGUI = editProductGUI;;
         }
-        
+
         public void confirm()
         {
                 int threshold = 0;
                 boolean valid = true;
+                String type = editProductGUI.getProductType().getSelectedItem().toString();
+                String description = editProductGUI.getDescriptionField().getText();
+                float price =0;
+                String errormessage = "";
                 try
                 {
                     threshold = Integer.parseInt(editProductGUI.getThresholdField().getText());
@@ -43,18 +47,29 @@ public class EditProductController
                 }
                 catch(NumberFormatException ex)
                 {
-                    JOptionPane.showMessageDialog(editProductGUI, "Please enter a positive integer for the threshold.", "Input error", JOptionPane.ERROR_MESSAGE);
+                    errormessage += "Please enter a positive integer for the threshold.\n";
                     valid = false;
                 }
                 
-                String type = editProductGUI.getProductType().getSelectedItem().toString();
-                String description = editProductGUI.getDescriptionField().getText();
-                float price =0;
                 switch(cMode)
                 {
                     case 'a':
                         String productName = editProductGUI.getNameField().getText();
+                        
+                        if (productName.equals(""))
+                        {
+                                valid = false;
+                                errormessage += "Please enter the productname.\n";
+                                
+                        }
                         String measurement = editProductGUI.getMeasurementField().getText();
+                        if (measurement.equals(""))
+                        {
+                                valid = false;
+                                errormessage += "Please enter the unit of measurement.\n";
+                                
+                        }
+                        
                         switch (type)
                         {
                             case "Consumable":
@@ -62,7 +77,10 @@ public class EditProductController
                                 if (valid)
                                 {
                                     DBManager.addProduct(c);
+                                    int index = editProductGUI.getInventoryGUI().getCategoryComboBox().getSelectedIndex();
+                                    editProductGUI.getInventoryGUI().getController().updateProducts(index);
                                     editProductGUI.dispose();
+                                    
                                 }
                                 break;
                             case "Over-the-Counter":
@@ -76,13 +94,15 @@ public class EditProductController
                                 }
                                 catch(NumberFormatException ex)
                                 {
-                                   JOptionPane.showMessageDialog(editProductGUI, "Please enter a positive number for the price.", "Input error", JOptionPane.ERROR_MESSAGE);
+                                   errormessage += "Please enter a positive number for the price.\n";
                                    valid = false;
                                 }
                                 OverTheCounter o = new OverTheCounter("", productName, description, 0, threshold, price);
                                 if (valid)
                                 {
                                     DBManager.addProduct(o);
+                                    int index = editProductGUI.getInventoryGUI().getCategoryComboBox().getSelectedIndex();
+                                    editProductGUI.getInventoryGUI().getController().updateProducts(index);
                                     editProductGUI.dispose();
                                 }
                                 
@@ -98,14 +118,20 @@ public class EditProductController
                                 }
                                 catch(NumberFormatException ex)
                                 {
-                                   JOptionPane.showMessageDialog(editProductGUI, "Please enter a positive number for the price.", "Input error", JOptionPane.ERROR_MESSAGE);
+                                   errormessage += "Please enter a positive number for the price.\n";
                                    valid = false;
                                 }
                                 
                                 if (valid)
                                 {
                                     DBManager.addProduct(p, price, measurement);
+                                    int index = editProductGUI.getInventoryGUI().getCategoryComboBox().getSelectedIndex();
+                                    editProductGUI.getInventoryGUI().getController().updateProducts(index);
                                     editProductGUI.dispose();
+                                }
+                                else
+                                {
+                                    JOptionPane.showMessageDialog(editProductGUI, errormessage, "Input error", JOptionPane.ERROR_MESSAGE);
                                 }
                                 
                                 break;
@@ -127,7 +153,7 @@ public class EditProductController
                              }
                              catch(NumberFormatException ex)
                              {
-                                JOptionPane.showMessageDialog(editProductGUI, "Please enter a positive number for the price.", "Input error", JOptionPane.ERROR_MESSAGE);
+                                errormessage += "Please enter a positive number for the price.\n";
                                 valid = false;
                              }
                              
@@ -140,14 +166,15 @@ public class EditProductController
                          if (valid)
                          {
                             DBManager.editProduct(p, price, measurement, type);
+                            int index = editProductGUI.getInventoryGUI().getCategoryComboBox().getSelectedIndex();
+                            editProductGUI.getInventoryGUI().getController().updateProducts(index);
                             editProductGUI.dispose();
                          }
+                         else
+                         {
+                             JOptionPane.showMessageDialog(editProductGUI, errormessage, "Input error", JOptionPane.ERROR_MESSAGE);
+                         }
                 }
-                
-                
-            
-            
-        
         }
 
     public String[] getProductInfo(int id) 
