@@ -33,6 +33,7 @@ import controller.AddTransactionController;
 import controller.AddServicesController;
 import controller.InventoryController;
 import controller.LogInController;
+import controller.ManageEmployeesController;
 import controller.ViewClientsController;
 import controller.ViewNotificationsController;
 import controller.ViewReceiptsController;
@@ -48,11 +49,12 @@ public class MainGUI extends JFrame implements ActionListener, MouseListener
 	private AddTransactionController addTransactionController;
 	private AddServicesController addServicesController;
 	private AddProductsController addProductsController;
+	private InventoryController inventoryController;
+	private LogInController logInController;
+	private ManageEmployeesController manageEmployeesController;
 	private ViewClientsController viewClientsController;
 	private ViewNotificationsController viewNotificationsController;
 	private ViewReceiptsController viewReceiptsController;
-	private InventoryController inventoryController;
-	private LogInController logInController;
 	
 	private JPanel logoPanel;
 	private Image logoImage;
@@ -99,11 +101,12 @@ public class MainGUI extends JFrame implements ActionListener, MouseListener
 		addTransactionController = new AddTransactionController();
 		addServicesController = new AddServicesController();
 		addProductsController = new AddProductsController();
+		inventoryController = new InventoryController();
+		logInController = new LogInController();
+		manageEmployeesController = new ManageEmployeesController();
 		viewClientsController = new ViewClientsController();
 		viewNotificationsController = new ViewNotificationsController();
 		viewReceiptsController = new ViewReceiptsController();
-		inventoryController = new InventoryController();
-		logInController = new LogInController();
 		
 		getContentPane().setLayout(null);
 		
@@ -373,7 +376,8 @@ public class MainGUI extends JFrame implements ActionListener, MouseListener
 			reportsButton.setEnabled(true);
 			viewTransactionsButton.setEnabled(true);
 			getContentPane().remove(mainPanel);
-			mainPanel = new ManageEmployeesGUI();
+			mainPanel = new ManageEmployeesGUI(manageEmployeesController);
+			manageEmployeesController.setView((ManageEmployeesGUI) mainPanel);
 			mainPanel.setBounds(253, 67, 821, 483);
 			getContentPane().add(mainPanel);
 			updatePanelTitle();
