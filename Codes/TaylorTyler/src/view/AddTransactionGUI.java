@@ -42,7 +42,6 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
      private JComboBox nameComboBox;
 	private JScrollPane servicesTransactionScrollPane;
 	private JScrollPane productsTransactionScrollPane;
-	private JPanel imagePanel;
 	private JLabel nameLabel;
 	private JButton addServiceButton;
 	private JButton addProductButton;
@@ -149,11 +148,6 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 		add(productsTransactionScrollPane);
 		productsTransactionTable.getModel().addTableModelListener(this);
 		
-		imagePanel = new JPanel();
-		imagePanel.setBounds(10, 42, 142, 130);
-		imagePanel.setBorder(blackline);
-		add(imagePanel);
-		
 		Iterator<Client> clients = addTransactionController.getAllClients();
 		clientNames = new ArrayList();
 		
@@ -164,7 +158,7 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 		}	
 	
           nameComboBox = new Java2sAutoComboBox(clientNames);
-          nameComboBox.setBounds(10, 183, 141, 20);
+          nameComboBox.setBounds(11, 42, 141, 20);
           add(nameComboBox);
                 
 //		nameTextField = new Java2sAutoTextField(clientNames.subList(0, clientNames.size()));
@@ -181,18 +175,18 @@ public class AddTransactionGUI extends JPanel implements ActionListener, TableMo
 		nameLabel = new JLabel("Name");
 		nameLabel.setForeground(Color.WHITE);
 		nameLabel.setFont(new Font("Tahoma", Font.PLAIN, 11));
-		nameLabel.setBounds(66, 204, 46, 14);
+		nameLabel.setBounds(67, 63, 46, 14);
 		add(nameLabel);
 		
 		addServicesHandler = false;
 		addServiceButton = new JButton("Add Services");
-		addServiceButton.setBounds(10, 246, 141, 23);
+		addServiceButton.setBounds(11, 105, 141, 23);
 		addServiceButton.addActionListener(this);
 		add(addServiceButton);
 		
 		addProductsHandler = false;
 		addProductButton = new JButton("Add Products");
-		addProductButton.setBounds(10, 280, 141, 20);
+		addProductButton.setBounds(11, 139, 141, 20);
 		addProductButton.addActionListener(this);
 		add(addProductButton);
 		
