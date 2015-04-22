@@ -142,11 +142,8 @@ DROP TABLE IF EXISTS `employee`;
 CREATE TABLE `employee` (
   `employee_id` int(11) NOT NULL AUTO_INCREMENT,
   `branch_id` int(11) NOT NULL,
-  `fname` varchar(45) NOT NULL,
-  `mname` varchar(45) NOT NULL,
-  `lname` varchar(45) NOT NULL,
+  `name` varchar(45) NOT NULL,
   `dateStartedWorking` date NOT NULL,
-  `hoursRendered` float NOT NULL,
   `type` varchar(45) NOT NULL,
   PRIMARY KEY (`employee_id`),
   UNIQUE KEY `employee_id_UNIQUE` (`employee_id`),
@@ -161,7 +158,7 @@ CREATE TABLE `employee` (
 
 LOCK TABLES `employee` WRITE;
 /*!40000 ALTER TABLE `employee` DISABLE KEYS */;
-INSERT INTO `employee` VALUES (1,1,'Sen','','One','2013-01-02',10,'senior'),(2,3,'Sen','','Two','2014-07-10',20,'senior'),(3,2,'Jun','','Three','2015-03-12',1,'junior'),(4,3,'Jun','','Four','2015-03-12',5,'junior'),(5,1,'Man','','Five','2013-02-13',50,'salonmanager'),(6,3,'Taylor','','Tyler','2010-01-01',0,'owner'),(7,2,'Man','','Seven','2011-02-14',90,'salonmanager');
+INSERT INTO `employee` VALUES (1,1,'Sen One','2013-01-02','senior'),(2,3,'Sen Two','2014-07-10','senior'),(3,2,'Jun Three','2015-03-12','junior'),(4,3,'Jun Four','2015-03-12','junior'),(5,1,'Man Five','2013-02-13','salonmanager'),(6,3,'Taylor Tyler','2010-01-01','owner'),(7,2,'Man Seven','2011-02-14','salonmanager');
 /*!40000 ALTER TABLE `employee` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -267,7 +264,7 @@ CREATE TABLE `receipt` (
   UNIQUE KEY `receipt_id_UNIQUE` (`receipt_id`),
   KEY `client_id_idx` (`client_id`),
   CONSTRAINT `client_id2` FOREIGN KEY (`client_id`) REFERENCES `client` (`client_id`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -276,7 +273,7 @@ CREATE TABLE `receipt` (
 
 LOCK TABLES `receipt` WRITE;
 /*!40000 ALTER TABLE `receipt` DISABLE KEYS */;
-INSERT INTO `receipt` VALUES (1,1,'2015-04-19 00:06:34','Cash',100),(2,1,'2015-04-19 00:17:54','Cash',100),(3,1,'2015-04-19 03:24:54','Cash',100),(4,1,'2015-04-19 03:42:09','Cash',0);
+INSERT INTO `receipt` VALUES (1,1,'2015-04-19 00:06:34','Cash',100),(2,1,'2015-04-19 00:17:54','Cash',100),(3,1,'2015-04-19 03:24:54','Cash',100),(4,1,'2015-04-19 03:42:09','Cash',0),(5,1,'2015-04-21 18:27:03','Cash',0);
 /*!40000 ALTER TABLE `receipt` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -461,4 +458,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-04-21 14:40:36
+-- Dump completed on 2015-04-21 20:03:54
